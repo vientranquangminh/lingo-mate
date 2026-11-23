@@ -1,0 +1,46 @@
+{
+  "configurations": [
+    {
+      "name": "dev",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define-from-file=.env.dev",
+        "--flavor",
+        "dev",
+        "--target",
+        "lib/main_dev.dart"
+      ]
+    },
+    {
+      "name": "staging",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define-from-file=.env.staging",
+        "--flavor",
+        "staging",
+        "--target",
+        "lib/main_staging.dart"
+      ]
+    },
+    {
+      "name": "production",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--dart-define-from-file=.env",
+        "--flavor",
+        "production",
+        "--target",
+        "lib/main.dart"
+      ]
+    },
+    {
+      "name": "no-flavor",
+      "request": "launch",
+      "type": "dart",
+      "args": []
+    }
+  ]
+}

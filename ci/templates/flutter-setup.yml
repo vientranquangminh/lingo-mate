@@ -1,0 +1,40 @@
+steps:
+  - bash: |
+      set -euo pipefail
+      flutter_version=$(jq -r '.flutter' .fvmrc)
+      version_name=$(sed -n 's/^version:[[:space:]]*\([^+]*\).*/\1/p' pubspec.yaml)
+      echo "Flutter $flutter_version, app version $version_name ($(buildNumber))"
+      echo "##vso[task.setvariable variable=flutterVersion]$flutter_version"
+      echo "##vso[task.setvariable variable=versionName]$version_name"
+    displayName: Read Flutter and app versions
+
+  - task: Cache@2
+    displayName: Cache Flutter SDK
+    inputs:
+      key: 'flutter | "$(Agent.OS)" | "$(flutterVersion)"'
+      path: $(Agent.ToolsDirectory)/flutter
+
+  - task: Cache@2
+    displayName: Cache pub packages
+    inputs:
+      key: 'pub | "$(Agent.OS)" | pubspec.lock'
+      restoreKeys: 'pub | "$(Agent.OS)"'
+      path: $(PUB_CACHE)
+
+  - bash: |
+      set -euo pipefail
+      sdk="$(Agent.ToolsDirectory)/flutter"
+      if [ ! -x "$sdk/bin/flutter" ]; then
+        git clone --depth 1 --branch "$(flutterVersion)" https://github.com/flutter/flutter.git "$sdk"
+      fi
+      echo "##vso[task.prependpath]$sdk/bin"
+      echo "##vso[task.prependpath]$(PUB_CACHE)/bin"
+    displayName: Install Flutter SDK
+
+  - bash: |
+      set -euo pipefail
+      flutter config --no-analytics --enable-swift-package-manager
+      flutter --version
+      flutter pub get
+      dart run build_runner build --delete-conflicting-outputs
+    displayName: Get packages and run code generation
