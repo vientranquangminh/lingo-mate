@@ -53,6 +53,10 @@ lib/
 └── main*.dart          # Entry points for different environments
 ```
 
+Product documentation lives outside `lib/` in `project-docs/`; start from
+`project-docs/INDEX.md` to find the spec, features (`F-xx`), acceptance criteria, screen
+designs (`S-xx`), decisions (`D-xx`) and icons.
+
 ## Key Patterns
 - **Riverpod State Management**: Each feature has `Notifier` classes extending `Notifier<T>` to manage `State` classes which extend `Equatable`.
 - **Result Wrapper**: Repositories catch exceptions and return `Result<T>` with either `Result.success(data)` or `Result.failed(error)`.
