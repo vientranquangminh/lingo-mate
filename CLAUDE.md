@@ -8,6 +8,10 @@
 - `.agents/INSTRUCTIONS.md`: how to add a feature (folders, states, repositories).
 - When you add or move a feature, route, server call, shared widget or cross-feature
   dependency, update `.agents/CONTEXT.md` in the same change.
+- `project-docs/INDEX.md`: where to find product information (spec, plan, technical design,
+  integrations, features and acceptance criteria, test plan, design system, decisions,
+  screen designs, icons). Look facts up there instead of guessing. On code conventions this
+  file and `.agents/CONTEXT.md` override `project-docs/**/CLAUDE.md`.
 
 ## Flutter version
 
@@ -161,3 +165,15 @@ Applies to Dart and Android code. iOS code is out of scope for now: leave it as 
 - Mark breaking changes with `!` after the type or scope (`feat(auth)!: …`) and
   explain them in a `BREAKING CHANGE:` footer.
 - Put details in the body, separated from the first line by a blank line.
+
+## Git workflow
+
+- The repository owner is the author of every change. Commit as the owner (the identity
+  of the existing commits on `main`), not as an AI assistant. Add no `Co-Authored-By`,
+  session links, "Generated with" lines or other AI attribution to commits, pull request
+  titles or bodies.
+- Never commit or push to `main` directly. Do each feature or fix on its own branch from
+  the latest `main`, named `<type>/<short-topic>` (e.g. `feat/conversation-mode`,
+  `docs/project-docs-index`), and open a pull request into `main`.
+- The owner reviews and merges pull requests. Review or merge a pull request only when the
+  owner asks for that pull request.
