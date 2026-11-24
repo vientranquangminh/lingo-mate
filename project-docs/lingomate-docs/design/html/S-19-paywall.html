@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Choose a plan</title>
+</head>
+<body style="margin:0;background:#E9E6DF">
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FAF8F4; color: #14161F; font-family: 'Be Vietnam Pro', system-ui, sans-serif; display: flex; flex-direction: column; padding: 14px 20px 24px; gap: 14px">
+  <div style="display: flex; justify-content: flex-end">
+    <a href="S-18-usage.html" aria-label="Close" style="width: 44px; height: 44px; border-radius: 999px; display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </a>
+  </div>
+  <h1 style="margin: 0; font-size: 26px; line-height: 32px; font-weight: 700">Talk more, sound natural</h1>
+
+  <div role="tablist" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 4px; border-radius: 14px; background: #F1EDE4">
+    <button role="tab" aria-selected="false" style="height: 40px; border-radius: 10px; border: none; background: transparent; color: #5B6070; font-size: 14px; font-weight: 600">Monthly</button>
+    <button role="tab" aria-selected="true" style="height: 40px; border-radius: 10px; border: none; background: #FFFFFF; color: #14161F; font-size: 14px; font-weight: 600; box-shadow: 0 1px 2px rgba(20,22,31,0.08)">Yearly · 2 months free</button>
+  </div>
+
+  <section aria-label="Pro plan" style="padding: 16px; border-radius: 20px; border: 2px solid #0F766E; background: #FFFFFF; display: flex; flex-direction: column; gap: 10px">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start">
+      <div style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 18px; font-weight: 700">Pro</span>
+        <span style="font-size: 13px; color: #5B6070">[PRICE]/year · about [PRICE]/month</span>
+      </div>
+      <span style="height: 26px; padding: 0 10px; display: flex; align-items: center; border-radius: 999px; background: #0F766E; color: #FFFFFF; font-size: 12px; font-weight: 600">Popular</span>
+    </div>
+    <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; font-size: 14px; line-height: 20px">
+      <li style="display: flex; gap: 8px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M5 12l5 5 9-10"/></svg>Standard: 10 hours a week</li>
+      <li style="display: flex; gap: 8px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M5 12l5 5 9-10"/></svg>30 Live minutes a month, top up anytime</li>
+      <li style="display: flex; gap: 8px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M5 12l5 5 9-10"/></svg>Review, reply suggestions, meeting summaries</li>
+      <li style="display: flex; gap: 8px"><svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F766E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0"><path d="M5 12l5 5 9-10"/></svg>Sync your phrasebook across devices</li>
+    </ul>
+  </section>
+
+  <section aria-label="Pro Lite plan" style="padding: 14px 16px; border-radius: 18px; border: 1px solid #E4DFD3; background: #FFFFFF; display: flex; justify-content: space-between; align-items: center; gap: 12px">
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 16px; font-weight: 700">Pro Lite</span>
+      <span style="font-size: 13px; line-height: 18px; color: #5B6070">Standard 6 h/week · no Live</span>
+    </div>
+    <span style="font-size: 14px; font-weight: 600; white-space: nowrap">[PRICE]/year</span>
+  </section>
+
+  <section aria-label="Free plan" style="padding: 14px 16px; border-radius: 18px; background: #F1EDE4; display: flex; justify-content: space-between; align-items: center; gap: 12px">
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 16px; font-weight: 700">Free · current plan</span>
+      <span style="font-size: 13px; line-height: 18px; color: #5B6070">Unlimited Offline · Standard 1 h/week</span>
+    </div>
+  </section>
+
+  <div style="flex: 1"></div>
+
+  <button style="height: 56px; border-radius: 16px; border: none; background: #0F766E; color: #FFFFFF; font-size: 17px; font-weight: 600">Continue with Pro</button>
+  <div style="display: flex; justify-content: center; gap: 18px; font-size: 13px; color: #5B6070">
+    <button style="border: none; background: transparent; color: #5B6070; font-size: 13px; text-decoration: underline; min-height: 44px">Restore purchases</button>
+    <a href="#" style="display: flex; align-items: center; text-decoration: underline">Terms</a>
+    <a href="#" style="display: flex; align-items: center; text-decoration: underline">Privacy</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Floating captions</title>
+</head>
+<body style="margin:0;background:#E9E6DF">
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; overflow: hidden; background: #ECEEF2; font-family: 'Be Vietnam Pro', system-ui, sans-serif">
+  <div aria-hidden="true" style="position: absolute; inset: 0; padding: 24px 20px; display: flex; flex-direction: column; gap: 14px">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <div style="width: 40px; height: 40px; border-radius: 999px; background: #C9CED8"></div>
+      <div style="display: flex; flex-direction: column; gap: 6px"><div style="width: 140px; height: 12px; border-radius: 6px; background: #C9CED8"></div><div style="width: 90px; height: 10px; border-radius: 5px; background: #D8DCE3"></div></div>
+    </div>
+    <div style="height: 150px; border-radius: 16px; background: #FFFFFF"></div>
+    <div style="width: 85%; height: 12px; border-radius: 6px; background: #D8DCE3"></div>
+    <div style="width: 70%; height: 12px; border-radius: 6px; background: #D8DCE3"></div>
+    <div style="width: 78%; height: 12px; border-radius: 6px; background: #D8DCE3"></div>
+    <div style="height: 120px; border-radius: 16px; background: #FFFFFF"></div>
+    <div style="width: 60%; height: 12px; border-radius: 6px; background: #D8DCE3"></div>
+    <div style="width: 82%; height: 12px; border-radius: 6px; background: #D8DCE3"></div>
+    <div style="height: 120px; border-radius: 16px; background: #FFFFFF"></div>
+  </div>
+
+  <div role="region" aria-label="Lingo Mate floating captions" style="position: absolute; left: 16px; right: 16px; top: 236px; border-radius: 20px; background: rgba(255,255,255,0.97); box-shadow: 0 8px 24px rgba(20,22,31,0.18); padding: 12px 14px 14px; color: #14161F">
+    <div style="display: flex; align-items: center; gap: 8px">
+      <span aria-hidden="true" style="width: 28px; height: 4px; border-radius: 999px; background: #E4DFD3; margin-right: 4px"></span>
+      <span style="display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 999px; background: #CCF2EC; color: #0F766E; font-size: 12px; font-weight: 600">Standard</span>
+      <span style="flex: 1; font-size: 12px; color: #5B6070">VI → EN</span>
+      <button aria-label="Expand" style="width: 36px; height: 36px; border-radius: 999px; border: none; background: #F1EDE4; color: #14161F; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10V4h6M20 14v6h-6M4 4l6 6M20 20l-6-6"/></svg>
+      </button>
+      <button aria-label="Stop translating" style="width: 36px; height: 36px; border-radius: 999px; border: none; background: #14161F; color: #F4F2EC; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+      </button>
+    </div>
+    <p style="margin: 10px 0 0; font-size: 15px; line-height: 22px; color: #5B6070">Hãy đặt mục tiêu ra bản đầu tiên vào thứ Sáu.</p>
+    <p style="margin: 2px 0 0; font-size: 20px; line-height: 28px; font-weight: 600">Let’s aim to ship the first version by Friday.</p>
+  </div>
+
+  <div role="status" style="position: absolute; left: 50%; transform: translateX(-50%); bottom: 40px; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; background: #14161F; color: #F4F2EC; font-size: 14px; white-space: nowrap">
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2DD4BF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>
+    Saved to phrasebook
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

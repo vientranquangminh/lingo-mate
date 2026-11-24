@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Conversation</title>
+</head>
+<body style="margin:0;background:#E9E6DF">
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FAF8F4; color: #14161F; font-family: 'Be Vietnam Pro', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+  <section lang="vi" aria-label="Partner side (Vietnamese)" style="height: 372px; background: #14161F; color: #F4F2EC; transform: rotate(180deg); display: flex; flex-direction: column; justify-content: space-between; padding: 22px 22px 18px; box-sizing: border-box">
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #A7ABB8">Tiếng Việt</span>
+      <p style="margin: 0; font-size: 15px; line-height: 22px; color: #A7ABB8">Not yet — could we have a table for two?</p>
+      <p style="margin: 0; font-size: 28px; line-height: 38px; font-weight: 600">Chưa ạ, cho chúng tôi một bàn hai người được không?</p>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <button aria-label="Replay" style="width: 48px; height: 48px; border-radius: 999px; border: 1px solid #2C3141; background: transparent; color: #F4F2EC; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6"/></svg>
+      </button>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+        <button aria-label="Tap to speak Vietnamese" style="width: 76px; height: 76px; border-radius: 999px; border: none; background: #F4F2EC; color: #14161F; display: flex; align-items: center; justify-content: center">
+          <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <span style="font-size: 13px; color: #A7ABB8">Chạm để nói</span>
+      </div>
+      <button aria-label="Show large" style="width: 48px; height: 48px; border-radius: 999px; border: 1px solid #2C3141; background: transparent; color: #F4F2EC; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10V4h6M20 14v6h-6M4 4l6 6M20 20l-6-6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <div style="height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border-bottom: 1px solid #E4DFD3; background: #FFFFFF">
+    <a href="S-04-translate-home.html" aria-label="Back" style="width: 44px; height: 44px; border-radius: 999px; display: flex; align-items: center; justify-content: center; color: #14161F">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </a>
+    <button aria-label="Translation engine: Standard. Tap to change" style="display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 999px; border: none; background: #CCF2EC; color: #0F766E; font-size: 13px; font-weight: 600">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.5 2A3 3 0 0 0 7 18z"/></svg>
+      Standard
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <button aria-pressed="true" aria-label="Auto-detect who is speaking: on" style="display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border-radius: 999px; border: 1px solid #E4DFD3; background: #F1EDE4; color: #14161F; font-size: 13px; font-weight: 600">
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg>
+      Auto-detect
+    </button>
+  </div>
+
+  <section aria-label="Your side (English)" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 18px 22px 22px; box-sizing: border-box">
+    <div style="display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <span style="font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5B6070">English</span>
+        <p style="margin: 0; font-size: 15px; line-height: 22px; color: #5B6070">Xin chào! Anh chị đã đặt bàn trước chưa ạ?</p>
+        <p style="margin: 0; font-size: 28px; line-height: 38px; font-weight: 600">Hi! Do you have a reservation?</p>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; background: #FFFFFF; border: 1px dashed #E4DFD3">
+        <span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 999px; background: #0F766E"></span>
+        <span style="font-size: 15px; line-height: 22px; color: #5B6070; font-style: italic">Could we sit by the window…</span>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; justify-content: space-between">
+      <button aria-label="Save to phrasebook" style="width: 48px; height: 48px; border-radius: 999px; border: 1px solid #E4DFD3; background: #FFFFFF; color: #14161F; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v17l-6-4-6 4z"/></svg>
+      </button>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+        <button aria-label="Listening. Tap to stop" style="width: 88px; height: 88px; border-radius: 999px; border: none; background: #0F766E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 10px rgba(15,118,110,0.16), 0 0 0 20px rgba(15,118,110,0.08)">
+          <svg aria-hidden="true" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <span style="font-size: 13px; font-weight: 600; color: #0F766E">Listening…</span>
+      </div>
+      <button aria-label="Read translations aloud: on" aria-pressed="true" style="width: 48px; height: 48px; border-radius: 999px; border: 1px solid #E4DFD3; background: #FFFFFF; color: #14161F; display: flex; align-items: center; justify-content: center">
+        <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg>
+      </button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Show mode</title>
+</head>
+<body style="margin:0;background:#E9E6DF">
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:inherit;text-decoration:none}a:hover{color:inherit}
+button{font-family:inherit}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #14161F; color: #F4F2EC; font-family: 'Be Vietnam Pro', system-ui, sans-serif; display: flex; flex-direction: column; padding: 18px 20px 28px">
+  <div style="display: flex; justify-content: space-between">
+    <a href="S-14-situation.html" aria-label="Close" style="width: 48px; height: 48px; border-radius: 999px; border: 1px solid #2C3141; display: flex; align-items: center; justify-content: center">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </a>
+    <span style="align-self: center; font-size: 13px; color: #A7ABB8">Show this screen to the other person</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 24px">
+    <p lang="ja" style="margin: 0; font-size: 44px; line-height: 58px; font-weight: 700">ピーナッツアレルギーがあります</p>
+    <p style="margin: 0; font-size: 17px; line-height: 26px; color: #A7ABB8">I’m allergic to peanuts</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+    <button style="height: 56px; border-radius: 16px; border: 1px solid #2C3141; background: transparent; color: #F4F2EC; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px; font-weight: 600">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5l2 2M20 4v5h-5M20 12a8 8 0 0 1-14 5l-2-2M4 20v-5h5"/></svg>
+      Rotate 180°
+    </button>
+    <button style="height: 56px; border-radius: 16px; border: none; background: #F4F2EC; color: #14161F; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px; font-weight: 600">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v4h4l5 4V6L8 10z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/></svg>
+      Speak
+    </button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
