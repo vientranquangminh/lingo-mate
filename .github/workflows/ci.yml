@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read Flutter version
+        id: fvm
+        run: echo "version=$(jq -r .flutter .fvmrc)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ steps.fvm.outputs.version }}
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Generate code
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+
+      - name: Build production release APK
+        run: |
+          cp .env.sample .env
+          sed -i 's/^GEMINI_API_KEY=.*/GEMINI_API_KEY=/' .env
+          flutter build apk --release --flavor production -t lib/main.dart --dart-define-from-file=.env
+
+      - name: Secret scan
+        run: |
+          apk=build/app/outputs/flutter-apk/app-production-release.apk
+          mkdir -p /tmp/apk && unzip -q -o "$apk" -d /tmp/apk
+          if grep -rIa --binary-files=text -l 'AIza[0-9A-Za-z_-]\{35\}' /tmp/apk; then
+            echo "A Google API key was found in the release APK" >&2
+            exit 1
+          fi
+
+      - name: Check 64-bit only
+        run: |
+          abis=$(ls /tmp/apk/lib)
+          echo "$abis"
+          if echo "$abis" | grep -vqxE 'arm64-v8a|x86_64'; then
+            echo "The release APK contains 32-bit native libraries" >&2
+            exit 1
+          fi

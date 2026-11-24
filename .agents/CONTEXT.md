@@ -32,7 +32,9 @@ lib/
 │   └── widgets/        # Shared AppPlatform* widgets
 ├── core/               # Core configuration, Dependency Injection, Networking, Storage
 │   ├── api/            # Retrofit Clients, API Models (Request Body, Responses)
+│   ├── config/         # remote_defaults.dart: Remote Config keys and defaults (the only place model names live)
 │   ├── data/           # Base data models (e.g., Result wrapper)
+│   ├── database/       # Drift AppDatabase and tables (sessions, utterances, phrases, tags, quick phrase favorites, language packs, usage ledger)
 │   ├── di/             # GetIt & Injectable setup
 │   ├── dio/            # Dio interceptors and configurations
 │   └── storage/        # Local storage (Shared Preferences, Secure Storage)
@@ -62,13 +64,19 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - **Riverpod State Management**: Each feature has `Notifier` classes extending `Notifier<T>` to manage `State` classes which extend `Equatable`.
 - **Result Wrapper**: Repositories catch exceptions and return `Result<T>` with either `Result.success(data)` or `Result.failed(error)`.
 - **Dependency Injection**: Repositories and Services use `@Singleton` or `@Injectable` from the `injectable` package.
+- **Local database**: Drift `AppDatabase` (`lib/core/database/`), registered as a singleton in `DatabaseModule`. Bump `schemaVersion` and add a migration step for every schema change. Tests open it with `NativeDatabase.memory()`.
 
 ## Firebase & Environments
 - Flavors: dev (`com.lingomate.app.dev`), staging (`com.lingomate.app.staging`), production (`com.lingomate.app`).
 - Env files are `KEY=VALUE` files in the root (`.env.dev`, `.env.staging`, `.env`; template `.env.sample`), passed with `--dart-define-from-file` and read in `lib/env.dart`.
 - Only dev is connected to Firebase (project `lingo-mate-4f38d`): `lib/firebase_options_dev.dart` and `android/app/src/dev/google-services.json`. Regenerate with `flutterfire-config.sh`.
 
+## CI
+- `.github/workflows/ci.yml` runs on pull requests and pushes to `main`: code generation, `flutter analyze`, `flutter test`, a production release APK build, a scan that fails on `AIza` keys in the APK, and a check that the APK holds only 64-bit native libraries (`packaging.jniLibs.excludes` in `android/app/build.gradle`).
+- Release builds sign with `signing.properties` + `key-release.jks` when present, otherwise with the debug key.
+
 ## Scripts & Generation
 - Localizations use Flutter's gen-l10n (`l10n.yaml`): edit `lib/l10n/*.arb`, then run `flutter gen-l10n` (`flutter pub get` also runs it). Read strings with `context.localization.<key>`.
-- Use `build_runner` for generating Retrofit clients, Injectable DI files, and Riverpod lints.
+- Use `build_runner` for generating Retrofit clients, Injectable DI files, Drift databases and Riverpod lints.
 - Example: `dart run build_runner build --delete-conflicting-outputs`
+- `scripts/cloud-setup.sh` installs Flutter (via fvm) and the Android SDK in cloud sessions.

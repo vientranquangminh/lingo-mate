@@ -31,3 +31,18 @@ EOF
 chmod +x /usr/local/bin/fvm
 chmod -R a+rwX "$FVM_CACHE" "$PUB_CACHE_DIR"
 fvm --version
+
+ANDROID_SDK=/opt/android-sdk
+SDKMANAGER="$ANDROID_SDK/cmdline-tools/latest/bin/sdkmanager"
+if [ ! -x "$SDKMANAGER" ]; then
+  tmp=$(mktemp -d)
+  curl -sSLo "$tmp/clt.zip" https://dl.google.com/android/repository/commandlinetools-linux-13114758_latest.zip
+  unzip -q "$tmp/clt.zip" -d "$tmp"
+  mkdir -p "$ANDROID_SDK/cmdline-tools"
+  mv "$tmp/cmdline-tools" "$ANDROID_SDK/cmdline-tools/latest"
+  rm -rf "$tmp"
+fi
+yes | "$SDKMANAGER" --licenses > /dev/null || true
+"$SDKMANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0" > /dev/null
+flutter config --android-sdk "$ANDROID_SDK"
+chmod -R a+rwX "$ANDROID_SDK"
