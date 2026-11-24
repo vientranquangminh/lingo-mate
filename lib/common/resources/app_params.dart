@@ -5,6 +5,10 @@ class AppParams {
   AppParams._();
 
   static const radius4 = 4.0;
+  static const radiusChip = 999.0;
+  static const engineDot = 8.0;
+  static const engineIcon = 16.0;
+  static const pulseDuration = Duration(milliseconds: 1000);
   static const radius24 = 24.0;
 
   static const buttonHeight = 48.0;

@@ -152,5 +152,17 @@
         "type": "String"
       }
     }
+  },
+  "engineOffline": "Offline",
+  "engineStandard": "Standard",
+  "engineLive": "Live",
+  "engineUnavailable": "Unavailable",
+  "engineChipSemantics": "Translation engine: {engine}. Tap to change.",
+  "@engineChipSemantics": {
+    "placeholders": {
+      "engine": {
+        "type": "String"
+      }
+    }
   }
 }

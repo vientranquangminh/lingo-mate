@@ -51,5 +51,10 @@
   "devtoolsSoakStats": "{elapsed} · {segments} đoạn · khoảng mất âm dài nhất {gapMs} ms",
   "devtoolsSoakOverlayDenied": "Chưa cấp quyền hiển thị trên ứng dụng khác: phụ đề chỉ hiện trong app.",
   "devtoolsSoakOverlayGrant": "Cấp quyền hiển thị nổi",
-  "devtoolsSoakSaved": "Đã lưu từ bong bóng: {text}"
+  "devtoolsSoakSaved": "Đã lưu từ bong bóng: {text}",
+  "engineOffline": "Ngoại tuyến",
+  "engineStandard": "Tiêu chuẩn",
+  "engineLive": "Trực tiếp",
+  "engineUnavailable": "Không khả dụng",
+  "engineChipSemantics": "Engine dịch: {engine}. Chạm để đổi."
 }

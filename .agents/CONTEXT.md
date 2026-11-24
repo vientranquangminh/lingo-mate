@@ -29,7 +29,7 @@ lib/
 ├── common/             # Reusable widgets, enums, extensions, utils, exceptions
 │   ├── extensions/     # BuildContext, platform (isCupertino) and text style extensions
 │   ├── resources/      # AppTheme, AppParams, Dimens, AppConfiguration
-│   └── widgets/        # Shared AppPlatform* widgets; AppIcon + AppIcons enum over the 79 SVGs in assets/icons
+│   └── widgets/        # Shared AppPlatform* widgets; AppIcon + AppIcons enum over the 79 SVGs in assets/icons; EngineChip (engine colour/icon/label, Live on-air dot honouring reduce motion)
 ├── core/               # Core configuration, Dependency Injection, Networking, Storage
 │   ├── background/     # BackgroundCapture: TranslationForegroundService (microphone FGS, Stop/Open notification) + CaptionOverlay over channels lingomate/background(+/events)
 │   ├── ai/             # GenerativeModelFactory: Gemini models via Firebase AI Logic, model names from Remote Config
@@ -43,7 +43,7 @@ lib/
 │   │   ├── asr/        # T-0.4 spike: AsrModelStore (models/ folder), SherpaWhisperEngine (worker isolate), WhisperCppEngine
 │   │   ├── live/       # T-0.5 spike: LiveCodec (setup/audio/server messages, doc 04 §4), LiveSession (WebSocket, goAway → resume with handle)
 │   │   ├── translate/  # TranslatorPrompt, GeminiTextTranslator (Standard, AI Logic, 6 s timeout + 1 retry), MlKitTextTranslator (Offline)
-│   │   └── selection/  # CapabilityMatrix (+ loader: Remote Config override or assets/capability_matrix.json), EngineSelector (doc 03 §7, reasons per engine), ErrorBurstTracker, RegionBlock
+│   │   └── selection/  # CapabilityMatrix (+ loader: Remote Config override or assets/capability_matrix.json), EngineSelector (doc 03 §7, reasons per engine), ErrorBurstTracker, RegionBlock; engine_providers.dart wires onlineProvider (connectivity_plus), capabilityMatrixProvider, liveAvailableProvider (dev flavor + ff_live_enabled, AC-05.6), enginePinProvider (session pin, also set by devtools), regionBlockProvider (saved 24 h block), errorBurstProvider, packsInstalledProvider into engineSelectionProvider(EngineRequest)
 │   ├── errors/         # CrashReporter: Crashlytics fatal/non-fatal reports and engine/mode/pair keys, never transcript text
 │   ├── firebase/       # bootstrapFirebase: Firebase.initializeApp + App Check (debug provider in dev, Play Integrity otherwise)
 │   ├── dio/            # Dio interceptors and configurations
