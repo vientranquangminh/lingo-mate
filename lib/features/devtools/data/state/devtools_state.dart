@@ -76,6 +76,9 @@ class DevtoolsState extends Equatable {
 /// Progress of a benchmark run.
 enum BenchmarkStatus { idle, loading, running, done, failed }
 
+/// Download state of the ML Kit models the Offline pipelines need.
+enum OfflineModelsStatus { unknown, downloading, ready, failed }
+
 /// Benchmark clips, pipelines and the latest run.
 class BenchmarkState extends Equatable {
   const BenchmarkState({
@@ -88,6 +91,7 @@ class BenchmarkState extends Equatable {
     this.rowCount = 0,
     this.csvPath = '',
     this.error = '',
+    this.offlineModels = OfflineModelsStatus.unknown,
   });
 
   final BenchmarkStatus status;
@@ -99,6 +103,7 @@ class BenchmarkState extends Equatable {
   final int rowCount;
   final String csvPath;
   final String error;
+  final OfflineModelsStatus offlineModels;
 
   BenchmarkState copyWith({
     BenchmarkStatus? status,
@@ -110,6 +115,7 @@ class BenchmarkState extends Equatable {
     int? rowCount,
     String? csvPath,
     String? error,
+    OfflineModelsStatus? offlineModels,
   }) {
     return BenchmarkState(
       status: status ?? this.status,
@@ -121,6 +127,7 @@ class BenchmarkState extends Equatable {
       rowCount: rowCount ?? this.rowCount,
       csvPath: csvPath ?? this.csvPath,
       error: error ?? this.error,
+      offlineModels: offlineModels ?? this.offlineModels,
     );
   }
 
@@ -135,5 +142,6 @@ class BenchmarkState extends Equatable {
     rowCount,
     csvPath,
     error,
+    offlineModels,
   ];
 }
