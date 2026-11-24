@@ -6,7 +6,7 @@ Actions → Build & Distribute Android (dev) → Run workflow). It analyzes, tes
 and sends it to the tester groups of Firebase project `lingo-mate-4f38d` with the commit
 message as release notes. The Firebase app id is read from `firebase.json`.
 
-The first step fails within seconds if anything below is missing.
+Until any of the secrets below exist, the workflow skips the build and reports a notice instead of failing, so merges send no failure emails. Once some are set, it fails within seconds if the rest are missing.
 
 ## 1. Release keystore (once)
 
