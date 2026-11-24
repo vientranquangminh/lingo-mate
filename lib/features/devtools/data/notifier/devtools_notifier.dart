@@ -78,9 +78,12 @@ class DevtoolsNotifier extends Notifier<DevtoolsState> {
       return;
     }
     final clock = Stopwatch()..start();
+    final vadFactory = await ref
+        .read(vadFactoryProvider.future)
+        .catchError((Object _) => EnergyVoiceActivityDetector.new);
     final pipeline = AudioPipeline(
       capture: ref.read(audioCaptureProvider),
-      vad: EnergyVoiceActivityDetector(),
+      vad: vadFactory(),
       echoGate: EchoGate(nowMs: () => clock.elapsedMilliseconds),
     );
     _subscriptions
