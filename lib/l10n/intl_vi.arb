@@ -44,5 +44,12 @@
   "devtoolsLiveTwoWay": "Hai chiều (vi ↔ en, hai phiên)",
   "devtoolsLiveStart": "Bắt đầu thử Live",
   "devtoolsLiveStop": "Dừng thử Live",
-  "devtoolsLiveLag": "Độ trễ trung vị {lagMs} ms qua {turns} lượt"
+  "devtoolsLiveLag": "Độ trễ trung vị {lagMs} ms qua {turns} lượt",
+  "devtoolsSoakSection": "Thử chạy nền (Cuộc họp)",
+  "devtoolsSoakStart": "Bắt đầu thử",
+  "devtoolsSoakStop": "Dừng thử",
+  "devtoolsSoakStats": "{elapsed} · {segments} đoạn · khoảng mất âm dài nhất {gapMs} ms",
+  "devtoolsSoakOverlayDenied": "Chưa cấp quyền hiển thị trên ứng dụng khác: phụ đề chỉ hiện trong app.",
+  "devtoolsSoakOverlayGrant": "Cấp quyền hiển thị nổi",
+  "devtoolsSoakSaved": "Đã lưu từ bong bóng: {text}"
 }

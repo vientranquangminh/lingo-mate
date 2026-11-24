@@ -72,7 +72,20 @@ The setup message follows doc 04 §4. If the session closes right after starting
 field placement differs from the current Live Translate guide: note the error shown and
 report it.
 
-## 6. Run and collect
+## 6. Background soak (T-0.8)
+
+Devtools → Background soak starts Meeting-style capture (raw mic) inside the microphone
+foreground service, with the "Translating meeting" notification (Stop / Open) and the
+floating caption bubble when the overlay permission is granted ("Grant overlay
+permission" opens the system screen). The bubble shows each segment; drag it anywhere,
+tap to expand, long-press to save a line. Its position is kept between runs.
+
+To run the 30-minute soak (AC-04.6, doc 07 §8): start it, lock the phone or switch apps,
+and come back after 30 minutes. The screen shows elapsed time, segments and the longest
+gap between audio frames: a gap of more than a second means capture was paused. Note
+battery % before and after (≤ 8% target) and try the reference and the low-end phone.
+
+## 7. Run and collect
 
 Devtools → Benchmark → Reload clips → Run benchmark. When it finishes, the screen shows the
 CSV path. Pull it with:
