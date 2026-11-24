@@ -70,6 +70,10 @@ Product documentation lives outside `lib/` in `project-docs/`; start from
 `project-docs/INDEX.md` to find the spec, features (`F-xx`), acceptance criteria, screen
 designs (`S-xx`), decisions (`D-xx`) and icons.
 
+## Typography
+- Font: Be Vietnam Pro (400/500/600/700, `assets/fonts`, OFL licence registered by `AppConfiguration.registerFontLicenses`) for Material and Cupertino; `AppTheme.textTheme` is the Material 3 scale (`Typography.englishLike2021`) in that font.
+- Doc 08 §2.2 styles rounded to the M3 scale (CLAUDE.md): display 40/48 → `displaySmall` 36/44 · captionXL 28/38 → `headlineMedium` 28/36 · captionL 22/30 and title 22/28 → `titleLarge` 22/28 · headline 18/24 → `titleMedium` 16/24 · body 16/24 → `bodyLarge` · original 15/22 → `bodyLarge` 16/24 (legibility on ties) · label 14/20 → `labelLarge` · small 12/16 → `bodySmall` / `labelMedium`. Add `PlatFormThemeDataExtension` getters for these as screens need them.
+
 ## Key Patterns
 - **Riverpod State Management**: Each feature has `Notifier` classes extending `Notifier<T>` to manage `State` classes which extend `Equatable`.
 - **Result Wrapper**: Repositories catch exceptions and return `Result<T>` with either `Result.success(data)` or `Result.failed(error)`.

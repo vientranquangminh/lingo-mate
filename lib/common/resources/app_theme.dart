@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../gen/colors.gen.dart';
+import '../../gen/fonts.gen.dart';
 import 'app_colors.dart';
 
 /// Material and Cupertino themes of the app, built from the doc 08 §2.1 tokens.
@@ -82,11 +83,21 @@ class AppTheme {
   static AppColors appColors(Brightness brightness) =>
       brightness == Brightness.dark ? AppColors.dark : AppColors.light;
 
+  /// Returns the Material 3 type scale in Be Vietnam Pro, coloured for [scheme].
+  static TextTheme textTheme(ColorScheme scheme) =>
+      Typography.englishLike2021.apply(
+        fontFamily: FontFamily.beVietnamPro,
+        bodyColor: scheme.onSurface,
+        displayColor: scheme.onSurface,
+      );
+
   /// Returns the Material theme for [brightness].
   static ThemeData materialTheme(Brightness brightness) {
     final scheme = colorScheme(brightness);
     return ThemeData(
       colorScheme: scheme,
+      fontFamily: FontFamily.beVietnamPro,
+      textTheme: textTheme(scheme),
       scaffoldBackgroundColor: scheme.surface,
       dividerColor: scheme.outlineVariant,
       extensions: [appColors(brightness)],
@@ -100,6 +111,15 @@ class AppTheme {
       brightness: brightness,
       primaryColor: scheme.primary,
       scaffoldBackgroundColor: scheme.surface,
+      textTheme: CupertinoTextThemeData(
+        primaryColor: scheme.primary,
+        textStyle: CupertinoTextThemeData(primaryColor: scheme.primary)
+            .textStyle
+            .copyWith(
+              fontFamily: FontFamily.beVietnamPro,
+              color: scheme.onSurface,
+            ),
+      ),
     );
   }
 }
