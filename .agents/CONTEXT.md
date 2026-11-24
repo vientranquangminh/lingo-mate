@@ -67,6 +67,7 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - Flavors: dev (`com.lingomate.app.dev`), staging (`com.lingomate.app.staging`), production (`com.lingomate.app`).
 - Env files are `KEY=VALUE` files in the root (`.env.dev`, `.env.staging`, `.env`; template `.env.sample`), passed with `--dart-define-from-file` and read in `lib/env.dart`.
 - Only dev is connected to Firebase (project `lingo-mate-4f38d`): `lib/firebase_options_dev.dart` and `android/app/src/dev/google-services.json`. Regenerate with `flutterfire-config.sh`.
+- Every push to `main` runs `.github/workflows/distribute-dev.yml`: analyze, test, signed dev release APK, upload to Firebase App Distribution. Secrets, variables and keystore setup: `docs/ci-cd.md`.
 
 ## Scripts & Generation
 - Localizations use Flutter's gen-l10n (`l10n.yaml`): edit `lib/l10n/*.arb`, then run `flutter gen-l10n` (`flutter pub get` also runs it). Read strings with `context.localization.<key>`.
