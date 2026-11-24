@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_translation">Translation</string>
+    <string name="notification_translating_meeting">Translating meeting</string>
+    <string name="notification_action_stop">Stop</string>
+    <string name="notification_action_open">Open</string>
+</resources>

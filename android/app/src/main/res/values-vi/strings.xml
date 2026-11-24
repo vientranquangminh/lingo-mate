@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_translation">Phiên dịch</string>
+    <string name="notification_translating_meeting">Đang dịch cuộc họp</string>
+    <string name="notification_action_stop">Dừng</string>
+    <string name="notification_action_open">Mở</string>
+</resources>

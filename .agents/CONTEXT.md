@@ -31,6 +31,7 @@ lib/
 │   ├── resources/      # AppTheme, AppParams, Dimens, AppConfiguration
 │   └── widgets/        # Shared AppPlatform* widgets
 ├── core/               # Core configuration, Dependency Injection, Networking, Storage
+│   ├── background/     # BackgroundCapture: TranslationForegroundService (microphone FGS, Stop/Open notification) + CaptionOverlay over channels lingomate/background(+/events)
 │   ├── ai/             # GenerativeModelFactory: Gemini models via Firebase AI Logic, model names from Remote Config
 │   ├── api/            # Retrofit Clients, API Models (Request Body, Responses)
 │   ├── audio/          # AudioPipeline: capture (record, 16 kHz PCM16) → 20 ms frames → 30 s ring buffer → EchoGate → VAD → Segmenter → AudioSegment; 100 ms chunks for Live; LatencyTimeline
@@ -88,6 +89,7 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - `DEVTOOLS_ENABLED=true` in `.env.dev` turns on the `/devtools` route (the dev start page until Phase 1 screens exist) and the `LatencyHud` overlay in `my_app.dart`. It is a compile-time constant, so production builds contain no devtools code (AC-12.1).
 - Pipelines push stage timings with `latencyLogProvider`; engines read the forced engine from `devtoolsProvider`.
 - The Live test (`liveTestProvider`) streams the mic's 100 ms chunks to one Live session (target en) or two (vi and en, OQ-4) with the dev `GEMINI_API_KEY`, plays the 24 kHz answer through `PcmPlayer` (native AudioTrack, `android/app/src/main/kotlin/com/lingomate/app/PcmPlayer.kt`, channel `lingomate/pcm_player`), closes the echo gate while it plays and reports the median lag from the first input transcript to the first translated audio.
+- The background soak (`soakProvider`) runs Meeting capture (raw mic) inside the foreground service with the caption overlay, and reports elapsed time, segments and the longest gap between audio frames, which shows whether capture paused with the screen off or the app in the background (AC-04.6). Native code: `android/app/src/main/kotlin/com/lingomate/app/` (`TranslationForegroundService`, `CaptionOverlay`, `channels/BackgroundChannel`); notification strings in `res/values(-vi)/strings.xml`.
 - The benchmark runs, for each speech model in the app's external `models/` folder, ASR alone, ASR → Gemini (Standard) and ASR → ML Kit (Offline) (`asrModelCatalogProvider` → `benchmarkPipelinesProvider`) over clips in `benchmark/`. English clips translate to Vietnamese, others to English. Setup: `docs/benchmark.md`.
 
 ## CI

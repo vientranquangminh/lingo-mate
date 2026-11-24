@@ -125,5 +125,32 @@
         "type": "int"
       }
     }
+  },
+  "devtoolsSoakSection": "Background soak (Meeting)",
+  "devtoolsSoakStart": "Start soak",
+  "devtoolsSoakStop": "Stop soak",
+  "devtoolsSoakStats": "{elapsed} · {segments} segments · longest audio gap {gapMs} ms",
+  "devtoolsSoakOverlayDenied": "Overlay permission not granted: captions stay in the app.",
+  "devtoolsSoakOverlayGrant": "Grant overlay permission",
+  "devtoolsSoakSaved": "Saved from overlay: {text}",
+  "@devtoolsSoakStats": {
+    "placeholders": {
+      "elapsed": {
+        "type": "String"
+      },
+      "segments": {
+        "type": "int"
+      },
+      "gapMs": {
+        "type": "int"
+      }
+    }
+  },
+  "@devtoolsSoakSaved": {
+    "placeholders": {
+      "text": {
+        "type": "String"
+      }
+    }
   }
 }

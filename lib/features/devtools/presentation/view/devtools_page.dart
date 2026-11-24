@@ -14,6 +14,7 @@ import '../../data/notifier/benchmark_notifier.dart';
 import '../../data/notifier/devtools_notifier.dart';
 import '../../data/notifier/devtools_providers.dart';
 import '../../data/notifier/live_test_notifier.dart';
+import '../../data/notifier/soak_notifier.dart';
 import '../../data/state/devtools_state.dart';
 import '../widget/devtools_widgets.dart';
 
@@ -46,6 +47,7 @@ class _DevtoolsPageState extends ConsumerState<DevtoolsPage> {
           _EngineSection(),
           _AudioSection(),
           _LiveSection(),
+          _SoakSection(),
           _BenchmarkSection(),
           _RemoteConfigSection(),
         ],
@@ -185,6 +187,48 @@ class _LiveSection extends ConsumerWidget {
             '→${line.target}: ${line.input} ⇒ ${line.output}',
             small: true,
           ),
+      ],
+    );
+  }
+}
+
+/// Background soak: Meeting capture in the foreground service with the overlay.
+class _SoakSection extends ConsumerWidget {
+  const _SoakSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.localization;
+    final state = ref.watch(soakProvider);
+    final notifier = ref.read(soakProvider.notifier);
+    final minutes = state.elapsed.inMinutes;
+    final seconds = state.elapsed.inSeconds % 60;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        DevtoolsSectionTitle(l10n.devtoolsSoakSection),
+        AppPlatformElevatedButton(
+          onPressed: notifier.toggle,
+          text: state.running ? l10n.devtoolsSoakStop : l10n.devtoolsSoakStart,
+        ),
+        if (state.running || state.elapsed > Duration.zero)
+          DevtoolsText(
+            l10n.devtoolsSoakStats(
+              '$minutes:${seconds.toString().padLeft(2, '0')}',
+              state.segments,
+              state.maxGapMs,
+            ),
+          ),
+        if (state.overlayDenied) ...[
+          DevtoolsText(l10n.devtoolsSoakOverlayDenied, small: true),
+          AppPlatformOutlinedButton(
+            onPressed: notifier.openOverlaySettings,
+            text: l10n.devtoolsSoakOverlayGrant,
+          ),
+        ],
+        for (final line in state.savedLines)
+          DevtoolsText(l10n.devtoolsSoakSaved(line), small: true),
+        if (state.error.isNotEmpty) DevtoolsText(state.error, small: true),
       ],
     );
   }
