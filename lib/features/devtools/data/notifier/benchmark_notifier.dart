@@ -15,9 +15,7 @@ class BenchmarkNotifier extends Notifier<BenchmarkState> {
   List<BenchmarkClip> _clips = const [];
 
   @override
-  BenchmarkState build() => BenchmarkState(
-    pipelineCount: ref.watch(benchmarkPipelinesProvider).length,
-  );
+  BenchmarkState build() => const BenchmarkState();
 
   /// Reads the manifest from the benchmark folder.
   Future<void> loadClips() async {
@@ -25,10 +23,13 @@ class BenchmarkNotifier extends Notifier<BenchmarkState> {
     try {
       final files = await ref.read(benchmarkFilesProvider.future);
       _clips = await files.readManifest();
+      ref.invalidate(asrModelCatalogProvider);
+      final pipelines = await ref.read(benchmarkPipelinesProvider.future);
       state = state.copyWith(
         status: BenchmarkStatus.idle,
         folder: files.directory.path,
         clipCount: _clips.length,
+        pipelineCount: pipelines.length,
       );
     } catch (e) {
       state = state.copyWith(status: BenchmarkStatus.failed, error: '$e');
@@ -37,12 +38,15 @@ class BenchmarkNotifier extends Notifier<BenchmarkState> {
 
   /// Runs all clips through all pipelines in real time and writes a CSV.
   Future<void> run() async {
-    final pipelines = ref.read(benchmarkPipelinesProvider);
+    final pipelines = await ref.read(benchmarkPipelinesProvider.future);
     if (_clips.isEmpty || pipelines.isEmpty) {
       return;
     }
     final clock = Stopwatch()..start();
-    final runner = BenchmarkRunner(nowMs: () => clock.elapsedMilliseconds);
+    final runner = BenchmarkRunner(
+      nowMs: () => clock.elapsedMilliseconds,
+      vadFactory: await ref.read(vadFactoryProvider.future),
+    );
     final rows = <BenchmarkRow>[];
     try {
       final files = await ref.read(benchmarkFilesProvider.future);

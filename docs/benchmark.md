@@ -27,7 +27,28 @@ Open the devtools screen once so the folder exists, then:
 adb push manifest.json *.wav /sdcard/Android/data/com.lingomate.app.dev/files/benchmark/
 ```
 
-## 3. Run and collect
+## 3. Copy the speech models (T-0.4 spike)
+
+The devtools screen builds one benchmark pipeline per model it finds in the app's
+`models/` folder, and uses Silero VAD instead of the energy threshold when
+`silero_vad.onnx` is there. Download the candidates on your computer, then push them:
+
+| Candidate | Files in `models/` | Download |
+|---|---|---|
+| whisper.cpp | `ggml-base.bin`, `ggml-small-q5_1.bin`, … (name: `ggml-<model>.bin`) | https://huggingface.co/ggerganov/whisper.cpp/tree/main |
+| sherpa-onnx Whisper | folder `sherpa-onnx-whisper-<model>/` with `<model>-encoder.int8.onnx`, `<model>-decoder.int8.onnx`, `<model>-tokens.txt` | https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models (`sherpa-onnx-whisper-base.tar.bz2`, `…-small…`) |
+| Silero VAD | `silero_vad.onnx` | https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models |
+
+Start with multilingual `base` and `small` (quantized) for both libraries (doc 04 §6).
+
+```bash
+adb push ggml-base.bin ggml-small-q5_1.bin silero_vad.onnx sherpa-onnx-whisper-base /sdcard/Android/data/com.lingomate.app.dev/files/models/
+```
+
+Devtools → Benchmark → Reload clips lists the models found and the VAD in use. The mic
+test also uses Silero when it is present.
+
+## 4. Run and collect
 
 Devtools → Benchmark → Reload clips → Run benchmark. When it finishes, the screen shows the
 CSV path. Pull it with:

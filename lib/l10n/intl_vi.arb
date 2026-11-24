@@ -21,7 +21,7 @@
   "devtoolsBenchmarkSection": "Benchmark",
   "devtoolsBenchmarkFolder": "Thư mục clip: {path}",
   "devtoolsBenchmarkSummary": "{clips} clip · {pipelines} pipeline",
-  "devtoolsBenchmarkNoPipelines": "Chưa có engine nhận dạng giọng nói.",
+  "devtoolsBenchmarkNoPipelines": "Không tìm thấy model nhận dạng giọng nói trong thư mục models.",
   "devtoolsBenchmarkReload": "Tải lại clip",
   "devtoolsBenchmarkRun": "Chạy benchmark",
   "devtoolsBenchmarkRunning": "Đang chạy {clip} với {pipeline}…",
@@ -32,5 +32,8 @@
   "devtoolsStageAsr": "ASR",
   "devtoolsStageTranslation": "Bản dịch",
   "devtoolsStagePlayback": "Phát",
-  "devtoolsNoValue": "–"
+  "devtoolsNoValue": "–",
+  "devtoolsModels": "Model giọng nói: {names}",
+  "devtoolsVadSilero": "VAD: Silero",
+  "devtoolsVadEnergy": "VAD: ngưỡng âm lượng"
 }

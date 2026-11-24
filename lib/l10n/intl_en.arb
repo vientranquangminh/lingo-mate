@@ -19,52 +19,76 @@
   "devtoolsMicLevel": "Level {level} dBFS",
   "@devtoolsMicLevel": {
     "placeholders": {
-      "level": {"type": "String"}
+      "level": {
+        "type": "String"
+      }
     }
   },
   "devtoolsSegment": "Segment {index}: {durationMs} ms, {speechPercent}% speech",
   "@devtoolsSegment": {
     "placeholders": {
-      "index": {"type": "int"},
-      "durationMs": {"type": "int"},
-      "speechPercent": {"type": "int"}
+      "index": {
+        "type": "int"
+      },
+      "durationMs": {
+        "type": "int"
+      },
+      "speechPercent": {
+        "type": "int"
+      }
     }
   },
   "devtoolsBenchmarkSection": "Benchmark",
   "devtoolsBenchmarkFolder": "Clips folder: {path}",
   "@devtoolsBenchmarkFolder": {
     "placeholders": {
-      "path": {"type": "String"}
+      "path": {
+        "type": "String"
+      }
     }
   },
   "devtoolsBenchmarkSummary": "{clips} clips · {pipelines} pipelines",
   "@devtoolsBenchmarkSummary": {
     "placeholders": {
-      "clips": {"type": "int"},
-      "pipelines": {"type": "int"}
+      "clips": {
+        "type": "int"
+      },
+      "pipelines": {
+        "type": "int"
+      }
     }
   },
-  "devtoolsBenchmarkNoPipelines": "No speech recognition engine yet.",
+  "devtoolsBenchmarkNoPipelines": "No speech model found in the models folder.",
   "devtoolsBenchmarkReload": "Reload clips",
   "devtoolsBenchmarkRun": "Run benchmark",
   "devtoolsBenchmarkRunning": "Running {clip} on {pipeline}…",
   "@devtoolsBenchmarkRunning": {
     "placeholders": {
-      "clip": {"type": "String"},
-      "pipeline": {"type": "String"}
+      "clip": {
+        "type": "String"
+      },
+      "pipeline": {
+        "type": "String"
+      }
     }
   },
   "devtoolsBenchmarkDone": "Saved {rows} rows to {path}",
   "@devtoolsBenchmarkDone": {
     "placeholders": {
-      "rows": {"type": "int"},
-      "path": {"type": "String"}
+      "rows": {
+        "type": "int"
+      },
+      "path": {
+        "type": "String"
+      }
     }
   },
   "devtoolsBenchmarkFailed": "Benchmark failed: {error}",
   "@devtoolsBenchmarkFailed": {
     "placeholders": {
-      "error": {"type": "String"}
+      "error": {
+        "type": "String"
+      }
     }
   },
   "devtoolsRemoteConfigSection": "Remote Config",
@@ -72,5 +96,15 @@
   "devtoolsStageAsr": "ASR",
   "devtoolsStageTranslation": "Translation",
   "devtoolsStagePlayback": "Playback",
-  "devtoolsNoValue": "–"
+  "devtoolsNoValue": "–",
+  "devtoolsModels": "Speech models: {names}",
+  "devtoolsVadSilero": "VAD: Silero",
+  "devtoolsVadEnergy": "VAD: energy threshold",
+  "@devtoolsModels": {
+    "placeholders": {
+      "names": {
+        "type": "String"
+      }
+    }
+  }
 }

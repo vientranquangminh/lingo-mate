@@ -176,6 +176,27 @@ class _BenchmarkSection extends ConsumerWidget {
         ),
         if (state.pipelineCount == 0)
           DevtoolsText(l10n.devtoolsBenchmarkNoPipelines, small: true),
+        ...switch (ref.watch(asrModelCatalogProvider)) {
+          AsyncData(:final value) => [
+            if (!value.isEmpty)
+              DevtoolsText(
+                l10n.devtoolsModels(
+                  [
+                    ...value.sherpaWhisper.map((m) => 'sherpa ${m.name}'),
+                    ...value.whisperCpp.map((m) => 'whisper.cpp ${m.name}'),
+                  ].join(', '),
+                ),
+                small: true,
+              ),
+            DevtoolsText(
+              value.sileroVad == null
+                  ? l10n.devtoolsVadEnergy
+                  : l10n.devtoolsVadSilero,
+              small: true,
+            ),
+          ],
+          _ => const <Widget>[],
+        },
         SizedBox(height: AppParams.spacing8.h),
         Row(
           children: [

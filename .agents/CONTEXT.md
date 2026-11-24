@@ -39,6 +39,7 @@ lib/
 │   ├── database/       # Drift AppDatabase and tables (sessions, utterances, phrases, tags, quick phrase favorites, language packs, usage ledger)
 │   ├── di/             # GetIt & Injectable setup
 │   ├── engines/        # EngineKind and the SpeechRecognizerEngine / TextTranslatorEngine interfaces (doc 03 §4)
+│   │   └── asr/        # T-0.4 spike: AsrModelStore (models/ folder), SherpaWhisperEngine (worker isolate), WhisperCppEngine
 │   ├── errors/         # CrashReporter: Crashlytics fatal/non-fatal reports and engine/mode/pair keys, never transcript text
 │   ├── firebase/       # bootstrapFirebase: Firebase.initializeApp + App Check (debug provider in dev, Play Integrity otherwise)
 │   ├── dio/            # Dio interceptors and configurations
@@ -70,7 +71,7 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - **Riverpod State Management**: Each feature has `Notifier` classes extending `Notifier<T>` to manage `State` classes which extend `Equatable`.
 - **Result Wrapper**: Repositories catch exceptions and return `Result<T>` with either `Result.success(data)` or `Result.failed(error)`.
 - **Dependency Injection**: Repositories and Services use `@Singleton` or `@Injectable` from the `injectable` package.
-- **Audio**: audio stays in memory (`AudioRingBuffer`), never on disk. `VoiceActivityDetector` is an interface; `EnergyVoiceActivityDetector` is the stand-in until Silero VAD comes with the ASR library (T-0.4). Segment rules (600 ms silence, 400 ms min speech, 15 s max cut at a ≥ 250 ms pause) live in `SegmenterConfig`. Call `echoGate.setSpeaking` around TTS/Live playback. `AudioPipeline.addPcm` feeds files for the benchmark runner.
+- **Audio**: audio stays in memory (`AudioRingBuffer`), never on disk; ASR engines take segments as in-memory floats. `VoiceActivityDetector` is an interface: `SileroVoiceActivityDetector` (sherpa-onnx) when `silero_vad.onnx` is in `models/`, `EnergyVoiceActivityDetector` otherwise (`vadFactoryProvider`). Segment rules (600 ms silence, 400 ms min speech, 15 s max cut at a ≥ 250 ms pause) live in `SegmenterConfig`. Call `echoGate.setSpeaking` around TTS/Live playback. `AudioPipeline.addPcm` feeds files for the benchmark runner.
 - **Local database**: Drift `AppDatabase` (`lib/core/database/`), registered as a singleton in `DatabaseModule`. Bump `schemaVersion` and add a migration step for every schema change. Tests open it with `NativeDatabase.memory()`.
 
 ## Firebase & Environments
@@ -84,7 +85,7 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 ## Devtools
 - `DEVTOOLS_ENABLED=true` in `.env.dev` turns on the `/devtools` route (the dev start page until Phase 1 screens exist) and the `LatencyHud` overlay in `my_app.dart`. It is a compile-time constant, so production builds contain no devtools code (AC-12.1).
 - Pipelines push stage timings with `latencyLogProvider`; engines read the forced engine from `devtoolsProvider`.
-- The benchmark runs the pipelines in `benchmarkPipelinesProvider` (empty until T-0.4) over clips in the app's external `benchmark/` folder. Setup: `docs/benchmark.md`.
+- The benchmark runs one pipeline per speech model in the app's external `models/` folder (`asrModelCatalogProvider` → `benchmarkPipelinesProvider`) over clips in `benchmark/`. Setup: `docs/benchmark.md`.
 
 ## CI
 - `.github/workflows/ci.yml` runs on pull requests and pushes to `main`: code generation, `flutter analyze`, `flutter test`, a production release APK build, a scan that fails on `AIza` keys in the APK, and a check that the APK holds only 64-bit native libraries (`packaging.jniLibs.excludes` in `android/app/build.gradle`).

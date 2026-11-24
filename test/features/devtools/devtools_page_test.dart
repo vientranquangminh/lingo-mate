@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lingo_mate/common/resources/app_config.dart';
 import 'package:lingo_mate/core/audio/audio_capture.dart';
 import 'package:lingo_mate/core/config/remote_config_service.dart';
+import 'package:lingo_mate/core/engines/asr/asr_models.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/errors/crash_reporter.dart';
 import 'package:lingo_mate/features/devtools/data/notifier/devtools_notifier.dart';
@@ -61,6 +62,9 @@ void main() {
       RemoteConfigService.withDefaults(CrashReporter.disabled()),
     ),
     benchmarkFilesProvider.overrideWith((ref) => BenchmarkFiles(dir)),
+    asrModelCatalogProvider.overrideWith(
+      (ref) async => const AsrModelCatalog(),
+    ),
   ];
 
   /// Pumps the devtools page with English strings and screen scaling.
@@ -106,7 +110,11 @@ void main() {
     await tester.scrollUntilVisible(find.text('Remote Config'), 200);
     expect(find.text('Benchmark'), findsOneWidget);
     expect(find.text('0 clips · 0 pipelines'), findsOneWidget);
-    expect(find.text('No speech recognition engine yet.'), findsOneWidget);
+    expect(
+      find.text('No speech model found in the models folder.'),
+      findsOneWidget,
+    );
+    expect(find.text('VAD: energy threshold'), findsOneWidget);
     expect(
       find.textContaining('model_text_translate: gemini-2.5-flash-lite'),
       findsOneWidget,

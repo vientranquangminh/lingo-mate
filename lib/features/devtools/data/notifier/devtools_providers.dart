@@ -1,6 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/audio/audio_capture.dart';
+import '../../../../core/audio/silero_voice_activity_detector.dart';
+import '../../../../core/audio/voice_activity_detector.dart';
+import '../../../../core/engines/asr/asr_models.dart';
+import '../../../../core/engines/asr/sherpa_whisper_engine.dart';
+import '../../../../core/engines/asr/whisper_cpp_engine.dart';
 import '../../../../core/config/remote_config_service.dart';
 import '../../../../core/di/di.dart';
 import '../model/benchmark_models.dart';
@@ -16,10 +21,34 @@ final remoteConfigProvider = Provider<RemoteConfigService>(
   (ref) => getIt<RemoteConfigService>(),
 );
 
-/// Pipelines the benchmark can run; speech recognition engines are added in T-0.4.
-final benchmarkPipelinesProvider = Provider<List<BenchmarkPipeline>>(
-  (ref) => const [],
+/// Speech models found in the app's `models/` folder.
+final asrModelCatalogProvider = FutureProvider<AsrModelCatalog>(
+  (ref) async => (await AsrModelStore.open()).scan(),
 );
+
+/// Pipelines the benchmark can run: one per speech model found.
+final benchmarkPipelinesProvider = FutureProvider<List<BenchmarkPipeline>>((
+  ref,
+) async {
+  final catalog = await ref.watch(asrModelCatalogProvider.future);
+  return [
+    for (final m in catalog.sherpaWhisper)
+      BenchmarkPipeline(asr: SherpaWhisperEngine(m)),
+    for (final m in catalog.whisperCpp)
+      BenchmarkPipeline(asr: WhisperCppEngine(m)),
+  ];
+});
+
+/// Creates the VAD: Silero when its model is present, the energy detector otherwise.
+final vadFactoryProvider = FutureProvider<VoiceActivityDetector Function()>((
+  ref,
+) async {
+  final silero = (await ref.watch(asrModelCatalogProvider.future)).sileroVad;
+  if (silero == null) {
+    return EnergyVoiceActivityDetector.new;
+  }
+  return () => SileroVoiceActivityDetector(silero);
+});
 
 /// Folder holding benchmark clips and results.
 final benchmarkFilesProvider = FutureProvider<BenchmarkFiles>(
