@@ -1,10 +1,10 @@
 # Generates Firebase configuration files for each flavor (dev, staging, prod).
-# Set --project and the bundle ids below to your Firebase projects and app ids.
+# Android only for now. Only dev is connected (Firebase project lingo-mate-4f38d);
+# the staging and prod projects do not exist yet: set their ids here once created.
 # Requires the FlutterFire CLI: dart pub global activate flutterfire_cli
 #
 # Each run writes lib/firebase_options_<flavor>.dart, which the app loads for
-# that flavor, plus the flavor's google-services.json and GoogleService-Info.plist.
-# On macOS the plist is bundled into the flavor's Release build configuration.
+# that flavor, plus the flavor's google-services.json.
 #
 # Usage: .\flutterfire-config.ps1 dev|staging|prod
 
@@ -22,35 +22,26 @@ if (-not $Environment) {
 switch ($Environment) {
     'dev' {
         flutterfire config `
-            --platforms=android,ios `
-            --project=template-dev `
+            --platforms=android `
+            --project=lingo-mate-4f38d `
             --out=lib/firebase_options_dev.dart `
-            --ios-bundle-id=com.example.template.dev `
-            --ios-out=ios/flavors/dev/GoogleService-Info.plist `
-            --ios-build-config=Release-dev `
-            --android-package-name=com.example.template.dev `
+            --android-package-name=com.lingomate.app.dev `
             --android-out=android/app/src/dev/google-services.json
     }
     'staging' {
         flutterfire config `
-            --platforms=android,ios `
-            --project=template-staging `
+            --platforms=android `
+            --project=lingomate-staging `
             --out=lib/firebase_options_staging.dart `
-            --ios-bundle-id=com.example.template.staging `
-            --ios-out=ios/flavors/staging/GoogleService-Info.plist `
-            --ios-build-config=Release-staging `
-            --android-package-name=com.example.template.staging `
+            --android-package-name=com.lingomate.app.staging `
             --android-out=android/app/src/staging/google-services.json
     }
     'prod' {
         flutterfire config `
-            --platforms=android,ios `
-            --project=template-prod `
-            --out=lib/firebase_options_production.dart `
-            --ios-bundle-id=com.example.template.prod `
-            --ios-out=ios/flavors/production/GoogleService-Info.plist `
-            --ios-build-config=Release-production `
-            --android-package-name=com.example.template.prod `
+            --platforms=android `
+            --project=lingomate-prod `
+            --out=lib/firebase_options_prod.dart `
+            --android-package-name=com.lingomate.app `
             --android-out=android/app/src/production/google-services.json
     }
 }

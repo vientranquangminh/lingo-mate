@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "932963846586",
+    "project_id": "lingo-mate-4f38d",
+    "storage_bucket": "lingo-mate-4f38d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932963846586:android:af1cd45a21f39dfa403583",
+        "android_client_info": {
+          "package_name": "com.lingomate.app.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtUsqsCFo8wZe6RybeDtgLJk75z_sXpnY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

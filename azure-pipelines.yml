@@ -237,7 +237,7 @@ stages:
               displayName: Upload to the internal testing track
               inputs:
                 serviceConnection: Google Play service connection
-                applicationId: com.example.template.prod
+                applicationId: com.lingomate.app
                 action: SingleBundle
                 bundleFile: $(Pipeline.Workspace)/android/*.aab
                 track: internal

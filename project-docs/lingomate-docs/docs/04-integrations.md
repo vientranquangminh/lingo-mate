@@ -25,16 +25,17 @@ Overview:
 
 ## 1. Firebase core + flavors
 
-- Two Firebase projects: `lingomate-dev` (Spark, never linked to billing) and `lingomate-prod` (Blaze from P2).
-- Configure with FlutterFire CLI per flavor → `lib/app/firebase_options_dev.dart`, `firebase_options_prod.dart`; `android/app/src/{dev,prod}/google-services.json`.
-- `main_dev.dart` / `main_prod.dart` call `bootstrap(Flavor.dev|prod)`.
+- Two Firebase projects: `lingo-mate-dev` (project id `lingo-mate-4f38d`, Spark, never linked to billing) and `lingomate-prod` (Blaze from P2, not created yet).
+- Configure with FlutterFire CLI per flavor via `./flutterfire-config.sh dev|staging|prod` → `lib/firebase_options_<flavor>.dart` and `android/app/src/<flavor>/google-services.json`. Only `dev` is connected today (Android app `com.lingomate.app.dev`).
+- `main_dev.dart` calls `Firebase.initializeApp` with `firebase_options_dev.dart`; `main.dart` (production) and `main_staging.dart` do the same once their projects exist.
+- Env values come from `.env.dev` / `.env.staging` / `.env` (`KEY=VALUE`, no JSON) via `--dart-define-from-file`.
 
 **Why separate projects**: linking a billing account switches all Gemini Developer API usage in that project to pay-as-you-go. Keeping dev on Spark keeps dev free.
 
 ## 2. Firebase App Check
 
 - Required: Firebase AI Logic is deactivated for projects without App Check enforcement (requirement effective 2 Nov 2026).
-- Dev: debug provider; register the debug token printed in logcat in the console.
+- Dev: debug provider with a fixed token: `AndroidDebugProvider(debugToken: …)` reads `APP_CHECK_DEBUG_TOKEN` from `.env.dev`. Token `local-dev` is registered for the dev app (App Check → Apps → Manage debug tokens); its value lives only in the owner's `.env.dev`. A token printed in logcat also works once registered there.
 - Prod: Play Integrity provider. Enforce for AI Logic, Firestore, Functions.
 - Failure mode: 403 `PERMISSION_DENIED` → show "Can't verify this app install" + retry; log to Crashlytics (no PII).
 
@@ -83,7 +84,7 @@ final translation = res.text?.trim();
 ```
   Audio frames: `{ "realtimeInput": { "audio": { "data": "<base64 pcm>", "mimeType": "audio/pcm;rate=16000" } } }`
 
-- **Dev auth**: `?key=<GEMINI_API_KEY>` from `env/dev.json` (dev flavor only).
+- **Dev auth**: `?key=<GEMINI_API_KEY>` from `.env.dev` (dev flavor only).
 - **Prod auth**: ephemeral token from `issueLiveToken` (§11). Defaults: 1 min to open a session (`newSessionExpireTime`), 30 min to send messages (`expireTime`); we set `expireTime = now + blockSec`. Reconnect roughly every 10 min with `sessionResumption` (same token allowed within `expireTime`). Lock `translationConfig` in token constraints, or omit it and set `lock_additional_fields: []` to let the user pick the target. Raw-WebSocket parameter for the token: verify (OQ-10).
 - Known limitations: voice can stick to one speaker in fast multi-speaker exchanges; language detection struggles with heavy accents / similar languages; background noise and music not fully filtered.
 - Pricing (paid): $3.50 / 1M input tokens ($0.0053/min audio), $21.00 / 1M output ($0.0315/min); billed at 25 tokens per second of audio → ≈ $0.0368/min. Free tier available. Two sessions for two-way ≈ $0.042/min.

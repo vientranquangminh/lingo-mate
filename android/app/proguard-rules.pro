@@ -1,1 +1,1 @@
--keep class com.example.template.BuildConfig { *; }
+-keep class com.lingomate.app.BuildConfig { *; }

@@ -41,20 +41,25 @@ Never link billing to `lingomate-dev`: doing so moves all Gemini usage in that p
 
 ## 4. Secrets & config
 
+Env files are plain `KEY=VALUE` files (no JSON) in the Flutter project root, one per flavor, passed to Flutter with `--dart-define-from-file` and read with `String.fromEnvironment` (`lib/env.dart`):
+
+| File | Flavor | Committed |
+|------|--------|-----------|
+| `.env.sample` | Template listing every key, with empty values | Yes |
+| `.env.dev` | `dev` | No |
+| `.env.staging` | `staging` | No |
+| `.env` | `production` | No |
+
+Example `.env.dev`:
+
+```dotenv
+GEMINI_API_KEY=AIza...
+LIVE_ENABLED=true
+APP_CHECK_DEBUG_TOKEN=<token registered in App Check>
 ```
-env/
-  dev.example.json   # committed
-  dev.json           # NOT committed
-```
-```json
-{
-  "GEMINI_API_KEY": "AIza...",
-  "FLAVOR": "dev",
-  "LIVE_ENABLED": "true"
-}
-```
-- `.gitignore`: `env/*.json` except `*.example.json`, `android/app/src/*/google-services.json` if you prefer, `test_assets/audio/*.wav` (if large/private).
-- Prod builds never receive `env/dev.json`. CI secret scan fails on `AIza` in release artifacts.
+
+- `.gitignore` covers `.env`, `.env.dev` and `.env.staging`; add `test_assets/audio/*.wav` if large/private. Firebase client config (`lib/firebase_options_<flavor>.dart`, `android/app/src/<flavor>/google-services.json`) is committed: it is not a secret.
+- `GEMINI_API_KEY` goes only in `.env.dev`. Production builds use `.env` and never receive `.env.dev`. CI secret scan fails on `AIza` in release artifacts.
 
 ## 5. Audio benchmark set (needed for Phase 0)
 
@@ -83,7 +88,7 @@ Write reference transcripts/translations yourself (or have a fluent friend check
 ## 6. Content prep (Phase 1)
 
 - Quick-phrase packs (F-09): 8 situations × ≥ 20 phrases. Workflow: Claude drafts canonical English + slot templates → generate translations for wave-1 languages → you review vi/en; ask fluent friends for ja/ko/zh spot checks → JSON in `assets/quick_phrases/`.
-- App name is decided: **Lingo Mate** (D-24); app icon ready in `assets/brand/`. Before the first Play upload: choose the package id and check the store name/trademark (OQ-7).
+- App name is decided: **Lingo Mate** (D-24); app icon ready in `assets/brand/`. Package id is decided: `com.lingomate.app` (D-25). Before the first Play upload: check the store name/trademark (OQ-7).
 
 ## 7. Legal & store prep (by Phase 2)
 
@@ -104,7 +109,7 @@ Write reference transcripts/translations yourself (or have a fluent friend check
 ## 9. Kick-off with Claude Code
 
 1. Create the repo, copy `CLAUDE.md` to the root together with the `docs/`, `design/` and `assets/` folders (the `assets/` content goes into the Flutter project's `assets/`).
-2. Put `env/dev.json` and Firebase config files in place (Claude Code can run FlutterFire CLI with you).
+2. Put `.env.dev` (copied from `.env.sample`) in the Flutter project root. Firebase config for the dev flavor is already committed; Claude Code can rerun `./flutterfire-config.sh dev` with you.
 3. First prompt (example):
 
 ```

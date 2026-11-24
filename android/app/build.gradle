@@ -1,5 +1,8 @@
 plugins {
     id "com.android.application"
+    // START: FlutterFire Configuration
+    id 'com.google.gms.google-services'
+    // END: FlutterFire Configuration
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
@@ -12,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.template"
+    namespace = "com.lingomate.app"
     compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
@@ -26,7 +29,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.template"
+        applicationId = "com.lingomate.app"
         minSdk = 28
         targetSdk = 36
         multiDexEnabled true
@@ -77,17 +80,21 @@ android {
     productFlavors {
         dev {
             dimension "default"
-            applicationId "com.example.template.dev"
+            applicationId "com.lingomate.app.dev"
         }
         staging {
             dimension "default"
-            applicationId "com.example.template.staging"
+            applicationId "com.lingomate.app.staging"
         }
         production {
             dimension "default"
-            applicationId "com.example.template.prod"
+            applicationId "com.lingomate.app"
         }
     }
+}
+
+googleServices {
+    missingGoogleServicesStrategy = com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy.WARN
 }
 
 flutter {

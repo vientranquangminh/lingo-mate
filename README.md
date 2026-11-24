@@ -1,4 +1,4 @@
-# Flutter Template
+# Lingo Mate
 
 ## Usage
 
@@ -19,10 +19,10 @@ Projects created from the old template (Flutter 3.47, `flutter_platform_widgets`
 
 ### Setup
 
-- Create these `.env` files in the root directory according to the flavors and add the required
-  environment variables into them. The example environment variable is in `.env.sample`.
+- Create these env files in the root directory, one per flavor, by copying `.env.sample` and
+  filling in the values. They are plain `KEY=VALUE` files (no JSON) and are git-ignored.
 
-    - Dev: `.env.dev`
+    - Dev: `.env.dev` (the only file that may hold `GEMINI_API_KEY`)
 
     - Staging: `.env.staging`
 
@@ -48,8 +48,20 @@ Projects created from the old template (Flutter 3.47, `flutter_platform_widgets`
 
 ## Firebase
 
-- Install the FlutterFire CLI: `$ dart pub global activate flutterfire_cli`
-- Set the Firebase project ids and bundle ids in `flutterfire-config.sh` (or `flutterfire-config.ps1` on Windows), then run it once per flavor:
+Package ids: `com.lingomate.app.dev` (dev), `com.lingomate.app.staging` (staging), `com.lingomate.app` (production).
+
+| Flavor | Firebase project | Config files |
+|---|---|---|
+| dev | `lingo-mate-dev` (id `lingo-mate-4f38d`) | `lib/firebase_options_dev.dart`, `android/app/src/dev/google-services.json` (committed) |
+| staging | not connected yet | — |
+| production | not connected yet | — |
+
+Only `main_dev.dart` initialises Firebase today. Staging and production builds still work: the Google Services Gradle plugin only warns when a flavor has no `google-services.json`.
+
+To connect another flavor or regenerate the config:
+
+- Install the FlutterFire CLI: `$ fvm dart pub global activate flutterfire_cli`
+- Set the flavor's Firebase project id in `flutterfire-config.sh` (or `flutterfire-config.ps1` on Windows), then run it. If the global `flutterfire` command runs on an older Dart, call it through fvm with the same arguments as the script: `$ fvm dart pub global run flutterfire_cli:flutterfire config ...`
 
     - `$ ./flutterfire-config.sh dev|staging|prod`
 

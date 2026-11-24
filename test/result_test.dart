@@ -1,4 +1,4 @@
-import 'package:flutter_template/core/data/base/result.dart';
+import 'package:lingo_mate/core/data/base/result.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

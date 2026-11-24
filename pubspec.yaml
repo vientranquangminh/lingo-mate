@@ -1,5 +1,5 @@
-name: flutter_template
-description: "A new Flutter project."
+name: lingo_mate
+description: "Live speech translation app."
 publish_to: "none"
 version: 1.0.0+1
 
@@ -30,6 +30,7 @@ dependencies:
   json_annotation: ^4.12.0
   material_ui: ^1.11.0
   cupertino_ui: ^1.1.6
+  firebase_core: ^5.2.0
 
 dev_dependencies:
   flutter_test:

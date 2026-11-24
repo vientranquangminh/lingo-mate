@@ -118,7 +118,7 @@ Run on: reference phone + low-end phone each release candidate; plus at least 2 
 
 ## 9. Security & privacy tests
 
-- Release APK: `strings`/apktool scan finds no `AIza` key and no `env/` content (automated in CI).
+- Release APK: `strings`/apktool scan finds no `AIza` key and no `.env.dev` content (automated in CI).
 - File-system check after sessions: no audio files in app dirs (AC-07.6).
 - Logcat in release: no transcript text (automated grep during integration run).
 - Offline mode network check: with packs installed and Standard disabled, proxy shows no requests to Gemini endpoints during a session.

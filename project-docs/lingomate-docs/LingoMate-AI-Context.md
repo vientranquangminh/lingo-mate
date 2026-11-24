@@ -60,7 +60,7 @@ Lingo Mate is an Android-first Flutter app for live speech translation (face-to-
 
 Lingo Mate is an Android-first Flutter app for **live speech translation**: face-to-face conversations (online or offline), one-way listening (lectures, tours), and online meetings heard through the phone mic, with a personal phrasebook, quick phrases by situation, and learning features built from the user's own conversations.
 
-The app is called **Lingo Mate** (D-24). The package id and the final store-name/trademark check are still open (OQ-7).
+The app is called **Lingo Mate** (D-24). The package id is `com.lingomate.app` (D-25); the final store-name/trademark check is still open (OQ-7).
 
 ## Read these first (in order)
 
@@ -89,7 +89,7 @@ The app is called **Lingo Mate** (D-24). The package id and the final store-name
 
 ## Hard rules
 
-- **No secrets in release builds.** The Gemini API key is allowed only in the `dev` flavor via `--dart-define-from-file=env/dev.json`. Production Live sessions use ephemeral tokens from the `issueLiveToken` Cloud Function. CI must fail if a release build contains `AIza` strings.
+- **No secrets in release builds.** The Gemini API key is allowed only in the `dev` flavor via `--dart-define-from-file=.env.dev`. Env files are plain `KEY=VALUE` files in the project root (`.env.dev` dev, `.env.staging` staging, `.env` production), never JSON. Production Live sessions use ephemeral tokens from the `issueLiveToken` Cloud Function. CI must fail if a release build contains `AIza` strings.
 - **No audio is persisted by default.** Audio buffers live in memory only. Transcripts are stored locally (Drift). Cloud sync is opt-in.
 - **Never log transcript text or audio** to Analytics, Crashlytics or console in release builds.
 - **Model names, quotas, feature flags and the language capability matrix come from Remote Config** with safe defaults in code. Never hard-code a model name outside `lib/core/config/remote_defaults.dart`.
@@ -115,8 +115,8 @@ The app is called **Lingo Mate** (D-24). The package id and the final store-name
 
 ```bash
 # run
-flutter run --flavor dev -t lib/main_dev.dart --dart-define-from-file=env/dev.json
-flutter run --flavor prod -t lib/main_prod.dart
+flutter run --flavor dev -t lib/main_dev.dart --dart-define-from-file=.env.dev
+flutter run --flavor production -t lib/main.dart --dart-define-from-file=.env
 
 # quality
 dart run build_runner build --delete-conflicting-outputs
@@ -184,20 +184,25 @@ Never link billing to `lingomate-dev`: doing so moves all Gemini usage in that p
 
 ## 4. Secrets & config
 
+Env files are plain `KEY=VALUE` files (no JSON) in the Flutter project root, one per flavor, passed to Flutter with `--dart-define-from-file` and read with `String.fromEnvironment` (`lib/env.dart`):
+
+| File | Flavor | Committed |
+|------|--------|-----------|
+| `.env.sample` | Template listing every key, with empty values | Yes |
+| `.env.dev` | `dev` | No |
+| `.env.staging` | `staging` | No |
+| `.env` | `production` | No |
+
+Example `.env.dev`:
+
+```dotenv
+GEMINI_API_KEY=AIza...
+LIVE_ENABLED=true
+APP_CHECK_DEBUG_TOKEN=<token registered in App Check>
 ```
-env/
-  dev.example.json   # committed
-  dev.json           # NOT committed
-```
-```json
-{
-  "GEMINI_API_KEY": "AIza...",
-  "FLAVOR": "dev",
-  "LIVE_ENABLED": "true"
-}
-```
-- `.gitignore`: `env/*.json` except `*.example.json`, `android/app/src/*/google-services.json` if you prefer, `test_assets/audio/*.wav` (if large/private).
-- Prod builds never receive `env/dev.json`. CI secret scan fails on `AIza` in release artifacts.
+
+- `.gitignore` covers `.env`, `.env.dev` and `.env.staging`; add `test_assets/audio/*.wav` if large/private. Firebase client config (`lib/firebase_options_<flavor>.dart`, `android/app/src/<flavor>/google-services.json`) is committed: it is not a secret.
+- `GEMINI_API_KEY` goes only in `.env.dev`. Production builds use `.env` and never receive `.env.dev`. CI secret scan fails on `AIza` in release artifacts.
 
 ## 5. Audio benchmark set (needed for Phase 0)
 
@@ -226,7 +231,7 @@ Write reference transcripts/translations yourself (or have a fluent friend check
 ## 6. Content prep (Phase 1)
 
 - Quick-phrase packs (F-09): 8 situations × ≥ 20 phrases. Workflow: Claude drafts canonical English + slot templates → generate translations for wave-1 languages → you review vi/en; ask fluent friends for ja/ko/zh spot checks → JSON in `assets/quick_phrases/`.
-- App name is decided: **Lingo Mate** (D-24); app icon ready in `assets/brand/`. Before the first Play upload: choose the package id and check the store name/trademark (OQ-7).
+- App name is decided: **Lingo Mate** (D-24); app icon ready in `assets/brand/`. Package id is decided: `com.lingomate.app` (D-25). Before the first Play upload: check the store name/trademark (OQ-7).
 
 ## 7. Legal & store prep (by Phase 2)
 
@@ -247,7 +252,7 @@ Write reference transcripts/translations yourself (or have a fluent friend check
 ## 9. Kick-off with Claude Code
 
 1. Create the repo, copy `CLAUDE.md` to the root together with the `docs/`, `design/` and `assets/` folders (the `assets/` content goes into the Flutter project's `assets/`).
-2. Put `env/dev.json` and Firebase config files in place (Claude Code can run FlutterFire CLI with you).
+2. Put `.env.dev` (copied from `.env.sample`) in the Flutter project root. Firebase config for the dev flavor is already committed; Claude Code can rerun `./flutterfire-config.sh dev` with you.
 3. First prompt (example):
 
 ```
@@ -577,12 +582,15 @@ Principles: offline-first; every engine replaceable; cost-bearing calls always p
 ├─ CLAUDE.md
 ├─ docs/
 ├─ design/                    # screen PNG/HTML exports of the Figma design (see design/README.md)
-├─ env/                       # gitignored except *.example.json
-│  ├─ dev.example.json
-│  └─ dev.json                # GEMINI_API_KEY (dev only), flags
+├─ .env.sample                # committed; every key, empty values (KEY=VALUE)
+├─ .env.dev                   # gitignored; GEMINI_API_KEY (dev only), flags
+├─ .env.staging               # gitignored
+├─ .env                       # gitignored; production
 ├─ lib/
 │  ├─ main_dev.dart
-│  ├─ main_prod.dart
+│  ├─ main_staging.dart
+│  ├─ main.dart               # production
+│  ├─ firebase_options_dev.dart  # generated by flutterfire-config.sh
 │  ├─ app/                    # bootstrap, router, theme, l10n wiring, flavors
 │  ├─ core/
 │  │  ├─ audio/               # capture, VAD, segmenter, ring buffer, PcmPlayer client
@@ -704,7 +712,7 @@ abstract interface class LiveSession {
 - Setup message: model `model_live_translate`, `responseModalities: [AUDIO]`, `inputAudioTranscription: {}`, `outputAudioTranscription: {}`, `translationConfig: { targetLanguageCode, echoTargetLanguage: false }`.
 - **Two-way conversation**: open two sessions on the same mic stream — session A targets lang A, session B targets lang B. With `echoTargetLanguage=false` each session stays silent when input is already in its target language. Validate in spike (OQ-4); fallback = Standard engine with TTS.
 - **Connection lifetime**: reconnect about every 10 minutes using session resumption; on `goAway` reconnect transparently.
-- **Credentials**: dev = API key from `env/dev.json` (dev flavor only); prod = ephemeral token from `issueLiveToken` (single use, short expiry ≤ quota block). Token expiry ends the session; client requests a new token (quota checked again).
+- **Credentials**: dev = API key from `.env.dev` (dev flavor only); prod = ephemeral token from `issueLiveToken` (single use, short expiry ≤ quota block). Token expiry ends the session; client requests a new token (quota checked again).
 - Show both transcripts; play translated audio; mute translated audio option (captions only still costs output tokens — prefer Standard for captions-only use).
 
 ### 6.4 Meeting mode specifics (P1)
@@ -882,12 +890,13 @@ UI: usage sheet shows per-engine bars "This 5-hour window: 12/30 min · resets 1
 
 ## 15. Build flavors, environments, CI
 
-| Flavor | Firebase project | Plan | Live credentials | Devtools |
-|--------|------------------|------|------------------|----------|
-| `dev` | `lingomate-dev` | Spark ($0) | API key via `--dart-define-from-file=env/dev.json` | Enabled |
-| `prod` | `lingomate-prod` | Blaze (from P2) | Ephemeral token from `issueLiveToken` | Disabled |
+| Flavor | Package id | Env file | Firebase project | Plan | Live credentials | Devtools |
+|--------|------------|----------|------------------|------|------------------|----------|
+| `dev` | `com.lingomate.app.dev` | `.env.dev` | `lingo-mate-dev` (id `lingo-mate-4f38d`) | Spark ($0) | API key via `--dart-define-from-file=.env.dev` | Enabled |
+| `staging` | `com.lingomate.app.staging` | `.env.staging` | Not connected yet | — | — | Enabled |
+| `production` | `com.lingomate.app` | `.env` | `lingomate-prod` (not created yet, P2) | Blaze (from P2) | Ephemeral token from `issueLiveToken` | Disabled |
 
-CI (GitHub Actions): `flutter analyze`, `flutter test`, build `prod` release APK, **secret scan** (fail if `AIza` or `env/dev.json` content appears in the release artifact), functions lint/test (P2).
+CI (GitHub Actions): `flutter analyze`, `flutter test`, build `production` release APK, **secret scan** (fail if `AIza` or `.env.dev` content appears in the release artifact), functions lint/test (P2).
 
 ## 16. Android manifest essentials
 
@@ -953,16 +962,17 @@ Overview:
 
 ## 1. Firebase core + flavors
 
-- Two Firebase projects: `lingomate-dev` (Spark, never linked to billing) and `lingomate-prod` (Blaze from P2).
-- Configure with FlutterFire CLI per flavor → `lib/app/firebase_options_dev.dart`, `firebase_options_prod.dart`; `android/app/src/{dev,prod}/google-services.json`.
-- `main_dev.dart` / `main_prod.dart` call `bootstrap(Flavor.dev|prod)`.
+- Two Firebase projects: `lingo-mate-dev` (project id `lingo-mate-4f38d`, Spark, never linked to billing) and `lingomate-prod` (Blaze from P2, not created yet).
+- Configure with FlutterFire CLI per flavor via `./flutterfire-config.sh dev|staging|prod` → `lib/firebase_options_<flavor>.dart` and `android/app/src/<flavor>/google-services.json`. Only `dev` is connected today (Android app `com.lingomate.app.dev`).
+- `main_dev.dart` calls `Firebase.initializeApp` with `firebase_options_dev.dart`; `main.dart` (production) and `main_staging.dart` do the same once their projects exist.
+- Env values come from `.env.dev` / `.env.staging` / `.env` (`KEY=VALUE`, no JSON) via `--dart-define-from-file`.
 
 **Why separate projects**: linking a billing account switches all Gemini Developer API usage in that project to pay-as-you-go. Keeping dev on Spark keeps dev free.
 
 ## 2. Firebase App Check
 
 - Required: Firebase AI Logic is deactivated for projects without App Check enforcement (requirement effective 2 Nov 2026).
-- Dev: debug provider; register the debug token printed in logcat in the console.
+- Dev: debug provider with a fixed token: `AndroidDebugProvider(debugToken: …)` reads `APP_CHECK_DEBUG_TOKEN` from `.env.dev`. Token `local-dev` is registered for the dev app (App Check → Apps → Manage debug tokens); its value lives only in the owner's `.env.dev`. A token printed in logcat also works once registered there.
 - Prod: Play Integrity provider. Enforce for AI Logic, Firestore, Functions.
 - Failure mode: 403 `PERMISSION_DENIED` → show "Can't verify this app install" + retry; log to Crashlytics (no PII).
 
@@ -1011,7 +1021,7 @@ final translation = res.text?.trim();
 ```
   Audio frames: `{ "realtimeInput": { "audio": { "data": "<base64 pcm>", "mimeType": "audio/pcm;rate=16000" } } }`
 
-- **Dev auth**: `?key=<GEMINI_API_KEY>` from `env/dev.json` (dev flavor only).
+- **Dev auth**: `?key=<GEMINI_API_KEY>` from `.env.dev` (dev flavor only).
 - **Prod auth**: ephemeral token from `issueLiveToken` (§11). Defaults: 1 min to open a session (`newSessionExpireTime`), 30 min to send messages (`expireTime`); we set `expireTime = now + blockSec`. Reconnect roughly every 10 min with `sessionResumption` (same token allowed within `expireTime`). Lock `translationConfig` in token constraints, or omit it and set `lock_additional_fields: []` to let the user pick the target. Raw-WebSocket parameter for the token: verify (OQ-10).
 - Known limitations: voice can stick to one speaker in fast multi-speaker exchanges; language detection struggles with heavy accents / similar languages; background noise and music not fully filtered.
 - Pricing (paid): $3.50 / 1M input tokens ($0.0053/min audio), $21.00 / 1M output ($0.0315/min); billed at 25 tokens per second of audio → ≈ $0.0368/min. Free tier available. Two sessions for two-way ≈ $0.042/min.
@@ -1757,7 +1767,7 @@ Run on: reference phone + low-end phone each release candidate; plus at least 2 
 
 ## 9. Security & privacy tests
 
-- Release APK: `strings`/apktool scan finds no `AIza` key and no `env/` content (automated in CI).
+- Release APK: `strings`/apktool scan finds no `AIza` key and no `.env.dev` content (automated in CI).
 - File-system check after sessions: no audio files in app dirs (AC-07.6).
 - Logcat in release: no transcript text (automated grep during integration run).
 - Offline mode network check: with packs installed and Standard disabled, proxy shows no requests to Gemini endpoints during a session.
@@ -2156,6 +2166,7 @@ Status: Living document. Claude Code: treat **Decisions** as settled; ask the ow
 | D-22 | English is the default and source UI language. The app follows the phone's language when supported (launch: en, vi), otherwise English; users can change it in-app (Me → App language, Welcome) and in Android 13+ system settings. Mockups and the master store listing are in English | Global release, consistent professional copy; Vietnamese stays a first-class translation | Owner |
 | D-23 | Figma is the visual source of truth (file "Lingo Mate — UI Design"); doc 08 stays the source for behaviour, states and tokens. AI tools read the design straight from the Figma link (Figma MCP); `design/` PNG/HTML exports are an offline fallback only. The claude.ai canvas is archived | Owner wants to view, edit and share the design in Figma and hand the Figma link to AI tools | Owner |
 | D-24 | App name: **Lingo Mate** (display name; `lingomate` in ids, e.g. Firebase projects `lingomate-dev` / `lingomate-prod`, notification icon `ic_stat_lingomate`). Replaces the working title "Parley" | Owner's chosen name | Owner |
+| D-25 | Package id `com.lingomate.app` for production; `com.lingomate.app.dev` and `com.lingomate.app.staging` for the other flavors. Env files are plain `KEY=VALUE` files in the project root (`.env.dev` dev, `.env.staging` staging, `.env` production), not JSON | Firebase apps are registered by package id; one env format across flavors and CI | Owner |
 
 ## Open questions
 
@@ -2167,7 +2178,7 @@ Status: Living document. Claude Code: treat **Decisions** as settled; ask the ow
 | OQ-4 | Is the "two Live sessions on one mic stream" approach viable for two-way conversation? | Two-way Live quality and cost (+~$0.0053/min) | Phase 0 spike (T-0.5) |
 | OQ-5 | `gemini-3.1-flash-live-preview` is now labelled legacy; Google points to `gemini-3.8-live`. Price? Firebase AI Logic support? | Fallback Live model choice | Phase 0 spike |
 | OQ-6 | Does Firebase AI Logic support the Live Translate model + `translationConfig`? | If yes, the token function may be unnecessary | Re-check docs at P2 start |
-| OQ-7 | Package id, and a store-name/trademark check for "Lingo Mate" (an iOS app named "LingoMate: Offline Translator" already exists) | Store listing, Firebase config, avoiding confusion or a takedown | Owner, before first Play upload |
+| OQ-7 | Store-name/trademark check for "Lingo Mate" (an iOS app named "LingoMate: Offline Translator" already exists). Package id is settled (D-25) | Store listing, avoiding confusion or a takedown | Owner, before first Play upload |
 | OQ-8 | Play Console account type: personal (closed test ≥ 12 testers × 14 days) or organization (needs D-U-N-S) | Launch timeline | Owner, before P2 |
 | OQ-9 | Tax treatment of app revenue in Vietnam | Net margin (draft assumes 10% reserve) | Owner + accountant |
 | OQ-10 | Exact raw-WebSocket parameter for authenticating with an ephemeral token | Implementation detail of F-05 Live in prod | Phase 2 start; verify against docs |

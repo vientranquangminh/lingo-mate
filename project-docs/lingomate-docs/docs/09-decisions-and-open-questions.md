@@ -30,6 +30,7 @@ Status: Living document. Claude Code: treat **Decisions** as settled; ask the ow
 | D-22 | English is the default and source UI language. The app follows the phone's language when supported (launch: en, vi), otherwise English; users can change it in-app (Me → App language, Welcome) and in Android 13+ system settings. Mockups and the master store listing are in English | Global release, consistent professional copy; Vietnamese stays a first-class translation | Owner |
 | D-23 | Figma is the visual source of truth (file "Lingo Mate — UI Design"); doc 08 stays the source for behaviour, states and tokens. AI tools read the design straight from the Figma link (Figma MCP); `design/` PNG/HTML exports are an offline fallback only. The claude.ai canvas is archived | Owner wants to view, edit and share the design in Figma and hand the Figma link to AI tools | Owner |
 | D-24 | App name: **Lingo Mate** (display name; `lingomate` in ids, e.g. Firebase projects `lingomate-dev` / `lingomate-prod`, notification icon `ic_stat_lingomate`). Replaces the working title "Parley" | Owner's chosen name | Owner |
+| D-25 | Package id `com.lingomate.app` for production; `com.lingomate.app.dev` and `com.lingomate.app.staging` for the other flavors. Env files are plain `KEY=VALUE` files in the project root (`.env.dev` dev, `.env.staging` staging, `.env` production), not JSON | Firebase apps are registered by package id; one env format across flavors and CI | Owner |
 
 ## Open questions
 
@@ -41,7 +42,7 @@ Status: Living document. Claude Code: treat **Decisions** as settled; ask the ow
 | OQ-4 | Is the "two Live sessions on one mic stream" approach viable for two-way conversation? | Two-way Live quality and cost (+~$0.0053/min) | Phase 0 spike (T-0.5) |
 | OQ-5 | `gemini-3.1-flash-live-preview` is now labelled legacy; Google points to `gemini-3.8-live`. Price? Firebase AI Logic support? | Fallback Live model choice | Phase 0 spike |
 | OQ-6 | Does Firebase AI Logic support the Live Translate model + `translationConfig`? | If yes, the token function may be unnecessary | Re-check docs at P2 start |
-| OQ-7 | Package id, and a store-name/trademark check for "Lingo Mate" (an iOS app named "LingoMate: Offline Translator" already exists) | Store listing, Firebase config, avoiding confusion or a takedown | Owner, before first Play upload |
+| OQ-7 | Store-name/trademark check for "Lingo Mate" (an iOS app named "LingoMate: Offline Translator" already exists). Package id is settled (D-25) | Store listing, avoiding confusion or a takedown | Owner, before first Play upload |
 | OQ-8 | Play Console account type: personal (closed test ≥ 12 testers × 14 days) or organization (needs D-U-N-S) | Launch timeline | Owner, before P2 |
 | OQ-9 | Tax treatment of app revenue in Vietnam | Net margin (draft assumes 10% reserve) | Owner + accountant |
 | OQ-10 | Exact raw-WebSocket parameter for authenticating with an ephemeral token | Implementation detail of F-05 Live in prod | Phase 2 start; verify against docs |

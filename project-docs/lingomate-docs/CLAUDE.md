@@ -2,7 +2,7 @@
 
 Lingo Mate is an Android-first Flutter app for **live speech translation**: face-to-face conversations (online or offline), one-way listening (lectures, tours), and online meetings heard through the phone mic, with a personal phrasebook, quick phrases by situation, and learning features built from the user's own conversations.
 
-The app is called **Lingo Mate** (D-24). The package id and the final store-name/trademark check are still open (OQ-7).
+The app is called **Lingo Mate** (D-24). The package id is `com.lingomate.app` (D-25); the final store-name/trademark check is still open (OQ-7).
 
 ## Read these first (in order)
 
@@ -31,7 +31,7 @@ The app is called **Lingo Mate** (D-24). The package id and the final store-name
 
 ## Hard rules
 
-- **No secrets in release builds.** The Gemini API key is allowed only in the `dev` flavor via `--dart-define-from-file=env/dev.json`. Production Live sessions use ephemeral tokens from the `issueLiveToken` Cloud Function. CI must fail if a release build contains `AIza` strings.
+- **No secrets in release builds.** The Gemini API key is allowed only in the `dev` flavor via `--dart-define-from-file=.env.dev`. Env files are plain `KEY=VALUE` files in the project root (`.env.dev` dev, `.env.staging` staging, `.env` production), never JSON. Production Live sessions use ephemeral tokens from the `issueLiveToken` Cloud Function. CI must fail if a release build contains `AIza` strings.
 - **No audio is persisted by default.** Audio buffers live in memory only. Transcripts are stored locally (Drift). Cloud sync is opt-in.
 - **Never log transcript text or audio** to Analytics, Crashlytics or console in release builds.
 - **Model names, quotas, feature flags and the language capability matrix come from Remote Config** with safe defaults in code. Never hard-code a model name outside `lib/core/config/remote_defaults.dart`.
@@ -57,8 +57,8 @@ The app is called **Lingo Mate** (D-24). The package id and the final store-name
 
 ```bash
 # run
-flutter run --flavor dev -t lib/main_dev.dart --dart-define-from-file=env/dev.json
-flutter run --flavor prod -t lib/main_prod.dart
+flutter run --flavor dev -t lib/main_dev.dart --dart-define-from-file=.env.dev
+flutter run --flavor production -t lib/main.dart --dart-define-from-file=.env
 
 # quality
 dart run build_runner build --delete-conflicting-outputs
