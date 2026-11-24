@@ -61,3 +61,5 @@ app.*.map.json
 .env
 .env.dev
 .env.staging
+# Gradle output when run from android/
+/android/build/
