@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "languages": {
+    "en": { "name": "English", "offlineTranslate": true, "asrOnDevice": "good", "live": true, "wave": 1 },
+    "vi": { "name": "Tiếng Việt", "offlineTranslate": true, "asrOnDevice": "good", "live": true, "wave": 1 },
+    "ja": { "name": "日本語", "offlineTranslate": true, "asrOnDevice": "fair", "live": true, "wave": 1 },
+    "ko": { "name": "한국어", "offlineTranslate": true, "asrOnDevice": "fair", "live": true, "wave": 1 },
+    "zh": { "name": "中文", "offlineTranslate": true, "asrOnDevice": "fair", "live": true, "wave": 1 },
+    "th": { "name": "ไทย", "offlineTranslate": true, "asrOnDevice": "fair", "live": true, "wave": 1 },
+    "id": { "name": "Bahasa Indonesia", "offlineTranslate": true, "asrOnDevice": "fair", "live": true, "wave": 1 },
+    "es": { "name": "Español", "offlineTranslate": true, "asrOnDevice": "fair", "live": true, "wave": 1 },
+    "fr": { "name": "Français", "offlineTranslate": true, "asrOnDevice": "fair", "live": true, "wave": 1 },
+    "de": { "name": "Deutsch", "offlineTranslate": true, "asrOnDevice": "fair", "live": true, "wave": 1 }
+  }
+}

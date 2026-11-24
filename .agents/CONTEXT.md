@@ -42,7 +42,8 @@ lib/
 │   ├── engines/        # EngineKind and the SpeechRecognizerEngine / TextTranslatorEngine interfaces (doc 03 §4)
 │   │   ├── asr/        # T-0.4 spike: AsrModelStore (models/ folder), SherpaWhisperEngine (worker isolate), WhisperCppEngine
 │   │   ├── live/       # T-0.5 spike: LiveCodec (setup/audio/server messages, doc 04 §4), LiveSession (WebSocket, goAway → resume with handle)
-│   │   └── translate/  # TranslatorPrompt, GeminiTextTranslator (Standard, AI Logic, 6 s timeout + 1 retry), MlKitTextTranslator (Offline)
+│   │   ├── translate/  # TranslatorPrompt, GeminiTextTranslator (Standard, AI Logic, 6 s timeout + 1 retry), MlKitTextTranslator (Offline)
+│   │   └── selection/  # CapabilityMatrix (+ loader: Remote Config override or assets/capability_matrix.json), EngineSelector (doc 03 §7, reasons per engine), ErrorBurstTracker, RegionBlock
 │   ├── errors/         # CrashReporter: Crashlytics fatal/non-fatal reports and engine/mode/pair keys, never transcript text
 │   ├── firebase/       # bootstrapFirebase: Firebase.initializeApp + App Check (debug provider in dev, Play Integrity otherwise)
 │   ├── dio/            # Dio interceptors and configurations
