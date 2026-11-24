@@ -27,7 +27,7 @@ final conversationProvider = NotifierProvider.autoDispose
       ConversationNotifier.new,
     );
 
-/// Runs tap-to-talk turns: mic → ASR → translate on the selected engine → TTS, with echo gating (F-02).
+/// Runs conversation turns, tap-to-talk or auto: mic → ASR → translate on the selected engine → TTS, with echo gating (F-02).
 class ConversationNotifier extends Notifier<ConversationState> {
   ConversationNotifier(this.pair);
 
@@ -39,6 +39,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
   late final SpeechSynthesizerEngine _tts;
   AudioPipeline? _pipeline;
   StreamSubscription<AudioSegment>? _segments;
+  Future<void> _queue = Future.value();
   int _nextId = 0;
 
   EngineRequest get _request =>
@@ -57,13 +58,41 @@ class ConversationNotifier extends Notifier<ConversationState> {
     return ConversationState(pair: pair);
   }
 
-  /// Starts listening for [speaker], or stops when that side is already listening.
+  /// Starts listening for [speaker], or stops when that side is already listening; leaves auto mode.
   Future<void> toggleMic(Speaker speaker) async {
     final current = state.listening;
     await _stopListening();
-    if (current == speaker) {
+    if (current == speaker || !ref.mounted) {
       return;
     }
+    if (state.speaking) {
+      await _tts.stop();
+    }
+    await _openMic((recognizer, segment) async {
+      await _stopListening();
+      await _recognize(speaker, recognizer, segment);
+    }, onOpen: () => state = state.copyWith(listening: () => speaker));
+  }
+
+  /// Turns auto mode on (one open mic, each utterance assigned to A or B by language, AC-02.5) or off.
+  Future<void> toggleAuto() async {
+    final wasAuto = state.auto;
+    await _stopListening();
+    if (wasAuto || !ref.mounted) {
+      return;
+    }
+    await _openMic(
+      (recognizer, segment) =>
+          _queue = _queue.then((_) => _onAutoSegment(recognizer, segment)),
+      onOpen: () => state = state.copyWith(auto: true),
+    );
+  }
+
+  /// Opens the mic and routes each segment to [onSegment]; [onOpen] runs once the mic is live.
+  Future<void> _openMic(
+    Future<void> Function(SpeechRecognizerEngine, AudioSegment) onSegment, {
+    required void Function() onOpen,
+  }) async {
     final recognizer = await ref
         .read(speechRecognizerProvider.future)
         .catchError((Object _) => null);
@@ -73,9 +102,6 @@ class ConversationNotifier extends Notifier<ConversationState> {
     if (recognizer == null) {
       state = state.copyWith(paused: () => PauseReason.noSpeechModel);
       return;
-    }
-    if (state.speaking) {
-      await _tts.stop();
     }
     final vadFactory = await ref
         .read(vadFactoryProvider.future)
@@ -98,16 +124,35 @@ class ConversationNotifier extends Notifier<ConversationState> {
     }
     _pipeline = pipeline;
     _segments = pipeline.segments.listen(
-      (segment) => _onSegment(speaker, recognizer, segment),
+      (segment) => onSegment(recognizer, segment),
     );
     state = state.copyWith(
-      listening: () => speaker,
       paused: () =>
           state.paused == PauseReason.micDenied ||
               state.paused == PauseReason.noSpeechModel
           ? null
           : state.paused,
     );
+    onOpen();
+  }
+
+  /// Assigns an auto-mode utterance to the side whose language was heard; when unsure, to the person who did not speak last.
+  Future<void> _onAutoSegment(
+    SpeechRecognizerEngine recognizer,
+    AudioSegment segment,
+  ) async {
+    if (!ref.mounted || !state.auto) {
+      return;
+    }
+    final detected = await recognizer
+        .detectLanguage(segment, candidates: [pair.a, pair.b])
+        .catchError((Object _) => null);
+    final speaker = switch (detected) {
+      final lang? when lang == pair.a => Speaker.a,
+      final lang? when lang == pair.b => Speaker.b,
+      _ => state.turns.lastOrNull?.speaker.other ?? Speaker.a,
+    };
+    await _recognize(speaker, recognizer, segment);
   }
 
   /// Turns spoken translations on or off.
@@ -155,13 +200,12 @@ class ConversationNotifier extends Notifier<ConversationState> {
     return null;
   }
 
-  /// Recognises one utterance of [speaker], ending this tap's listening.
-  Future<void> _onSegment(
+  /// Recognises one utterance of [speaker] and translates it.
+  Future<void> _recognize(
     Speaker speaker,
     SpeechRecognizerEngine recognizer,
     AudioSegment segment,
   ) async {
-    await _stopListening();
     if (!ref.mounted) {
       return;
     }
@@ -296,8 +340,8 @@ class ConversationNotifier extends Notifier<ConversationState> {
     if (pipeline != null) {
       await pipeline.dispose();
     }
-    if (ref.mounted && state.listening != null) {
-      state = state.copyWith(listening: () => null);
+    if (ref.mounted && (state.listening != null || state.auto)) {
+      state = state.copyWith(listening: () => null, auto: false);
     }
   }
 

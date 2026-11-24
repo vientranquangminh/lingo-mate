@@ -281,5 +281,15 @@
   "engineBlockStandardQuota": "Cloud translation limit reached",
   "engineBlockStandardFailing": "Having trouble, trying again soon",
   "engineBlockPacksMissing": "Download the offline packs first",
-  "devtoolsOpenConversation": "Open Conversation (vi ⇄ en)"
+  "devtoolsOpenConversation": "Open Conversation (vi ⇄ en)",
+  "conversationAutoDetect": "Auto-detect",
+  "conversationAutoOn": "Auto-detect is on: the app hears both of you and works out who spoke.",
+  "bubbleReplay": "Replay",
+  "bubbleCopy": "Copy",
+  "bubbleShowLarge": "Show large",
+  "bubbleCopied": "Copied",
+  "bubbleActions": "Actions for this line",
+  "showModeTitle": "Show mode",
+  "showModeRotate": "Turn the text around",
+  "showModeClose": "Close"
 }

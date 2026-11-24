@@ -39,10 +39,20 @@ class FakeCapture implements AudioCapture {
   void add(Uint8List bytes) => controller?.add(bytes);
 }
 
-/// Recognizer that returns the queued texts in order, tagged with the hint language.
+/// Recognizer that returns the queued texts in order, tagged with the hint language; detection returns the queued languages.
 class FakeRecognizer implements SpeechRecognizerEngine {
   final texts = <String>[];
   final hints = <String?>[];
+  final detections = <String?>[];
+
+  @override
+  Future<String?> detectLanguage(
+    AudioSegment segment, {
+    required List<String> candidates,
+  }) async {
+    final lang = detections.isEmpty ? null : detections.removeAt(0);
+    return candidates.contains(lang) ? lang : null;
+  }
 
   @override
   String get id => 'fake';

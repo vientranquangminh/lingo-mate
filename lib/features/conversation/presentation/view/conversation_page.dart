@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -6,9 +7,11 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/app_action_sheet.dart';
 import '../../../../common/widgets/app_banner.dart';
 import '../../../../common/widgets/app_circle_icon_button.dart';
 import '../../../../common/widgets/app_icon.dart';
+import '../../../../common/widgets/app_platform_outlined_button.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../common/widgets/app_toast.dart';
 import '../../../../common/widgets/engine_chip.dart';
@@ -78,6 +81,8 @@ class ConversationPage extends ConsumerWidget {
                   ),
                   micBackground: scheme.surface,
                   micForeground: scheme.onSurface,
+                  onLongPressIncoming: (turn) =>
+                      _showActions(context, ref, turn),
                 ),
               ),
             ),
@@ -94,9 +99,15 @@ class ConversationPage extends ConsumerWidget {
                 mutedForeground: scheme.onSurfaceVariant,
                 micBackground: scheme.primary,
                 micForeground: scheme.onPrimary,
-                banner: state.paused == null
-                    ? null
-                    : _PausedBanner(reason: state.paused!),
+                onLongPressIncoming: (turn) => _showActions(context, ref, turn),
+                banner: state.paused != null
+                    ? _PausedBanner(reason: state.paused!)
+                    : state.auto
+                    ? AppBanner(
+                        kind: AppBannerKind.info,
+                        message: l10n.conversationAutoOn,
+                      )
+                    : null,
                 trailing: AppCircleIconButton(
                   icon: state.speakOn ? AppIcons.speaker : AppIcons.speakerOff,
                   semanticLabel: state.speakOn
@@ -113,9 +124,58 @@ class ConversationPage extends ConsumerWidget {
     );
   }
 
+  /// Offers Replay, Copy and Show large for a line (AC-02.6).
+  void _showActions(
+    BuildContext context,
+    WidgetRef ref,
+    ConversationTurn turn,
+  ) {
+    final l10n = context.localization;
+    final translation = turn.translation;
+    final shown = translation ?? turn.original;
+    showAppActionSheet(
+      context: context,
+      title: l10n.bubbleActions,
+      cancel: l10n.commonCancel,
+      actions: [
+        if (translation != null)
+          AppSheetAction(
+            icon: AppIcons.replay,
+            label: l10n.bubbleReplay,
+            onSelected: () =>
+                ref.read(conversationProvider(pair).notifier).replay(turn),
+          ),
+        AppSheetAction(
+          icon: AppIcons.copy,
+          label: l10n.bubbleCopy,
+          onSelected: () async {
+            await Clipboard.setData(ClipboardData(text: shown));
+            if (context.mounted) {
+              showAppToast(context, l10n.bubbleCopied);
+            }
+          },
+        ),
+        AppSheetAction(
+          icon: AppIcons.modeShow,
+          label: l10n.bubbleShowLarge,
+          onSelected: () => context.pushNamed(
+            AppRouteName.showMode,
+            extra: <String, String?>{
+              'text': shown,
+              'original': translation == null ? null : turn.original,
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
   /// Returns what [speaker]'s mic shows.
   static MicButtonState _micState(ConversationState state, Speaker speaker) {
     if (state.listening == speaker) {
+      return MicButtonState.listening;
+    }
+    if (state.auto && !state.processing && !state.speaking) {
       return MicButtonState.listening;
     }
     if (state.processing) {
@@ -182,7 +242,17 @@ class _Divider extends ConsumerWidget {
                 ),
               ),
             ),
-            SizedBox(width: AppParams.buttonHeight.r),
+            Flexible(
+              child: AppPlatformOutlinedButton(
+                onPressed: () =>
+                    ref.read(conversationProvider(pair).notifier).toggleAuto(),
+                text: context.localization.conversationAutoDetect,
+                backgroundColor: state.auto ? scheme.primaryContainer : null,
+                foregroundColor: state.auto
+                    ? scheme.onPrimaryContainer
+                    : scheme.onSurface,
+              ),
+            ),
           ],
         ),
       ),

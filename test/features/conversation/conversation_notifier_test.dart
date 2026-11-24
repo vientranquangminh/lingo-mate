@@ -274,4 +274,84 @@ void main() {
 
     expect(c.read(errorBurstProvider).isFailing(DateTime.now()), isTrue);
   });
+
+  group('auto mode (AC-02.5)', () {
+    test(
+      'assigns each utterance to the side whose language was heard',
+      () async {
+        fakes.recognizer
+          ..texts.addAll(['Hello', 'Xin chào'])
+          ..detections.addAll(['en', 'vi']);
+        final c = await build();
+
+        await notifier(c).toggleAuto();
+        expect(c.read(conversationProvider(pair)).auto, isTrue);
+        await speak();
+        await speak();
+
+        final state = c.read(conversationProvider(pair));
+        expect(state.turns.map((t) => t.speaker), [Speaker.b, Speaker.a]);
+        expect(fakes.recognizer.hints, ['en', 'vi']);
+        expect(state.lastBy(Speaker.b)!.translation, '[vi] Hello');
+        expect(state.auto, isTrue);
+        expect(fakes.capture.controller, isNotNull);
+      },
+    );
+
+    test(
+      'an unclear language goes to the person who did not speak last',
+      () async {
+        fakes.recognizer
+          ..texts.addAll(['Xin chào', 'Hi'])
+          ..detections.addAll(['vi', 'ja']);
+        final c = await build();
+
+        await notifier(c).toggleAuto();
+        await speak();
+        await speak();
+
+        expect(c.read(conversationProvider(pair)).turns.map((t) => t.speaker), [
+          Speaker.a,
+          Speaker.b,
+        ]);
+      },
+    );
+
+    test('tapping auto again closes the mic', () async {
+      final c = await build();
+
+      await notifier(c).toggleAuto();
+      await notifier(c).toggleAuto();
+
+      expect(c.read(conversationProvider(pair)).auto, isFalse);
+      expect(fakes.capture.controller, isNull);
+    });
+
+    test('a side mic tap leaves auto for tap-to-talk', () async {
+      final c = await build();
+
+      await notifier(c).toggleAuto();
+      await notifier(c).toggleMic(Speaker.b);
+
+      final state = c.read(conversationProvider(pair));
+      expect(state.auto, isFalse);
+      expect(state.listening, Speaker.b);
+    });
+
+    test('TTS output is not heard back while auto listens (AC-02.4)', () async {
+      fakes.recognizer
+        ..texts.addAll(['Xin chào', 'echo'])
+        ..detections.addAll(['vi', 'en']);
+      fakes.tts.hold = true;
+      final c = await build();
+
+      await notifier(c).toggleAuto();
+      await speak();
+      expect(c.read(conversationProvider(pair)).speaking, isTrue);
+
+      await speak();
+      expect(c.read(conversationProvider(pair)).turns, hasLength(1));
+      fakes.tts.finish();
+    });
+  });
 }

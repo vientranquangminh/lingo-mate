@@ -26,6 +26,12 @@ abstract interface class SpeechRecognizerEngine {
 
   /// Recognises one segment, using [hintLang] when the language is known.
   Future<AsrResult> transcribe(AudioSegment segment, {String? hintLang});
+
+  /// Returns the language spoken in [segment] when it is one of [candidates], else null.
+  Future<String?> detectLanguage(
+    AudioSegment segment, {
+    required List<String> candidates,
+  });
 }
 
 /// A text translation request with recent context.

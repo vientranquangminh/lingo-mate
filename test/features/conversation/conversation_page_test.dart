@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -236,5 +237,63 @@ void main() {
     await tester.pump();
 
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('auto-detect pill turns auto mode on with a hint', (
+    tester,
+  ) async {
+    final container = await pumpPage(tester);
+
+    await tester.tap(find.text('Auto-detect'));
+    await settle(tester);
+
+    expect(container.read(conversationProvider(pair)).auto, isTrue);
+    expect(find.textContaining('Auto-detect is on'), findsOneWidget);
+    expect(find.text('Listening…'), findsNWidgets(2));
+  });
+
+  testWidgets('long press offers line actions and copies (AC-02.6)', (
+    tester,
+  ) async {
+    fakes.recognizer.texts.add('Xin chào');
+    final container = await pumpPage(tester);
+    String? copied;
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        if (call.method == 'Clipboard.setData') {
+          copied = (call.arguments as Map)['text'] as String?;
+        }
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+    await container
+        .read(conversationProvider(pair).notifier)
+        .toggleMic(Speaker.a);
+    fakes.nowMs += 1000;
+    fakes.capture
+      ..add(pcm(1000, amplitude: 4000))
+      ..add(pcm(700));
+    await settle(tester);
+    await tester.pump();
+
+    await tester.longPress(find.text('[en] Xin chào'));
+    await tester.pumpAndSettle();
+    expect(find.text('Replay'), findsOneWidget);
+    expect(find.text('Copy'), findsOneWidget);
+    expect(find.text('Show large'), findsOneWidget);
+
+    await tester.tap(find.text('Copy'));
+    await tester.pump();
+    await tester.pump();
+    expect(copied, '[en] Xin chào');
+    expect(find.text('Copied'), findsOneWidget);
+    await tester.pump(const Duration(seconds: 4));
   });
 }

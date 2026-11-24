@@ -24,6 +24,7 @@ class ConversationHalf extends StatelessWidget {
     this.leading,
     this.trailing,
     this.banner,
+    this.onLongPressIncoming,
   });
 
   final AppLocalizations strings;
@@ -39,6 +40,7 @@ class ConversationHalf extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
   final Widget? banner;
+  final ValueChanged<ConversationTurn>? onLongPressIncoming;
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +77,18 @@ class ConversationHalf extends StatelessWidget {
                   children: [
                     ?banner,
                     if (banner != null) SizedBox(height: AppParams.spacing12.h),
-                    _Incoming(
-                      turn: incoming,
-                      strings: strings,
-                      foreground: foreground,
-                      mutedForeground: mutedForeground,
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onLongPress:
+                          incoming == null || onLongPressIncoming == null
+                          ? null
+                          : () => onLongPressIncoming!(incoming!),
+                      child: _Incoming(
+                        turn: incoming,
+                        strings: strings,
+                        foreground: foreground,
+                        mutedForeground: mutedForeground,
+                      ),
                     ),
                   ],
                 ),

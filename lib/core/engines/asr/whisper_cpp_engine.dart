@@ -41,6 +41,15 @@ class WhisperCppEngine implements SpeechRecognizerEngine {
     );
   }
 
+  @override
+  Future<String?> detectLanguage(
+    AudioSegment segment, {
+    required List<String> candidates,
+  }) async {
+    final lang = (await transcribe(segment)).lang;
+    return candidates.contains(lang) ? lang : null;
+  }
+
   /// Frees the loaded model.
   Future<void> dispose() async {
     final engine = _engine;
