@@ -31,11 +31,14 @@ lib/
 │   ├── resources/      # AppTheme, AppParams, Dimens, AppConfiguration
 │   └── widgets/        # Shared AppPlatform* widgets
 ├── core/               # Core configuration, Dependency Injection, Networking, Storage
+│   ├── ai/             # GenerativeModelFactory: Gemini models via Firebase AI Logic, model names from Remote Config
 │   ├── api/            # Retrofit Clients, API Models (Request Body, Responses)
-│   ├── config/         # remote_defaults.dart: Remote Config keys and defaults (the only place model names live)
+│   ├── config/         # remote_defaults.dart (keys + defaults, the only place model names live); RemoteConfigService (typed getters)
 │   ├── data/           # Base data models (e.g., Result wrapper)
 │   ├── database/       # Drift AppDatabase and tables (sessions, utterances, phrases, tags, quick phrase favorites, language packs, usage ledger)
 │   ├── di/             # GetIt & Injectable setup
+│   ├── errors/         # CrashReporter: Crashlytics fatal/non-fatal reports and engine/mode/pair keys, never transcript text
+│   ├── firebase/       # bootstrapFirebase: Firebase.initializeApp + App Check (debug provider in dev, Play Integrity otherwise)
 │   ├── dio/            # Dio interceptors and configurations
 │   └── storage/        # Local storage (Shared Preferences, Secure Storage)
 ├── features/           # Feature folders
@@ -70,6 +73,8 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - Flavors: dev (`com.lingomate.app.dev`), staging (`com.lingomate.app.staging`), production (`com.lingomate.app`).
 - Env files are `KEY=VALUE` files in the root (`.env.dev`, `.env.staging`, `.env`; template `.env.sample`), passed with `--dart-define-from-file` and read in `lib/env.dart`.
 - Only dev is connected to Firebase (project `lingo-mate-4f38d`): `lib/firebase_options_dev.dart` and `android/app/src/dev/google-services.json`. Regenerate with `flutterfire-config.sh`.
+- `main_dev.dart` startup: `bootstrapFirebase` → `AppConfiguration.ensureAppConfiguration` (DI) → `CrashReporter.installErrorHandlers` → `RemoteConfigService.initialize` (activate last fetch, fetch in background). `RemoteConfigService` and `CrashReporter` work without Firebase (in-app defaults, no reports), so staging and production run before their projects exist.
+- Crashlytics mapping upload is turned off for flavors without a `google-services.json` (`android/app/build.gradle`).
 
 ## CI
 - `.github/workflows/ci.yml` runs on pull requests and pushes to `main`: code generation, `flutter analyze`, `flutter test`, a production release APK build, a scan that fails on `AIza` keys in the APK, and a check that the APK holds only 64-bit native libraries (`packaging.jniLibs.excludes` in `android/app/build.gradle`).
