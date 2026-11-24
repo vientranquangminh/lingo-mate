@@ -14,6 +14,7 @@ abstract final class RemoteDefaults {
   static const minSupportedBuild = 'min_supported_build';
   static const ffEmailLinkSignin = 'ff_email_link_signin';
   static const ffManageSubscription = 'ff_manage_subscription';
+  static const asrModels = 'asr_models';
 
   static const _quotaLimitsJson =
       '{"free":{"standard":{"win5hSec":1800,"weekSec":3600},'
@@ -37,5 +38,6 @@ abstract final class RemoteDefaults {
     minSupportedBuild: 1,
     ffEmailLinkSignin: true,
     ffManageSubscription: false,
+    asrModels: '{}',
   };
 }

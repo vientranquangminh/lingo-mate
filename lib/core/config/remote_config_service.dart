@@ -74,6 +74,10 @@ class RemoteConfigService {
       _json(RemoteDefaults.quotaLimits) ??
       _defaultJson(RemoteDefaults.quotaLimits)!;
 
+  /// Returns the speech model to download per language (`{lang: {file, url, bytes, sha256}}`), empty until OQ-3 picks the library.
+  Map<String, dynamic> get asrModels =>
+      _json(RemoteDefaults.asrModels) ?? const {};
+
   /// Returns the capability matrix override, or null when none is set or it is invalid.
   Map<String, dynamic>? get capabilityMatrix =>
       _json(RemoteDefaults.capabilityMatrix);

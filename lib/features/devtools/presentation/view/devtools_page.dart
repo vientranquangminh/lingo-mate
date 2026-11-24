@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
@@ -10,6 +11,7 @@ import '../../../../common/widgets/app_platform_outlined_button.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../core/audio/audio_capture.dart';
 import '../../../../core/engines/engines.dart';
+import '../../../../navigation/route_const.dart';
 import '../../data/notifier/benchmark_notifier.dart';
 import '../../data/notifier/devtools_notifier.dart';
 import '../../data/notifier/devtools_providers.dart';
@@ -99,6 +101,11 @@ class _EngineSection extends ConsumerWidget {
           label: l10n.devtoolsRegionBlock,
           value: state.forceRegionBlock,
           onChanged: notifier.setForceRegionBlock,
+        ),
+        SizedBox(height: AppParams.spacing8.h),
+        AppPlatformOutlinedButton(
+          onPressed: () => context.pushNamed(AppRouteName.languagePacks),
+          text: l10n.devtoolsOpenPacks,
         ),
       ],
     );

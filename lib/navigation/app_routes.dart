@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../env.dart';
 import '../features/authentication/presentation/view/login_page.dart';
 import '../features/devtools/presentation/view/devtools_page.dart';
+import '../features/language_packs/presentation/view/language_packs_page.dart';
 import 'route_const.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(
@@ -23,6 +24,12 @@ final goRouterProvider = Provider((ref) {
         path: AppRoutePath.onboarding,
         pageBuilder: (context, state) =>
             CupertinoPage(child: const LoginPage()),
+      ),
+      GoRoute(
+        name: AppRouteName.languagePacks,
+        path: AppRoutePath.languagePacks,
+        pageBuilder: (context, state) =>
+            const CupertinoPage(child: LanguagePacksPage()),
       ),
       if (Env.devtoolsEnabled)
         GoRoute(
