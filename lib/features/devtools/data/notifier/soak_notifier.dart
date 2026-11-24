@@ -22,6 +22,12 @@ final notificationPermissionProvider = Provider<Future<void> Function()>(
       () => Permission.notification.request(),
 );
 
+/// Monotonic milliseconds used to time the soak; replaced in tests.
+final soakClockProvider = Provider<int Function()>((ref) {
+  final watch = Stopwatch()..start();
+  return () => watch.elapsedMilliseconds;
+});
+
 /// Soak test state.
 final soakProvider = NotifierProvider<SoakNotifier, SoakState>(
   SoakNotifier.new,
@@ -34,7 +40,8 @@ class SoakNotifier extends Notifier<SoakState> {
   AudioPipeline? _pipeline;
   BackgroundCapture? _background;
   final _subscriptions = <StreamSubscription<Object>>[];
-  final _clock = Stopwatch();
+  late int Function() _now;
+  int _startMs = 0;
   int? _lastFrameMs;
   Timer? _ticker;
   final _overlayLines = <String>[];
@@ -54,6 +61,7 @@ class SoakNotifier extends Notifier<SoakState> {
     }
     final background = ref.read(backgroundCaptureProvider);
     _background = background;
+    _now = ref.read(soakClockProvider);
     state = const SoakState();
     try {
       await ref.read(notificationPermissionProvider)();
@@ -62,11 +70,9 @@ class SoakNotifier extends Notifier<SoakState> {
       final pipeline = AudioPipeline(
         capture: ref.read(audioCaptureProvider),
         vad: EnergyVoiceActivityDetector(),
-        echoGate: EchoGate(nowMs: () => _clock.elapsedMilliseconds),
+        echoGate: EchoGate(nowMs: () => _now()),
       );
-      _clock
-        ..reset()
-        ..start();
+      _startMs = _now();
       _lastFrameMs = null;
       _subscriptions
         ..add(pipeline.levels.listen((_) => _onFrame()))
@@ -106,7 +112,7 @@ class SoakNotifier extends Notifier<SoakState> {
 
   /// Records the longest gap between audio frames; a gap means capture paused in the background.
   void _onFrame() {
-    final now = _clock.elapsedMilliseconds;
+    final now = _now();
     final last = _lastFrameMs;
     _lastFrameMs = now;
     if (last != null && now - last > state.maxGapMs) {
@@ -116,7 +122,7 @@ class SoakNotifier extends Notifier<SoakState> {
 
   /// Updates the elapsed time every second.
   void _onTick() {
-    state = state.copyWith(elapsed: _clock.elapsed);
+    state = state.copyWith(elapsed: Duration(milliseconds: _now() - _startMs));
   }
 
   /// Stops on the notification's Stop, and keeps lines long-pressed in the overlay.
@@ -148,7 +154,6 @@ class SoakNotifier extends Notifier<SoakState> {
   Future<void> _stop() async {
     _ticker?.cancel();
     _ticker = null;
-    _clock.stop();
     for (final s in _subscriptions) {
       await s.cancel();
     }

@@ -68,6 +68,7 @@ void main() {
   late _FakeCapture capture;
   late ProviderContainer container;
   late bool permissionAsked;
+  late int now;
 
   /// Builds a container around the fakes.
   ProviderContainer build() {
@@ -75,6 +76,7 @@ void main() {
       overrides: [
         backgroundCaptureProvider.overrideWithValue(background),
         audioCaptureProvider.overrideWithValue(capture),
+        soakClockProvider.overrideWithValue(() => now),
         notificationPermissionProvider.overrideWithValue(
           () async => permissionAsked = true,
         ),
@@ -88,6 +90,7 @@ void main() {
     background = _FakeBackground();
     capture = _FakeCapture();
     permissionAsked = false;
+    now = 0;
     container = build();
   });
 
@@ -108,13 +111,14 @@ void main() {
       await container.read(soakProvider.notifier).toggle();
 
       capture.controller.add(pcm(1000, amplitude: 4000));
-      await Future<void>.delayed(const Duration(milliseconds: 60));
+      await pumpEventQueue();
+      now += 60;
       capture.controller.add(pcm(700));
       await pumpEventQueue();
 
       final state = container.read(soakProvider);
       expect(state.segments, 1);
-      expect(state.maxGapMs, greaterThanOrEqualTo(50));
+      expect(state.maxGapMs, 60);
       expect(background.overlayLines.single, '#1 · 1000 ms');
     },
   );
