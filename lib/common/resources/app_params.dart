@@ -8,5 +8,11 @@ class AppParams {
   static const radius24 = 24.0;
 
   static const buttonHeight = 48.0;
+
+  static const spacing4 = 4.0;
+  static const spacing8 = 8.0;
+  static const spacing12 = 12.0;
+  static const spacing16 = 16.0;
+  static const spacing24 = 24.0;
   static const pillPadding = EdgeInsets.symmetric(horizontal: 14, vertical: 8);
 }

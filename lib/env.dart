@@ -11,4 +11,6 @@ class Env {
 
   static String get appCheckDebugToken =>
       const String.fromEnvironment('APP_CHECK_DEBUG_TOKEN');
+
+  static const devtoolsEnabled = bool.fromEnvironment('DEVTOOLS_ENABLED');
 }

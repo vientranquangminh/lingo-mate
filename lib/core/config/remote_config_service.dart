@@ -78,6 +78,15 @@ class RemoteConfigService {
   Map<String, dynamic>? get capabilityMatrix =>
       _json(RemoteDefaults.capabilityMatrix);
 
+  /// Returns every key with its current value and where it came from, for the devtools viewer.
+  Map<String, String> snapshot() => {
+    for (final key in _defaults.keys)
+      key: _remoteConfig == null
+          ? '${_local(key)} (in-app)'
+          : '${_remoteConfig.getString(key)} '
+                '(${_remoteConfig.getValue(key).source.name})',
+  };
+
   /// Reads a string value.
   String _string(String key) =>
       _remoteConfig?.getString(key) ?? _local(key) as String;

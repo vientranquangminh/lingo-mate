@@ -108,6 +108,7 @@ jobs:
             echo "GEMINI_API_KEY=$GEMINI_API_KEY"
             echo "LIVE_ENABLED=true"
             echo "APP_CHECK_DEBUG_TOKEN=$APP_CHECK_DEBUG_TOKEN"
+            echo "DEVTOOLS_ENABLED=true"
           } > .env.dev
 
       - name: Flutter Pub Get

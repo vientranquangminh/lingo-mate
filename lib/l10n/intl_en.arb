@@ -1,4 +1,76 @@
 {
-    "@@locale": "en",
-    "login": "Login"
+  "@@locale": "en",
+  "login": "Login",
+  "devtoolsTitle": "Devtools",
+  "devtoolsEngineSection": "Engine",
+  "devtoolsEngineAuto": "Auto",
+  "devtoolsEngineOffline": "Offline",
+  "devtoolsEngineStandard": "Standard",
+  "devtoolsEngineLive": "Live",
+  "devtoolsLatencyHud": "Latency HUD",
+  "devtoolsRegionBlock": "Force region-block error",
+  "devtoolsAudioSection": "Audio input",
+  "devtoolsRawMic": "Raw mic (meeting source)",
+  "devtoolsNoiseSuppression": "Noise suppression",
+  "devtoolsAutoGain": "Automatic gain",
+  "devtoolsMicStart": "Start mic test",
+  "devtoolsMicStop": "Stop mic test",
+  "devtoolsMicDenied": "Microphone permission was denied.",
+  "devtoolsMicLevel": "Level {level} dBFS",
+  "@devtoolsMicLevel": {
+    "placeholders": {
+      "level": {"type": "String"}
+    }
+  },
+  "devtoolsSegment": "Segment {index}: {durationMs} ms, {speechPercent}% speech",
+  "@devtoolsSegment": {
+    "placeholders": {
+      "index": {"type": "int"},
+      "durationMs": {"type": "int"},
+      "speechPercent": {"type": "int"}
+    }
+  },
+  "devtoolsBenchmarkSection": "Benchmark",
+  "devtoolsBenchmarkFolder": "Clips folder: {path}",
+  "@devtoolsBenchmarkFolder": {
+    "placeholders": {
+      "path": {"type": "String"}
+    }
+  },
+  "devtoolsBenchmarkSummary": "{clips} clips · {pipelines} pipelines",
+  "@devtoolsBenchmarkSummary": {
+    "placeholders": {
+      "clips": {"type": "int"},
+      "pipelines": {"type": "int"}
+    }
+  },
+  "devtoolsBenchmarkNoPipelines": "No speech recognition engine yet.",
+  "devtoolsBenchmarkReload": "Reload clips",
+  "devtoolsBenchmarkRun": "Run benchmark",
+  "devtoolsBenchmarkRunning": "Running {clip} on {pipeline}…",
+  "@devtoolsBenchmarkRunning": {
+    "placeholders": {
+      "clip": {"type": "String"},
+      "pipeline": {"type": "String"}
+    }
+  },
+  "devtoolsBenchmarkDone": "Saved {rows} rows to {path}",
+  "@devtoolsBenchmarkDone": {
+    "placeholders": {
+      "rows": {"type": "int"},
+      "path": {"type": "String"}
+    }
+  },
+  "devtoolsBenchmarkFailed": "Benchmark failed: {error}",
+  "@devtoolsBenchmarkFailed": {
+    "placeholders": {
+      "error": {"type": "String"}
+    }
+  },
+  "devtoolsRemoteConfigSection": "Remote Config",
+  "devtoolsStageVadEnd": "VAD end",
+  "devtoolsStageAsr": "ASR",
+  "devtoolsStageTranslation": "Translation",
+  "devtoolsStagePlayback": "Playback",
+  "devtoolsNoValue": "–"
 }
