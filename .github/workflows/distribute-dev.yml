@@ -18,7 +18,43 @@ env:
   FIREBASE_PROJECT: lingo-mate-4f38d
 
 jobs:
+  # Skips the build, without failing or emailing, until distribution is set up;
+  # fails when it is only partly set up.
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - name: Check the secrets and variables are set
+        id: check
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GROUPS: ${{ vars.FIREBASE_DISTRIBUTION_GROUPS }}
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT$GROUPS$KEYSTORE_BASE64$KEYSTORE_PASSWORD$KEY_ALIAS$KEY_PASSWORD" ]; then
+            echo "::notice::App Distribution is not set up yet, so the build is skipped. Setup: docs/ci-cd.md"
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          ok=true
+          [ -n "$GROUPS" ] || { echo "::error::Variable FIREBASE_DISTRIBUTION_GROUPS is not set (a group alias in App Distribution → Testers & Groups)"; ok=false; }
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            [ -n "${!name}" ] || { echo "::error::Secret ANDROID_$name is not set"; ok=false; }
+          done
+          [ -n "$GEMINI_API_KEY" ] || echo "::warning::Secret GEMINI_API_KEY is not set; the build will have no Gemini key"
+          project=$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | jq -r 'select(.type == "service_account") | .project_id' 2>/dev/null || true)
+          [ "$project" = "$FIREBASE_PROJECT" ] || { echo "::error::Secret FIREBASE_SERVICE_ACCOUNT must be the JSON key of a $FIREBASE_PROJECT service account (found project: '${project:-none}')"; ok=false; }
+          $ok
+          echo "configured=true" >> "$GITHUB_OUTPUT"
+
   build:
+    needs: config
+    if: needs.config.outputs.configured == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 60
 
@@ -40,28 +76,6 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
-
-      # Fails in seconds, not after the build, when a secret or variable is
-      # missing (Settings → Secrets and variables → Actions).
-      - name: Check the secrets and variables are set
-        env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          GROUPS: ${{ vars.FIREBASE_DISTRIBUTION_GROUPS }}
-          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: |
-          ok=true
-          [ -n "$GROUPS" ] || { echo "::error::Variable FIREBASE_DISTRIBUTION_GROUPS is not set (a group alias in App Distribution → Testers & Groups)"; ok=false; }
-          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
-            [ -n "${!name}" ] || { echo "::error::Secret ANDROID_$name is not set"; ok=false; }
-          done
-          [ -n "$GEMINI_API_KEY" ] || echo "::warning::Secret GEMINI_API_KEY is not set; the build will have no Gemini key"
-          project=$(printf '%s' "$FIREBASE_SERVICE_ACCOUNT" | jq -r 'select(.type == "service_account") | .project_id' 2>/dev/null || true)
-          [ "$project" = "$FIREBASE_PROJECT" ] || { echo "::error::Secret FIREBASE_SERVICE_ACCOUNT must be the JSON key of a $FIREBASE_PROJECT service account (found project: '${project:-none}')"; ok=false; }
-          $ok
 
       - name: Read app id and Flutter version
         id: meta
@@ -108,6 +122,7 @@ jobs:
             echo "GEMINI_API_KEY=$GEMINI_API_KEY"
             echo "LIVE_ENABLED=true"
             echo "APP_CHECK_DEBUG_TOKEN=$APP_CHECK_DEBUG_TOKEN"
+            echo "DEVTOOLS_ENABLED=true"
           } > .env.dev
 
       - name: Flutter Pub Get

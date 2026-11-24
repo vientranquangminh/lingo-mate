@@ -61,6 +61,7 @@ Applies to every screen.
   | `TextButton` | `AppPlatformTextButton` |
   | `IconButton` | `AppPlatformIconButton` |
   | `CircularProgressIndicator` | `AppCircularProgressIndicator` |
+  | `Switch` / `CupertinoSwitch` | `AppPlatformSwitch` |
 
 - Need a widget that isn't there yet? Add it to `lib/common/widgets`, building the
   Material or the Cupertino Flutter widget depending on `context.isCupertino`

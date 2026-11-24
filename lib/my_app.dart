@@ -9,6 +9,8 @@ import 'package:overlay_support/overlay_support.dart';
 
 import 'common/resources/app_config.dart';
 import 'common/resources/app_theme.dart';
+import 'env.dart';
+import 'features/devtools/presentation/widget/latency_hud.dart';
 import 'generated/l10n.dart';
 import 'navigation/app_routes.dart';
 
@@ -63,7 +65,10 @@ class MyApp extends ConsumerWidget {
       minTextAdapt: true,
     );
     final brightness = MediaQuery.platformBrightnessOf(context);
-    final page = child ?? Container();
+    final routed = child ?? Container();
+    final page = Env.devtoolsEnabled
+        ? Stack(children: [routed, const LatencyHud()])
+        : routed;
     return Portal(
       child: Theme(
         data: AppTheme.materialTheme(brightness),
