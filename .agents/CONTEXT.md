@@ -29,7 +29,7 @@ lib/
 ├── common/             # Reusable widgets, enums, extensions, utils, exceptions
 │   ├── extensions/     # BuildContext, platform (isCupertino) and text style extensions
 │   ├── resources/      # AppTheme, AppParams, Dimens, AppConfiguration
-│   └── widgets/        # Shared AppPlatform* widgets
+│   └── widgets/        # Shared AppPlatform* widgets; AppIcon + AppIcons enum over the 79 SVGs in assets/icons
 ├── core/               # Core configuration, Dependency Injection, Networking, Storage
 │   ├── background/     # BackgroundCapture: TranslationForegroundService (microphone FGS, Stop/Open notification) + CaptionOverlay over channels lingomate/background(+/events)
 │   ├── ai/             # GenerativeModelFactory: Gemini models via Firebase AI Logic, model names from Remote Config
