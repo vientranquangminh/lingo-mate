@@ -8,6 +8,7 @@ import '../../../../core/audio/echo_gate.dart';
 import '../../../../core/audio/latency_timeline.dart';
 import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/selection/engine_providers.dart';
 import '../state/devtools_state.dart';
 import 'devtools_providers.dart';
 
@@ -32,8 +33,10 @@ class DevtoolsNotifier extends Notifier<DevtoolsState> {
   }
 
   /// Forces an engine, or returns to auto-selection with null.
-  void forceEngine(EngineKind? engine) =>
-      state = state.copyWith(forcedEngine: () => engine);
+  void forceEngine(EngineKind? engine) {
+    state = state.copyWith(forcedEngine: () => engine);
+    ref.read(enginePinProvider.notifier).pin(engine);
+  }
 
   /// Shows or hides the latency HUD.
   void setLatencyHud(bool visible) =>
