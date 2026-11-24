@@ -103,9 +103,22 @@ class _EngineSection extends ConsumerWidget {
           onChanged: notifier.setForceRegionBlock,
         ),
         SizedBox(height: AppParams.spacing8.h),
-        AppPlatformOutlinedButton(
-          onPressed: () => context.pushNamed(AppRouteName.languagePacks),
-          text: l10n.devtoolsOpenPacks,
+        Wrap(
+          spacing: AppParams.spacing8.w,
+          runSpacing: AppParams.spacing8.h,
+          children: [
+            AppPlatformOutlinedButton(
+              onPressed: () => context.pushNamed(AppRouteName.languagePacks),
+              text: l10n.devtoolsOpenPacks,
+            ),
+            AppPlatformOutlinedButton(
+              onPressed: () => context.pushNamed(
+                AppRouteName.conversation,
+                queryParameters: const {'a': 'vi', 'b': 'en'},
+              ),
+              text: l10n.devtoolsOpenConversation,
+            ),
+          ],
         ),
       ],
     );

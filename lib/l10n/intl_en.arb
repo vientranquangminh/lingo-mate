@@ -237,5 +237,49 @@
         "type": "String"
       }
     }
-  }
+  },
+  "conversationTitle": "Conversation",
+  "conversationTapToSpeak": "Tap to speak",
+  "conversationListening": "Listening…",
+  "conversationTranslating": "Translating…",
+  "conversationSpeaking": "Speaking…",
+  "conversationMicSemantics": "Microphone for {language}",
+  "@conversationMicSemantics": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "conversationSpeakOn": "Speak translations aloud",
+  "conversationSpeakOff": "Translations are not spoken",
+  "conversationSwitchedTo": "Switched to {engine}",
+  "@conversationSwitchedTo": {
+    "placeholders": {
+      "engine": {
+        "type": "String"
+      }
+    }
+  },
+  "conversationTranslatedOffline": "Translated offline",
+  "conversationTranslationFailed": "Couldn't translate this line.",
+  "conversationPausedNoEngine": "Translation is paused: no internet and the offline packs for these languages are missing. What you say is kept.",
+  "conversationPausedNoSpeechModel": "No speech model on this phone yet. Download a language pack to talk.",
+  "conversationPausedMicDenied": "Microphone access is off. Allow it in Settings to talk.",
+  "conversationDownloadPacks": "Download packs",
+  "conversationOpenSettings": "Open settings",
+  "conversationBack": "Back",
+  "engineSheetTitle": "Translation engine",
+  "engineSheetAutomatic": "Automatic",
+  "engineSheetAutomaticHint": "Picks the best engine that works right now.",
+  "engineSheetInUse": "In use",
+  "engineBlockNotSupported": "Not available for these languages",
+  "engineBlockNoInternet": "Needs internet",
+  "engineBlockRegionBlocked": "Not available in your current region",
+  "engineBlockLiveDisabled": "Not available yet",
+  "engineBlockLiveQuota": "Live minutes used up",
+  "engineBlockStandardQuota": "Cloud translation limit reached",
+  "engineBlockStandardFailing": "Having trouble, trying again soon",
+  "engineBlockPacksMissing": "Download the offline packs first",
+  "devtoolsOpenConversation": "Open Conversation (vi ⇄ en)"
 }

@@ -37,7 +37,7 @@ class AppPlatformTextButton extends StatelessWidget {
           Icon(icon, size: 20.r, color: style?.color),
           SizedBox(width: 6.w),
         ],
-        Text(text, style: style),
+        Flexible(child: Text(text, style: style)),
       ],
     );
     if (context.isCupertino) {

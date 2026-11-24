@@ -29,7 +29,7 @@ lib/
 ├── common/             # Reusable widgets, enums, extensions, utils, exceptions
 │   ├── extensions/     # BuildContext, platform (isCupertino), text style and language name (AppLocalizations.languageName) extensions
 │   ├── resources/      # AppTheme, AppParams, Dimens, AppConfiguration
-│   └── widgets/        # Shared AppPlatform* widgets; AppIcon + AppIcons enum over the 79 SVGs in assets/icons; EngineChip (engine colour/icon/label, Live on-air dot honouring reduce motion); showAppPlatformDialog (two-choice Material/Cupertino dialog)
+│   └── widgets/        # Shared AppPlatform* widgets; AppIcon + AppIcons enum over the 79 SVGs in assets/icons; EngineChip (engine colour/icon/label, Live on-air dot honouring reduce motion); showAppPlatformDialog (two-choice Material/Cupertino dialog); MicButton (idle/listening ring/processing/speaking/disabled); AppBanner (info/warning/error + action); showAppToast (3 s overlay toast); AppCircleIconButton (round AppIcon button); showEngineSheet (engines with block reasons, returns the pin, AC-05.7)
 ├── core/               # Core configuration, Dependency Injection, Networking, Storage
 │   ├── background/     # BackgroundCapture: TranslationForegroundService (microphone FGS, Stop/Open notification) + CaptionOverlay over channels lingomate/background(+/events)
 │   ├── ai/             # GenerativeModelFactory: Gemini models via Firebase AI Logic, model names from Remote Config
@@ -39,18 +39,20 @@ lib/
 │   ├── data/           # Base data models (e.g., Result wrapper)
 │   ├── database/       # Drift AppDatabase and tables (sessions, utterances, phrases, tags, quick phrase favorites, language packs, usage ledger)
 │   ├── di/             # GetIt & Injectable setup
-│   ├── engines/        # EngineKind and the SpeechRecognizerEngine / TextTranslatorEngine interfaces (doc 03 §4)
+│   ├── engines/        # EngineKind and the SpeechRecognizerEngine / TextTranslatorEngine interfaces (doc 03 §4); engine_instances.dart holds the shared providers (audioCaptureProvider, asrModelCatalogProvider, speechRecognizerProvider, textTranslatorProvider(kind), vadFactoryProvider, speechSynthesizerProvider) used by modes and devtools
 │   │   ├── asr/        # T-0.4 spike: AsrModelStore (models/ folder), SherpaWhisperEngine (worker isolate), WhisperCppEngine
 │   │   ├── live/       # T-0.5 spike: LiveCodec (setup/audio/server messages, doc 04 §4), LiveSession (WebSocket, goAway → resume with handle)
+│   │   ├── tts/        # SpeechSynthesizerEngine + FlutterTtsSynthesizer (speak completes when playback ends)
 │   │   ├── translate/  # TranslatorPrompt, GeminiTextTranslator (Standard, AI Logic, 6 s timeout + 1 retry), MlKitTextTranslator (Offline)
 │   │   └── selection/  # CapabilityMatrix (+ loader: Remote Config override or assets/capability_matrix.json), EngineSelector (doc 03 §7, reasons per engine), ErrorBurstTracker, RegionBlock; engine_providers.dart wires onlineProvider (connectivity_plus), capabilityMatrixProvider, liveAvailableProvider (dev flavor + ff_live_enabled, AC-05.6), enginePinProvider (session pin, also set by devtools), regionBlockProvider (saved 24 h block), errorBurstProvider, packsInstalledProvider into engineSelectionProvider(EngineRequest)
 │   ├── errors/         # CrashReporter: Crashlytics fatal/non-fatal reports and engine/mode/pair keys, never transcript text
-│   ├── platform/       # SystemSettings over channel lingomate/system_settings (SystemSettingsChannel.kt): opens the TTS voice installer
+│   ├── platform/       # SystemSettings over channel lingomate/system_settings (SystemSettingsChannel.kt): opens the TTS voice installer and the app's settings page
 │   ├── firebase/       # bootstrapFirebase: Firebase.initializeApp + App Check (debug provider in dev, Play Integrity otherwise)
 │   ├── dio/            # Dio interceptors and configurations
 │   └── storage/        # Local storage (Shared Preferences, Secure Storage)
 ├── features/           # Feature folders
-│   ├── devtools/       # Dev flavor only (DEVTOOLS_ENABLED): S-23 screen, engine switcher, latency HUD, mic test, benchmark runner + CSV, Remote Config viewer, link to offline packs
+│   ├── conversation/   # T-1.5 S-05 (hero mode, D-27): ConversationNotifier per LanguagePair runs tap-to-talk turns (mic → AudioPipeline with EchoGate → on-device ASR with the side's language → translate on the selected engine, Standard failure falls back to Offline per line → TTS, mic gated while speaking + 150 ms); maps Live to Standard until OQ-4; switch toast (AC-02.7), paused banner (AC-02.8); page: partner half RotatedBox 180° with partner-language strings, divider with EngineChip + engine sheet
+│   ├── devtools/       # Dev flavor only (DEVTOOLS_ENABLED): S-23 screen, engine switcher, latency HUD, mic test, benchmark runner + CSV, Remote Config viewer, links to offline packs and Conversation
 │   ├── language_packs/ # T-1.3 S-16 offline packs: LanguagePacksNotifier (kept alive so downloads go on, AC-06.3; English pivot AC-06.5; Wi-Fi-only + mobile data question AC-06.2; delete keeps shared speech files AC-06.6); repositories over ML Kit model manager, HTTP speech model files (sha256-checked) in AsrModelStore's folder, flutter_tts voice check, connectivity Wi-Fi state
 │   └── [FeatureName]/
 │       ├── data/
@@ -64,7 +66,7 @@ lib/
 ├── gen/                # Auto-generated code (e.g., localization, assets)
 ├── generated/          # gen-l10n output (AppLocalizations), git-ignored
 ├── l10n/               # Localization ARB files: intl_en.arb (template) and intl_vi.arb
-├── navigation/         # GoRouter configurations and route constants (route_const.dart); /language-packs (S-16); /devtools exists only when DEVTOOLS_ENABLED
+├── navigation/         # GoRouter configurations and route constants (route_const.dart); /language-packs (S-16); /conversation?a=&b= (S-05); /devtools exists only when DEVTOOLS_ENABLED
 ├── firebase_options_dev.dart  # FlutterFire config for the dev flavor (generated by flutterfire-config.sh)
 └── main*.dart          # Entry points: main_dev.dart (dev, initialises Firebase), main_staging.dart, main.dart (production)
 ```

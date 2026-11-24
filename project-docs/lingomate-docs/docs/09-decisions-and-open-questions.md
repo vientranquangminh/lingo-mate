@@ -32,12 +32,12 @@ Status: Living document. Claude Code: treat **Decisions** as settled; ask the ow
 | D-24 | App name: **Lingo Mate** (display name; `lingomate` in ids, e.g. Firebase projects `lingomate-dev` / `lingomate-prod`, notification icon `ic_stat_lingomate`). Replaces the working title "Parley" | Owner's chosen name | Owner |
 | D-25 | Package id `com.lingomate.app` for production; `com.lingomate.app.dev` and `com.lingomate.app.staging` for the other flavors. Env files are plain `KEY=VALUE` files in the project root (`.env.dev` dev, `.env.staging` staging, `.env` production), not JSON | Firebase apps are registered by package id; one env format across flavors and CI | Owner |
 | D-26 | Sign-in and profile stay in Phase 2; the Phase 1 internal alpha has no sign-in (closes OQ-12) | Keeps P1 scope on the core translation modes; Live and sync, which need an account, are P2 anyway (D-18) | Owner |
+| D-27 | Conversation is the hero mode of Phase 1 and gets polish first (closes OQ-1) | The owner chose face-to-face conversation as the core use case; Listen and Meeting follow on the same pipeline | Owner |
 
 ## Open questions
 
 | ID | Question | Why it matters | How/when to resolve |
 |----|----------|----------------|---------------------|
-| OQ-1 | What concrete situation made the owner want this app (the core pain point)? | Decides which mode is the hero of P1 and which spike experiment runs first | Owner, before P1 starts |
 | OQ-2 | Final prices and quota numbers per plan | Margin; working draft below | After beta usage data (A-3) |
 | OQ-3 | Which on-device ASR library: whisper.cpp wrapper, transcribe_cpp, or sherpa-onnx? Which model size? | Latency, accuracy (esp. Vietnamese), APK/model size, battery | Phase 0 spike (T-0.4) |
 | OQ-4 | Is the "two Live sessions on one mic stream" approach viable for two-way conversation? | Two-way Live quality and cost (+~$0.0053/min) | Phase 0 spike (T-0.5) |

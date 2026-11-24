@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../env.dart';
 import '../features/authentication/presentation/view/login_page.dart';
+import '../core/engines/selection/engine_selector.dart';
+import '../features/conversation/presentation/view/conversation_page.dart';
 import '../features/devtools/presentation/view/devtools_page.dart';
 import '../features/language_packs/presentation/view/language_packs_page.dart';
 import 'route_const.dart';
@@ -30,6 +32,18 @@ final goRouterProvider = Provider((ref) {
         path: AppRoutePath.languagePacks,
         pageBuilder: (context, state) =>
             const CupertinoPage(child: LanguagePacksPage()),
+      ),
+      GoRoute(
+        name: AppRouteName.conversation,
+        path: AppRoutePath.conversation,
+        pageBuilder: (context, state) {
+          final query = state.uri.queryParameters;
+          return CupertinoPage(
+            child: ConversationPage(
+              pair: LanguagePair(query['a'] ?? 'vi', query['b'] ?? 'en'),
+            ),
+          );
+        },
       ),
       if (Env.devtoolsEnabled)
         GoRoute(
