@@ -39,7 +39,8 @@ lib/
 │   ├── database/       # Drift AppDatabase and tables (sessions, utterances, phrases, tags, quick phrase favorites, language packs, usage ledger)
 │   ├── di/             # GetIt & Injectable setup
 │   ├── engines/        # EngineKind and the SpeechRecognizerEngine / TextTranslatorEngine interfaces (doc 03 §4)
-│   │   └── asr/        # T-0.4 spike: AsrModelStore (models/ folder), SherpaWhisperEngine (worker isolate), WhisperCppEngine
+│   │   ├── asr/        # T-0.4 spike: AsrModelStore (models/ folder), SherpaWhisperEngine (worker isolate), WhisperCppEngine
+│   │   └── live/       # T-0.5 spike: LiveCodec (setup/audio/server messages, doc 04 §4), LiveSession (WebSocket, goAway → resume with handle)
 │   ├── errors/         # CrashReporter: Crashlytics fatal/non-fatal reports and engine/mode/pair keys, never transcript text
 │   ├── firebase/       # bootstrapFirebase: Firebase.initializeApp + App Check (debug provider in dev, Play Integrity otherwise)
 │   ├── dio/            # Dio interceptors and configurations
@@ -85,6 +86,7 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 ## Devtools
 - `DEVTOOLS_ENABLED=true` in `.env.dev` turns on the `/devtools` route (the dev start page until Phase 1 screens exist) and the `LatencyHud` overlay in `my_app.dart`. It is a compile-time constant, so production builds contain no devtools code (AC-12.1).
 - Pipelines push stage timings with `latencyLogProvider`; engines read the forced engine from `devtoolsProvider`.
+- The Live test (`liveTestProvider`) streams the mic's 100 ms chunks to one Live session (target en) or two (vi and en, OQ-4) with the dev `GEMINI_API_KEY`, plays the 24 kHz answer through `PcmPlayer` (native AudioTrack, `android/app/src/main/kotlin/com/lingomate/app/PcmPlayer.kt`, channel `lingomate/pcm_player`), closes the echo gate while it plays and reports the median lag from the first input transcript to the first translated audio.
 - The benchmark runs one pipeline per speech model in the app's external `models/` folder (`asrModelCatalogProvider` → `benchmarkPipelinesProvider`) over clips in `benchmark/`. Setup: `docs/benchmark.md`.
 
 ## CI

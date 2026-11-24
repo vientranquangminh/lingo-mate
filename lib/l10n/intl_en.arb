@@ -106,5 +106,20 @@
         "type": "String"
       }
     }
+  },
+  "devtoolsLiveSection": "Live Translate",
+  "devtoolsLiveTwoWay": "Two-way (vi ↔ en, two sessions)",
+  "devtoolsLiveStart": "Start Live test",
+  "devtoolsLiveStop": "Stop Live test",
+  "devtoolsLiveLag": "Median lag {lagMs} ms over {turns} turns",
+  "@devtoolsLiveLag": {
+    "placeholders": {
+      "lagMs": {
+        "type": "int"
+      },
+      "turns": {
+        "type": "int"
+      }
+    }
   }
 }

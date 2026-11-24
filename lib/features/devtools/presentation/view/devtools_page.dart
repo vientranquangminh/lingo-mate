@@ -13,6 +13,7 @@ import '../../../../core/engines/engines.dart';
 import '../../data/notifier/benchmark_notifier.dart';
 import '../../data/notifier/devtools_notifier.dart';
 import '../../data/notifier/devtools_providers.dart';
+import '../../data/notifier/live_test_notifier.dart';
 import '../../data/state/devtools_state.dart';
 import '../widget/devtools_widgets.dart';
 
@@ -44,6 +45,7 @@ class _DevtoolsPageState extends ConsumerState<DevtoolsPage> {
         children: const [
           _EngineSection(),
           _AudioSection(),
+          _LiveSection(),
           _BenchmarkSection(),
           _RemoteConfigSection(),
         ],
@@ -145,6 +147,42 @@ class _AudioSection extends ConsumerWidget {
               segment.durationMs,
               (segment.speechRatio * 100).round(),
             ),
+            small: true,
+          ),
+      ],
+    );
+  }
+}
+
+/// Live Translate test: one-way or two-way, transcripts and lag.
+class _LiveSection extends ConsumerWidget {
+  const _LiveSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.localization;
+    final state = ref.watch(liveTestProvider);
+    final notifier = ref.read(liveTestProvider.notifier);
+    final lag = state.medianLagMs;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        DevtoolsSectionTitle(l10n.devtoolsLiveSection),
+        DevtoolsToggle(
+          label: l10n.devtoolsLiveTwoWay,
+          value: state.twoWay,
+          onChanged: state.running ? null : notifier.setTwoWay,
+        ),
+        AppPlatformElevatedButton(
+          onPressed: notifier.toggle,
+          text: state.running ? l10n.devtoolsLiveStop : l10n.devtoolsLiveStart,
+        ),
+        if (state.error.isNotEmpty) DevtoolsText(state.error, small: true),
+        if (lag != null)
+          DevtoolsText(l10n.devtoolsLiveLag(lag, state.lagsMs.length)),
+        for (final line in state.lines)
+          DevtoolsText(
+            '→${line.target}: ${line.input} ⇒ ${line.output}',
             small: true,
           ),
       ],

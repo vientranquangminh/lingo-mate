@@ -35,5 +35,10 @@
   "devtoolsNoValue": "–",
   "devtoolsModels": "Model giọng nói: {names}",
   "devtoolsVadSilero": "VAD: Silero",
-  "devtoolsVadEnergy": "VAD: ngưỡng âm lượng"
+  "devtoolsVadEnergy": "VAD: ngưỡng âm lượng",
+  "devtoolsLiveSection": "Dịch trực tiếp",
+  "devtoolsLiveTwoWay": "Hai chiều (vi ↔ en, hai phiên)",
+  "devtoolsLiveStart": "Bắt đầu thử Live",
+  "devtoolsLiveStop": "Dừng thử Live",
+  "devtoolsLiveLag": "Độ trễ trung vị {lagMs} ms qua {turns} lượt"
 }
