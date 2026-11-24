@@ -70,7 +70,7 @@ Goal: prove the three pipelines and background capture work on real phones, chea
 
 **Exit (M3)**: P2 ACs pass; closed test complete; account deletion works in-app and on the web; measured average usage vs. A-3 (25% of caps) reviewed and pricing finalized.
 
-Note: sign-in/profile stay in P2 unless the owner moves them into P1 (OQ-12).
+Note: sign-in/profile stay in P2 (D-26).
 
 ## Phase 3 — Global & growth (ongoing)
 

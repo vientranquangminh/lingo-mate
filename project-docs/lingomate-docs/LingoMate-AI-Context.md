@@ -474,7 +474,7 @@ Goal: prove the three pipelines and background capture work on real phones, chea
 
 **Exit (M3)**: P2 ACs pass; closed test complete; account deletion works in-app and on the web; measured average usage vs. A-3 (25% of caps) reviewed and pricing finalized.
 
-Note: sign-in/profile stay in P2 unless the owner moves them into P1 (OQ-12).
+Note: sign-in/profile stay in P2 (D-26).
 
 ## Phase 3 — Global & growth (ongoing)
 
@@ -2167,6 +2167,7 @@ Status: Living document. Claude Code: treat **Decisions** as settled; ask the ow
 | D-23 | Figma is the visual source of truth (file "Lingo Mate — UI Design"); doc 08 stays the source for behaviour, states and tokens. AI tools read the design straight from the Figma link (Figma MCP); `design/` PNG/HTML exports are an offline fallback only. The claude.ai canvas is archived | Owner wants to view, edit and share the design in Figma and hand the Figma link to AI tools | Owner |
 | D-24 | App name: **Lingo Mate** (display name; `lingomate` in ids, e.g. Firebase projects `lingomate-dev` / `lingomate-prod`, notification icon `ic_stat_lingomate`). Replaces the working title "Parley" | Owner's chosen name | Owner |
 | D-25 | Package id `com.lingomate.app` for production; `com.lingomate.app.dev` and `com.lingomate.app.staging` for the other flavors. Env files are plain `KEY=VALUE` files in the project root (`.env.dev` dev, `.env.staging` staging, `.env` production), not JSON | Firebase apps are registered by package id; one env format across flavors and CI | Owner |
+| D-26 | Sign-in and profile stay in Phase 2; the Phase 1 internal alpha has no sign-in (closes OQ-12) | Keeps P1 scope on the core translation modes; Live and sync, which need an account, are P2 anyway (D-18) | Owner |
 
 ## Open questions
 
@@ -2183,7 +2184,6 @@ Status: Living document. Claude Code: treat **Decisions** as settled; ask the ow
 | OQ-9 | Tax treatment of app revenue in Vietnam | Net margin (draft assumes 10% reserve) | Owner + accountant |
 | OQ-10 | Exact raw-WebSocket parameter for authenticating with an ephemeral token | Implementation detail of F-05 Live in prod | Phase 2 start; verify against docs |
 | OQ-11 | Regions where Gemini API is blocked: accept Offline-only, or later route through Agent Platform (Vertex AI) with a proxy? | Coverage vs. "no server" decision | Revisit after P3 |
-| OQ-12 | Should sign-in + profile ship in P1 (internal alpha) instead of P2? Plan currently keeps P1 login-free | Earlier login = earlier sync/Live testing, but more P1 scope | Owner, before P1 starts |
 | OQ-13 | Add Sign in with Apple when the iOS app starts? (App Store review rules ask for an equivalent privacy-friendly login option when third-party logins are offered — verify current guideline) | iOS parity | When iOS is planned |
 
 ## Pricing working draft (NOT final — see OQ-2)
