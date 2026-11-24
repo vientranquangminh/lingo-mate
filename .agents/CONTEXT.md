@@ -33,6 +33,7 @@ lib/
 ├── core/               # Core configuration, Dependency Injection, Networking, Storage
 │   ├── ai/             # GenerativeModelFactory: Gemini models via Firebase AI Logic, model names from Remote Config
 │   ├── api/            # Retrofit Clients, API Models (Request Body, Responses)
+│   ├── audio/          # AudioPipeline: capture (record, 16 kHz PCM16) → 20 ms frames → 30 s ring buffer → EchoGate → VAD → Segmenter → AudioSegment; 100 ms chunks for Live; LatencyTimeline
 │   ├── config/         # remote_defaults.dart (keys + defaults, the only place model names live); RemoteConfigService (typed getters)
 │   ├── data/           # Base data models (e.g., Result wrapper)
 │   ├── database/       # Drift AppDatabase and tables (sessions, utterances, phrases, tags, quick phrase favorites, language packs, usage ledger)
@@ -67,6 +68,7 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - **Riverpod State Management**: Each feature has `Notifier` classes extending `Notifier<T>` to manage `State` classes which extend `Equatable`.
 - **Result Wrapper**: Repositories catch exceptions and return `Result<T>` with either `Result.success(data)` or `Result.failed(error)`.
 - **Dependency Injection**: Repositories and Services use `@Singleton` or `@Injectable` from the `injectable` package.
+- **Audio**: audio stays in memory (`AudioRingBuffer`), never on disk. `VoiceActivityDetector` is an interface; `EnergyVoiceActivityDetector` is the stand-in until Silero VAD comes with the ASR library (T-0.4). Segment rules (600 ms silence, 400 ms min speech, 15 s max cut at a ≥ 250 ms pause) live in `SegmenterConfig`. Call `echoGate.setSpeaking` around TTS/Live playback. `AudioPipeline.addPcm` feeds files for the benchmark runner.
 - **Local database**: Drift `AppDatabase` (`lib/core/database/`), registered as a singleton in `DatabaseModule`. Bump `schemaVersion` and add a migration step for every schema change. Tests open it with `NativeDatabase.memory()`.
 
 ## Firebase & Environments
