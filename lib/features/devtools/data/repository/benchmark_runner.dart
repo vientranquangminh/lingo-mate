@@ -90,7 +90,7 @@ class BenchmarkRunner {
         final result = await translator.translate(
           TranslateRequest(
             from: clip.lang,
-            to: pipeline.targetLang,
+            to: pipeline.targetFor(clip.lang),
             text: transcript,
             context: List.of(
               context.length > 3
@@ -116,9 +116,14 @@ class BenchmarkRunner {
       asrMs: timeline.sinceVadEnd(LatencyStage.asrDone),
       translationMs: timeline.sinceVadEnd(LatencyStage.translationShown),
       transcript: transcript,
-      targetLang: pipeline.translator == null ? '' : pipeline.targetLang,
+      targetLang: pipeline.translator == null
+          ? ''
+          : pipeline.targetFor(clip.lang),
       translation: translation,
       referenceTranscript: clip.referenceTranscript,
+      referenceTranslation: pipeline.translator == null
+          ? ''
+          : clip.referenceTranslation[pipeline.targetFor(clip.lang)] ?? '',
       error: error,
     );
   }

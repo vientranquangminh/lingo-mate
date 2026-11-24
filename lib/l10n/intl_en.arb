@@ -106,5 +106,9 @@
         "type": "String"
       }
     }
-  }
+  },
+  "devtoolsOfflineModelsDownload": "Download offline models (vi, en)",
+  "devtoolsOfflineModelsDownloading": "Downloading ML Kit models…",
+  "devtoolsOfflineModelsReady": "ML Kit models for vi and en are ready.",
+  "devtoolsOfflineModelsFailed": "ML Kit model download failed."
 }

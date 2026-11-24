@@ -6,7 +6,11 @@ import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/engines/asr/asr_models.dart';
 import '../../../../core/engines/asr/sherpa_whisper_engine.dart';
 import '../../../../core/engines/asr/whisper_cpp_engine.dart';
+import '../../../../core/ai/generative_model_factory.dart';
 import '../../../../core/config/remote_config_service.dart';
+import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/translate/gemini_text_translator.dart';
+import '../../../../core/engines/translate/mlkit_text_translator.dart';
 import '../../../../core/di/di.dart';
 import '../model/benchmark_models.dart';
 import '../repository/benchmark_files.dart';
@@ -26,16 +30,36 @@ final asrModelCatalogProvider = FutureProvider<AsrModelCatalog>(
   (ref) async => (await AsrModelStore.open()).scan(),
 );
 
-/// Pipelines the benchmark can run: one per speech model found.
+/// Standard engine translator (Gemini through Firebase AI Logic).
+final geminiTranslatorProvider = Provider<TextTranslatorEngine>(
+  (ref) => GeminiTextTranslator.firebase(getIt<GenerativeModelFactory>()),
+);
+
+/// Offline engine translator (ML Kit).
+final mlKitTranslatorProvider = Provider<MlKitTextTranslator>((ref) {
+  final translator = MlKitTextTranslator();
+  ref.onDispose(translator.close);
+  return translator;
+});
+
+/// Pipelines the benchmark can run: each speech model alone, then followed by Gemini (Standard) and ML Kit (Offline).
 final benchmarkPipelinesProvider = FutureProvider<List<BenchmarkPipeline>>((
   ref,
 ) async {
   final catalog = await ref.watch(asrModelCatalogProvider.future);
+  final translators = [
+    ref.watch(geminiTranslatorProvider),
+    ref.watch(mlKitTranslatorProvider),
+  ];
+  final engines = <SpeechRecognizerEngine>[
+    for (final m in catalog.sherpaWhisper) SherpaWhisperEngine(m),
+    for (final m in catalog.whisperCpp) WhisperCppEngine(m),
+  ];
   return [
-    for (final m in catalog.sherpaWhisper)
-      BenchmarkPipeline(asr: SherpaWhisperEngine(m)),
-    for (final m in catalog.whisperCpp)
-      BenchmarkPipeline(asr: WhisperCppEngine(m)),
+    for (final asr in engines) ...[
+      BenchmarkPipeline(asr: asr),
+      for (final t in translators) BenchmarkPipeline(asr: asr, translator: t),
+    ],
   ];
 });
 

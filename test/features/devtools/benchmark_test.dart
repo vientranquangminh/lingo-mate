@@ -139,6 +139,7 @@ void main() {
       lang: 'vi',
       scenario: 'turns',
       referenceTranscript: 'ref',
+      referenceTranslation: {'en': 'ref en'},
     );
     final twoUtterances = Uint8List.fromList([
       ...pcm(1000, amplitude: 4000),
@@ -173,6 +174,9 @@ void main() {
       expect(rows.first.translationMs, 500);
       expect(rows.first.translation, startsWith('EN utterance 1'));
       expect(rows.first.referenceTranscript, 'ref');
+      expect(rows.first.targetLang, 'en');
+      expect(rows.first.referenceTranslation, 'ref en');
+      expect(translator.requests.first.to, 'en');
       expect(translator.requests[1].context, [rows.first.transcript]);
     });
 
@@ -203,6 +207,23 @@ void main() {
       expect(rows, hasLength(2));
       expect(rows.every((r) => r.error.contains('quota')), isTrue);
       expect(rows.first.transcript, isNotEmpty);
+    });
+  });
+
+  group('BenchmarkPipeline', () {
+    test('translates English clips to Vietnamese and others to English', () {
+      final pipeline = BenchmarkPipeline(asr: _FakeAsr((_) {}));
+
+      expect(pipeline.targetFor('en'), 'vi');
+      expect(pipeline.targetFor('vi'), 'en');
+      expect(pipeline.targetFor('ja'), 'en');
+      expect(
+        BenchmarkPipeline(
+          asr: _FakeAsr((_) {}),
+          targetLang: 'ja',
+        ).targetFor('vi'),
+        'ja',
+      );
     });
   });
 

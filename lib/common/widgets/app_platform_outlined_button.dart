@@ -50,7 +50,9 @@ class AppPlatformOutlinedButton extends StatelessWidget {
           Text(leading!, style: style),
           SizedBox(width: 6.w),
         ],
-        Text(text, style: style),
+        Flexible(
+          child: Text(text, style: style, textAlign: TextAlign.center),
+        ),
       ],
     );
 
