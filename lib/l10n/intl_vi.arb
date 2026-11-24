@@ -35,5 +35,9 @@
   "devtoolsNoValue": "–",
   "devtoolsModels": "Model giọng nói: {names}",
   "devtoolsVadSilero": "VAD: Silero",
-  "devtoolsVadEnergy": "VAD: ngưỡng âm lượng"
+  "devtoolsVadEnergy": "VAD: ngưỡng âm lượng",
+  "devtoolsOfflineModelsDownload": "Tải model ngoại tuyến (vi, en)",
+  "devtoolsOfflineModelsDownloading": "Đang tải model ML Kit…",
+  "devtoolsOfflineModelsReady": "Model ML Kit cho vi và en đã sẵn sàng.",
+  "devtoolsOfflineModelsFailed": "Tải model ML Kit thất bại."
 }

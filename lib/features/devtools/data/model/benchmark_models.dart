@@ -42,12 +42,16 @@ class BenchmarkPipeline extends Equatable {
   const BenchmarkPipeline({
     required this.asr,
     this.translator,
-    this.targetLang = 'en',
+    this.targetLang,
   });
 
   final SpeechRecognizerEngine asr;
   final TextTranslatorEngine? translator;
-  final String targetLang;
+  final String? targetLang;
+
+  /// Returns the language to translate a clip into: [targetLang], else Vietnamese for English clips and English otherwise.
+  String targetFor(String clipLang) =>
+      targetLang ?? (clipLang == 'en' ? 'vi' : 'en');
 
   String get id => translator == null ? asr.id : '${asr.id}+${translator!.id}';
 
@@ -70,6 +74,7 @@ class BenchmarkRow extends Equatable {
     this.translation = '',
     this.targetLang = '',
     this.referenceTranscript = '',
+    this.referenceTranslation = '',
     this.error = '',
   });
 
@@ -86,6 +91,7 @@ class BenchmarkRow extends Equatable {
     'target_lang',
     'translation',
     'reference_transcript',
+    'reference_translation',
     'error',
   ];
 
@@ -101,6 +107,7 @@ class BenchmarkRow extends Equatable {
   final String translation;
   final String targetLang;
   final String referenceTranscript;
+  final String referenceTranslation;
   final String error;
 
   /// Returns the row's values in [header] order.
@@ -117,6 +124,7 @@ class BenchmarkRow extends Equatable {
     targetLang,
     translation,
     referenceTranscript,
+    referenceTranslation,
     error,
   ];
 

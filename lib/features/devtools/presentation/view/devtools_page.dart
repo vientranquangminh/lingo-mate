@@ -215,6 +215,20 @@ class _BenchmarkSection extends ConsumerWidget {
           ],
         ),
         SizedBox(height: AppParams.spacing8.h),
+        AppPlatformOutlinedButton(
+          onPressed: state.offlineModels == OfflineModelsStatus.downloading
+              ? null
+              : notifier.downloadOfflineModels,
+          text: l10n.devtoolsOfflineModelsDownload,
+        ),
+        if (state.offlineModels != OfflineModelsStatus.unknown)
+          DevtoolsText(switch (state.offlineModels) {
+            OfflineModelsStatus.downloading =>
+              l10n.devtoolsOfflineModelsDownloading,
+            OfflineModelsStatus.ready => l10n.devtoolsOfflineModelsReady,
+            _ => l10n.devtoolsOfflineModelsFailed,
+          }, small: true),
+        SizedBox(height: AppParams.spacing8.h),
         switch (state.status) {
           BenchmarkStatus.running => DevtoolsText(
             l10n.devtoolsBenchmarkRunning(

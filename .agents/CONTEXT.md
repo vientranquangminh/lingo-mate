@@ -39,7 +39,8 @@ lib/
 │   ├── database/       # Drift AppDatabase and tables (sessions, utterances, phrases, tags, quick phrase favorites, language packs, usage ledger)
 │   ├── di/             # GetIt & Injectable setup
 │   ├── engines/        # EngineKind and the SpeechRecognizerEngine / TextTranslatorEngine interfaces (doc 03 §4)
-│   │   └── asr/        # T-0.4 spike: AsrModelStore (models/ folder), SherpaWhisperEngine (worker isolate), WhisperCppEngine
+│   │   ├── asr/        # T-0.4 spike: AsrModelStore (models/ folder), SherpaWhisperEngine (worker isolate), WhisperCppEngine
+│   │   └── translate/  # TranslatorPrompt, GeminiTextTranslator (Standard, AI Logic, 6 s timeout + 1 retry), MlKitTextTranslator (Offline)
 │   ├── errors/         # CrashReporter: Crashlytics fatal/non-fatal reports and engine/mode/pair keys, never transcript text
 │   ├── firebase/       # bootstrapFirebase: Firebase.initializeApp + App Check (debug provider in dev, Play Integrity otherwise)
 │   ├── dio/            # Dio interceptors and configurations
@@ -85,7 +86,7 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 ## Devtools
 - `DEVTOOLS_ENABLED=true` in `.env.dev` turns on the `/devtools` route (the dev start page until Phase 1 screens exist) and the `LatencyHud` overlay in `my_app.dart`. It is a compile-time constant, so production builds contain no devtools code (AC-12.1).
 - Pipelines push stage timings with `latencyLogProvider`; engines read the forced engine from `devtoolsProvider`.
-- The benchmark runs one pipeline per speech model in the app's external `models/` folder (`asrModelCatalogProvider` → `benchmarkPipelinesProvider`) over clips in `benchmark/`. Setup: `docs/benchmark.md`.
+- The benchmark runs, for each speech model in the app's external `models/` folder, ASR alone, ASR → Gemini (Standard) and ASR → ML Kit (Offline) (`asrModelCatalogProvider` → `benchmarkPipelinesProvider`) over clips in `benchmark/`. English clips translate to Vietnamese, others to English. Setup: `docs/benchmark.md`.
 
 ## CI
 - `.github/workflows/ci.yml` runs on pull requests and pushes to `main`: code generation, `flutter analyze`, `flutter test`, a production release APK build, a scan that fails on `AIza` keys in the APK, and a check that the APK holds only 64-bit native libraries (`packaging.jniLibs.excludes` in `android/app/build.gradle`).

@@ -65,6 +65,7 @@ void main() {
     asrModelCatalogProvider.overrideWith(
       (ref) async => const AsrModelCatalog(),
     ),
+    benchmarkPipelinesProvider.overrideWith((ref) async => const []),
   ];
 
   /// Pumps the devtools page with English strings and screen scaling.

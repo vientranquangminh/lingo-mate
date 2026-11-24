@@ -36,6 +36,26 @@ class BenchmarkNotifier extends Notifier<BenchmarkState> {
     }
   }
 
+  /// Downloads the Vietnamese and English ML Kit models used by the Offline pipelines.
+  Future<void> downloadOfflineModels() async {
+    state = state.copyWith(offlineModels: OfflineModelsStatus.downloading);
+    try {
+      final ok = await ref
+          .read(mlKitTranslatorProvider)
+          .downloadModels('vi', 'en', allowMobileData: true);
+      state = state.copyWith(
+        offlineModels: ok
+            ? OfflineModelsStatus.ready
+            : OfflineModelsStatus.failed,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        offlineModels: OfflineModelsStatus.failed,
+        error: '$e',
+      );
+    }
+  }
+
   /// Runs all clips through all pipelines in real time and writes a CSV.
   Future<void> run() async {
     final pipelines = await ref.read(benchmarkPipelinesProvider.future);
