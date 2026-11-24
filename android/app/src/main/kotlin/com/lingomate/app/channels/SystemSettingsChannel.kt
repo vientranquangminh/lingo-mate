@@ -3,6 +3,8 @@ package com.lingomate.app.channels
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.speech.tts.TextToSpeech
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
@@ -14,7 +16,16 @@ class SystemSettingsChannel(messenger: BinaryMessenger, private val context: Con
     init {
         channel.setMethodCallHandler { call, result ->
             when (call.method) {
-                "installTtsVoice" -> result.success(open(Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA)))
+                "installTtsVoice" -> result.success(
+                    open(Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA))
+                        || open(Intent("com.android.settings.TTS_SETTINGS")),
+                )
+                "openAppSettings" -> result.success(
+                    open(
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            .setData(Uri.fromParts("package", context.packageName, null)),
+                    ),
+                )
                 else -> result.notImplemented()
             }
         }
@@ -25,12 +36,7 @@ class SystemSettingsChannel(messenger: BinaryMessenger, private val context: Con
         context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         true
     } catch (_: ActivityNotFoundException) {
-        try {
-            context.startActivity(Intent("com.android.settings.TTS_SETTINGS").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-            true
-        } catch (_: ActivityNotFoundException) {
-            false
-        }
+        false
     }
 
     /** Stops handling calls. */

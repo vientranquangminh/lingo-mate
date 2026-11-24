@@ -1,0 +1,83 @@
+import 'package:equatable/equatable.dart';
+
+import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/selection/engine_selector.dart';
+import '../model/conversation_models.dart';
+
+/// Split-screen conversation: who is talking, the turns so far and the engine in use.
+class ConversationState extends Equatable {
+  const ConversationState({
+    required this.pair,
+    this.listening,
+    this.processing = false,
+    this.speaking = false,
+    this.speakOn = true,
+    this.turns = const [],
+    this.engine,
+    this.blocked = const {},
+    this.switchedTo,
+    this.switchCount = 0,
+    this.paused,
+  });
+
+  final LanguagePair pair;
+  final Speaker? listening;
+  final bool processing;
+  final bool speaking;
+  final bool speakOn;
+  final List<ConversationTurn> turns;
+  final EngineKind? engine;
+  final Map<EngineKind, EngineBlock> blocked;
+  final EngineKind? switchedTo;
+  final int switchCount;
+  final PauseReason? paused;
+
+  /// Returns the language [speaker] speaks.
+  String languageOf(Speaker speaker) => speaker == Speaker.a ? pair.a : pair.b;
+
+  /// The latest turn spoken by [speaker].
+  ConversationTurn? lastBy(Speaker speaker) =>
+      turns.where((t) => t.speaker == speaker).lastOrNull;
+
+  ConversationState copyWith({
+    Speaker? Function()? listening,
+    bool? processing,
+    bool? speaking,
+    bool? speakOn,
+    List<ConversationTurn>? turns,
+    EngineKind? Function()? engine,
+    Map<EngineKind, EngineBlock>? blocked,
+    EngineKind? switchedTo,
+    int? switchCount,
+    PauseReason? Function()? paused,
+  }) {
+    return ConversationState(
+      pair: pair,
+      listening: listening != null ? listening() : this.listening,
+      processing: processing ?? this.processing,
+      speaking: speaking ?? this.speaking,
+      speakOn: speakOn ?? this.speakOn,
+      turns: turns ?? this.turns,
+      engine: engine != null ? engine() : this.engine,
+      blocked: blocked ?? this.blocked,
+      switchedTo: switchedTo ?? this.switchedTo,
+      switchCount: switchCount ?? this.switchCount,
+      paused: paused != null ? paused() : this.paused,
+    );
+  }
+
+  @override
+  List<Object?> get props => [
+    pair,
+    listening,
+    processing,
+    speaking,
+    speakOn,
+    turns,
+    engine,
+    blocked,
+    switchedTo,
+    switchCount,
+    paused,
+  ];
+}
