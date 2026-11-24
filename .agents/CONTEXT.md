@@ -20,7 +20,7 @@ The application follows a **Feature-First Architecture** combined with separated
 - **Networking**: Uses **Dio** and **Retrofit** for API calls. API responses are wrapped in a generic `Result` (`Success`/`Failed`).
 - **Data Models**: Employs `Equatable` for models and states.
 - **UI**: Flutter 3.50 with Material and Cupertino from the `material_ui` and `cupertino_ui` packages. Screens use the shared `AppPlatform*` widgets in `lib/common/widgets`, which pick the Material or the Cupertino widget from `context.isCupertino`.
-- **Styling**: Colours come from `assets/color/values/colors.xml` (generated into `ColorName`, also an Android resource) and the `ColorScheme` in `AppTheme`; text styles from `PlatFormThemeDataExtension`; shared sizes from `AppParams`; sizes are scaled with `flutter_screenutil`.
+- **Styling**: Colours come from `assets/color/values/colors.xml` (generated into `ColorName`, also an Android resource; holds the doc 08 §2.1 tokens) and the light/dark `ColorScheme` in `AppTheme` (paper = `surface`, surface = `surfaceContainerLowest`, surfaceAlt = `surfaceContainerHigh`, ink = `onSurface`, inkMuted = `onSurfaceVariant`, line = `outlineVariant`, brand = `primary`, brandSoft = `primaryContainer`, partner half = `inverseSurface`/`onInverseSurface`, danger = `error`); roles with no Material slot (engine chips, success, warning, listening, billing banner) come from `context.appColors` (`AppColors` theme extension); text styles from `PlatFormThemeDataExtension`; shared sizes from `AppParams`; sizes are scaled with `flutter_screenutil`.
 
 ## Project Structure
 
