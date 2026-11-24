@@ -121,5 +121,15 @@
   "engineBlockStandardQuota": "Đã đạt giới hạn dịch qua mạng",
   "engineBlockStandardFailing": "Đang gặp sự cố, sẽ thử lại sau",
   "engineBlockPacksMissing": "Cần tải gói ngoại tuyến trước",
-  "devtoolsOpenConversation": "Mở Hội thoại (vi ⇄ en)"
+  "devtoolsOpenConversation": "Mở Hội thoại (vi ⇄ en)",
+  "conversationAutoDetect": "Tự nhận diện",
+  "conversationAutoOn": "Đang tự nhận diện: app nghe cả hai người và tự biết ai vừa nói.",
+  "bubbleReplay": "Nghe lại",
+  "bubbleCopy": "Sao chép",
+  "bubbleShowLarge": "Hiện chữ to",
+  "bubbleCopied": "Đã sao chép",
+  "bubbleActions": "Thao tác với câu này",
+  "showModeTitle": "Chế độ hiển thị",
+  "showModeRotate": "Xoay chữ",
+  "showModeClose": "Đóng"
 }

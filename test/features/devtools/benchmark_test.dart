@@ -51,6 +51,12 @@ class _FakeAsr implements SpeechRecognizerEngine {
     calls++;
     return AsrResult(text: 'utterance $calls, "quoted"', lang: hintLang ?? '');
   }
+
+  @override
+  Future<String?> detectLanguage(
+    AudioSegment segment, {
+    required List<String> candidates,
+  }) async => null;
 }
 
 /// Translator that echoes the text after advancing the fake clock.

@@ -17,7 +17,7 @@ class SherpaWhisperEngine implements SpeechRecognizerEngine {
 
   Isolate? _isolate;
   SendPort? _toWorker;
-  final _pending = <int, Completer<String>>{};
+  final _pending = <int, Completer<(String, String)>>{};
   int _nextId = 0;
   Future<void>? _starting;
 
@@ -30,11 +30,27 @@ class SherpaWhisperEngine implements SpeechRecognizerEngine {
   @override
   Future<AsrResult> transcribe(AudioSegment segment, {String? hintLang}) async {
     await ensureReady(hintLang ?? '');
+    final (text, detected) = await _decode(segment, hintLang ?? '');
+    return AsrResult(text: text, lang: hintLang ?? detected);
+  }
+
+  @override
+  Future<String?> detectLanguage(
+    AudioSegment segment, {
+    required List<String> candidates,
+  }) async {
+    await ensureReady('');
+    final (_, detected) = await _decode(segment, '');
+    return candidates.contains(detected) ? detected : null;
+  }
+
+  /// Sends [segment] to the worker; an empty [lang] lets Whisper detect it. Returns the text and the detected language.
+  Future<(String, String)> _decode(AudioSegment segment, String lang) {
     final id = _nextId++;
-    final completer = Completer<String>();
+    final completer = Completer<(String, String)>();
     _pending[id] = completer;
-    _toWorker!.send([id, hintLang ?? '', pcm16ToFloat(segment.samples)]);
-    return AsrResult(text: await completer.future, lang: hintLang ?? '');
+    _toWorker!.send([id, lang, pcm16ToFloat(segment.samples)]);
+    return completer.future;
   }
 
   /// Stops the worker isolate and frees the models.
@@ -58,10 +74,11 @@ class SherpaWhisperEngine implements SpeechRecognizerEngine {
         ready.complete(message);
         return;
       }
-      final [id as int, ok as bool, value as String] = message as List<Object?>;
+      final [id as int, ok as bool, value as String, lang as String] =
+          message as List<Object?>;
       final completer = _pending.remove(id);
       if (ok) {
-        completer?.complete(value);
+        completer?.complete((value, lang));
       } else {
         completer?.completeError(StateError(value));
       }
@@ -75,6 +92,10 @@ class SherpaWhisperEngine implements SpeechRecognizerEngine {
     ]);
     _toWorker = await ready.future;
   }
+
+  /// Reduces Whisper's language tag (`<|vi|>`, `vi`) to the BCP-47 base code.
+  static String _shortLang(String tag) =>
+      tag.replaceAll(RegExp('[<|>]'), '').trim().toLowerCase();
 
   /// Worker isolate: keeps one recognizer per language and decodes segments in order.
   static void _worker(List<Object?> args) {
@@ -117,11 +138,11 @@ class SherpaWhisperEngine implements SpeechRecognizerEngine {
             sampleRate: AudioFormat.sampleRate,
           );
         recognizer.decode(stream);
-        final text = recognizer.getResult(stream).text.trim();
+        final result = recognizer.getResult(stream);
         stream.free();
-        reply.send([id, true, text]);
+        reply.send([id, true, result.text.trim(), _shortLang(result.lang)]);
       } catch (e) {
-        reply.send([id, false, '$e']);
+        reply.send([id, false, '$e', '']);
       }
     });
   }

@@ -8,6 +8,7 @@ import '../core/engines/selection/engine_selector.dart';
 import '../features/conversation/presentation/view/conversation_page.dart';
 import '../features/devtools/presentation/view/devtools_page.dart';
 import '../features/language_packs/presentation/view/language_packs_page.dart';
+import '../features/show_mode/presentation/view/show_mode_page.dart';
 import 'route_const.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(
@@ -41,6 +42,22 @@ final goRouterProvider = Provider((ref) {
           return CupertinoPage(
             child: ConversationPage(
               pair: LanguagePair(query['a'] ?? 'vi', query['b'] ?? 'en'),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        name: AppRouteName.showMode,
+        path: AppRoutePath.showMode,
+        pageBuilder: (context, state) {
+          final extra = state.extra is Map<String, String?>
+              ? state.extra! as Map<String, String?>
+              : const <String, String?>{};
+          return CupertinoPage(
+            fullscreenDialog: true,
+            child: ShowModePage(
+              text: extra['text'] ?? '',
+              original: extra['original'],
             ),
           );
         },

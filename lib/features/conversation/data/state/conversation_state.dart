@@ -9,6 +9,7 @@ class ConversationState extends Equatable {
   const ConversationState({
     required this.pair,
     this.listening,
+    this.auto = false,
     this.processing = false,
     this.speaking = false,
     this.speakOn = true,
@@ -22,6 +23,7 @@ class ConversationState extends Equatable {
 
   final LanguagePair pair;
   final Speaker? listening;
+  final bool auto;
   final bool processing;
   final bool speaking;
   final bool speakOn;
@@ -41,6 +43,7 @@ class ConversationState extends Equatable {
 
   ConversationState copyWith({
     Speaker? Function()? listening,
+    bool? auto,
     bool? processing,
     bool? speaking,
     bool? speakOn,
@@ -54,6 +57,7 @@ class ConversationState extends Equatable {
     return ConversationState(
       pair: pair,
       listening: listening != null ? listening() : this.listening,
+      auto: auto ?? this.auto,
       processing: processing ?? this.processing,
       speaking: speaking ?? this.speaking,
       speakOn: speakOn ?? this.speakOn,
@@ -70,6 +74,7 @@ class ConversationState extends Equatable {
   List<Object?> get props => [
     pair,
     listening,
+    auto,
     processing,
     speaking,
     speakOn,
