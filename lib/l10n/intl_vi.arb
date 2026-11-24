@@ -39,5 +39,10 @@
   "devtoolsOfflineModelsDownload": "Tải model ngoại tuyến (vi, en)",
   "devtoolsOfflineModelsDownloading": "Đang tải model ML Kit…",
   "devtoolsOfflineModelsReady": "Model ML Kit cho vi và en đã sẵn sàng.",
-  "devtoolsOfflineModelsFailed": "Tải model ML Kit thất bại."
+  "devtoolsOfflineModelsFailed": "Tải model ML Kit thất bại.",
+  "devtoolsLiveSection": "Dịch trực tiếp",
+  "devtoolsLiveTwoWay": "Hai chiều (vi ↔ en, hai phiên)",
+  "devtoolsLiveStart": "Bắt đầu thử Live",
+  "devtoolsLiveStop": "Dừng thử Live",
+  "devtoolsLiveLag": "Độ trễ trung vị {lagMs} ms qua {turns} lượt"
 }

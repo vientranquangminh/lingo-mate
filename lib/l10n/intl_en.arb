@@ -110,5 +110,20 @@
   "devtoolsOfflineModelsDownload": "Download offline models (vi, en)",
   "devtoolsOfflineModelsDownloading": "Downloading ML Kit models…",
   "devtoolsOfflineModelsReady": "ML Kit models for vi and en are ready.",
-  "devtoolsOfflineModelsFailed": "ML Kit model download failed."
+  "devtoolsOfflineModelsFailed": "ML Kit model download failed.",
+  "devtoolsLiveSection": "Live Translate",
+  "devtoolsLiveTwoWay": "Two-way (vi ↔ en, two sessions)",
+  "devtoolsLiveStart": "Start Live test",
+  "devtoolsLiveStop": "Stop Live test",
+  "devtoolsLiveLag": "Median lag {lagMs} ms over {turns} turns",
+  "@devtoolsLiveLag": {
+    "placeholders": {
+      "lagMs": {
+        "type": "int"
+      },
+      "turns": {
+        "type": "int"
+      }
+    }
+  }
 }

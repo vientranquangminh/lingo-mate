@@ -59,7 +59,20 @@ English.
 - Offline needs the ML Kit models: Devtools → Benchmark → Download offline models (vi, en).
   Further languages download the same way once the language packs screen exists (T-1.3).
 
-## 5. Run and collect
+## 5. Live Translate test (T-0.5)
+
+Devtools → Live Translate streams the mic to Gemini Live Translate with the dev
+`GEMINI_API_KEY` from `.env.dev` and plays the translation. One-way translates into
+English; "Two-way" opens a Vietnamese and an English session on the same mic (OQ-4).
+The screen shows each turn's transcripts and the median lag from the first input
+transcript to the first translated audio (doc 07 §5 target: ≤ 3 s). The mic is muted while
+the translation plays; use earphones to test without that gap.
+
+The setup message follows doc 04 §4. If the session closes right after starting, the
+field placement differs from the current Live Translate guide: note the error shown and
+report it.
+
+## 6. Run and collect
 
 Devtools → Benchmark → Reload clips → Run benchmark. When it finishes, the screen shows the
 CSV path. Pull it with:
