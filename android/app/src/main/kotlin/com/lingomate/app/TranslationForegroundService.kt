@@ -64,7 +64,7 @@ class TranslationForegroundService : Service() {
             flags,
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_stat_lingomate)
             .setContentTitle(getString(R.string.notification_translating_meeting))
             .setOngoing(true)
             .setContentIntent(open)

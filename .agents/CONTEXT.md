@@ -77,6 +77,10 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - **Audio**: audio stays in memory (`AudioRingBuffer`), never on disk; ASR engines take segments as in-memory floats. `VoiceActivityDetector` is an interface: `SileroVoiceActivityDetector` (sherpa-onnx) when `silero_vad.onnx` is in `models/`, `EnergyVoiceActivityDetector` otherwise (`vadFactoryProvider`). Segment rules (600 ms silence, 400 ms min speech, 15 s max cut at a ≥ 250 ms pause) live in `SegmenterConfig`. Call `echoGate.setSpeaking` around TTS/Live playback. `AudioPipeline.addPcm` feeds files for the benchmark runner.
 - **Local database**: Drift `AppDatabase` (`lib/core/database/`), registered as a singleton in `DatabaseModule`. Bump `schemaVersion` and add a migration step for every schema change. Tests open it with `NativeDatabase.memory()`.
 
+## App icons
+- Launcher icons per flavor are generated from `assets/brand/png` with `flutter_launcher_icons-<flavor>.yaml` (`fvm dart run flutter_launcher_icons`) into `android/app/src/<flavor>/res`: production uses Lagoon, dev and staging the Graphite variant. Backgrounds are PNG layers, so no colour value lives outside `colors.xml`; foreground inset is 0 because the art already sits in the 66 dp safe zone.
+- Notification small icon: `@drawable/ic_stat_lingomate` (`res/drawable-<density>`); never the colour launcher icon.
+
 ## Firebase & Environments
 - Flavors: dev (`com.lingomate.app.dev`), staging (`com.lingomate.app.staging`), production (`com.lingomate.app`).
 - Env files are `KEY=VALUE` files in the root (`.env.dev`, `.env.staging`, `.env`; template `.env.sample`), passed with `--dart-define-from-file` and read in `lib/env.dart`.
