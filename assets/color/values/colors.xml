@@ -4,4 +4,42 @@
     <color name="black">#000000</color>
     <color name="black_a54">#8A000000</color>
     <color name="blue_seljuk">#2F7FEA</color>
+
+    <color name="orange_unbleached">#FAF8F4</color>
+    <color name="blue_midnight_oil">#0F1117</color>
+    <color name="blue_coarse_wool">#181B24</color>
+    <color name="orange_cows_milk">#F1EDE4</color>
+    <color name="blue_moonless_mystery">#222634</color>
+    <color name="blue_kuroi_black">#14161F</color>
+    <color name="orange_bit_of_sugar">#F4F2EC</color>
+    <color name="blue_mysterious_night">#5B6070</color>
+    <color name="blue_jacaranda_light">#A7ABB8</color>
+    <color name="orange_aragonite">#E4DFD3</color>
+    <color name="blue_coal">#2C3141</color>
+
+    <color name="cyan_mermaid_harbour">#0F766E</color>
+    <color name="cyan_exquisite_turquoise">#2DD4BF</color>
+    <color name="cyan_waterslide">#CCF2EC</color>
+    <color name="cyan_botanical_night">#123B38</color>
+    <color name="cyan_stellar_explorer">#04201D</color>
+
+    <color name="blue_inkjet">#475569</color>
+    <color name="blue_ghostly_tuna">#E2E8F0</color>
+    <color name="blue_ephemeral">#CBD5E1</color>
+    <color name="blue_dress_blues">#273142</color>
+
+    <color name="red_madder">#B4232A</color>
+    <color name="red_vanilla_strawberry">#FFE4E5</color>
+    <color name="red_x_marks_the_spot">#E5484D</color>
+    <color name="red_forbidden_fruit">#FF7A7E</color>
+    <color name="red_rustic">#3D1A1C</color>
+
+    <color name="green_warpstone_glow">#15803D</color>
+    <color name="green_shivering">#4ADE80</color>
+    <color name="orange_bloodhound">#B45309</color>
+    <color name="orange_not_yo_cheese">#FBBF24</color>
+    <color name="red_inferno">#B91C1C</color>
+    <color name="red_georgia_peach">#F87171</color>
+    <color name="yellow_silent_ivory">#FEF3C7</color>
+    <color name="orange_beer_glazed_bacon">#78350F</color>
 </resources>

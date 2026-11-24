@@ -65,6 +65,7 @@ flutter:
     - assets/
     - assets/imgs/
     - assets/svgs/
+    - assets/icons/
 
 flutter_gen:
   integrations:
