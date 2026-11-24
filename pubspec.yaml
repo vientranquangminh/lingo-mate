@@ -45,6 +45,8 @@ dependencies:
   google_mlkit_translation: ^1.0.3
   permission_handler: ^13.0.2
   connectivity_plus: ^7.3.2
+  flutter_tts: ^4.2.5
+  crypto: ^3.0.8
 dev_dependencies:
   flutter_test:
     sdk: flutter

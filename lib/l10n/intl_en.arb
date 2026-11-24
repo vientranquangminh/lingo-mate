@@ -164,5 +164,78 @@
         "type": "String"
       }
     }
+  },
+  "languageEn": "English",
+  "languageVi": "Vietnamese",
+  "languageJa": "Japanese",
+  "languageKo": "Korean",
+  "languageZh": "Chinese",
+  "languageTh": "Thai",
+  "languageId": "Indonesian",
+  "languageEs": "Spanish",
+  "languageFr": "French",
+  "languageDe": "German",
+  "packsTitle": "Offline packs",
+  "packsUsed": "{size} used",
+  "packsWifiOnly": "Download over Wi-Fi only",
+  "packsYourLanguages": "Your languages",
+  "packsOtherLanguages": "Other languages",
+  "packsPivotNote": "Required for offline translation",
+  "packsSizes": "Speech {speech} · Translation {translation}",
+  "packsReady": "Ready",
+  "packsDownload": "Download",
+  "packsRetry": "Retry",
+  "packsDownloading": "Downloading {percent}%",
+  "packsWaitingWifi": "Waiting for Wi-Fi",
+  "packsNotOffline": "No offline pack yet — needs internet (Live)",
+  "packsSpeechNotConfigured": "Speech model not set up yet",
+  "packsVoiceMissing": "No voice installed for speaking aloud",
+  "packsInstallVoice": "Install voice",
+  "packsDeleteTitle": "Delete {language} pack?",
+  "packsDeleteBody": "Offline translation for {language} stops working until you download it again.",
+  "packsDelete": "Delete",
+  "commonCancel": "Cancel",
+  "packsMobileDataTitle": "You're on mobile data",
+  "packsMobileDataBody": "Offline packs can be large. Download now over mobile data, or wait for Wi-Fi?",
+  "packsUseMobileData": "Use mobile data once",
+  "packsWaitWifi": "Wait for Wi-Fi",
+  "devtoolsOpenPacks": "Open offline packs",
+  "@packsUsed": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "@packsSizes": {
+    "placeholders": {
+      "speech": {
+        "type": "String"
+      },
+      "translation": {
+        "type": "String"
+      }
+    }
+  },
+  "@packsDownloading": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "@packsDeleteTitle": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "@packsDeleteBody": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
   }
 }

@@ -2,6 +2,7 @@ package com.lingomate.app
 
 import com.lingomate.app.channels.BackgroundChannel
 import com.lingomate.app.channels.PcmPlayerChannel
+import com.lingomate.app.channels.SystemSettingsChannel
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 
@@ -9,12 +10,14 @@ import io.flutter.embedding.engine.FlutterEngine
 class MainActivity : FlutterActivity() {
     private var pcmPlayer: PcmPlayerChannel? = null
     private var background: BackgroundChannel? = null
+    private var systemSettings: SystemSettingsChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         pcmPlayer = PcmPlayerChannel(messenger)
         background = BackgroundChannel(messenger, applicationContext)
+        systemSettings = SystemSettingsChannel(messenger, applicationContext)
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
@@ -22,6 +25,8 @@ class MainActivity : FlutterActivity() {
         pcmPlayer = null
         background?.dispose()
         background = null
+        systemSettings?.dispose()
+        systemSettings = null
         super.cleanUpFlutterEngine(flutterEngine)
     }
 }

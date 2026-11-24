@@ -10,6 +10,7 @@ class AppParams {
   static const engineIcon = 16.0;
   static const pulseDuration = Duration(milliseconds: 1000);
   static const radius24 = 24.0;
+  static const radiusCard = 16.0;
 
   static const buttonHeight = 48.0;
 

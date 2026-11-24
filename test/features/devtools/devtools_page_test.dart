@@ -108,6 +108,7 @@ void main() {
     expect(find.text('Devtools'), findsOneWidget);
     expect(find.text('Engine'), findsOneWidget);
     expect(find.text('Audio input'), findsOneWidget);
+    expect(find.text('Open offline packs'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Remote Config'), 200);
     expect(find.text('Benchmark'), findsOneWidget);
     expect(find.text('0 clips · 0 pipelines'), findsOneWidget);
@@ -137,6 +138,8 @@ void main() {
   testWidgets('mic test shows segments heard from the mic', (tester) async {
     final container = await pumpPage(tester);
 
+    await tester.ensureVisible(find.text('Start mic test'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Start mic test'));
     await settle(tester);
     expect(find.text('Stop mic test'), findsOneWidget);
@@ -155,19 +158,22 @@ void main() {
   testWidgets('raw mic switch opens the meeting source', (tester) async {
     await pumpPage(tester);
 
+    await tester.ensureVisible(find.text('Start mic test'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Start mic test'));
     await settle(tester);
     expect(capture.lastConfig?.source, CaptureSource.voiceRecognition);
 
-    await tester.tap(
-      find.descendant(
-        of: find.ancestor(
-          of: find.text('Raw mic (meeting source)'),
-          matching: find.byType(Row),
-        ),
-        matching: find.byType(Switch),
+    final rawMic = find.descendant(
+      of: find.ancestor(
+        of: find.text('Raw mic (meeting source)'),
+        matching: find.byType(Row),
       ),
+      matching: find.byType(Switch),
     );
+    await tester.ensureVisible(rawMic);
+    await tester.pumpAndSettle();
+    await tester.tap(rawMic);
     await settle(tester);
 
     expect(capture.lastConfig?.source, CaptureSource.mic);
@@ -181,6 +187,8 @@ void main() {
     capture = _FakeCapture(permitted: false);
     await pumpPage(tester);
 
+    await tester.ensureVisible(find.text('Start mic test'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Start mic test'));
     await settle(tester);
 
