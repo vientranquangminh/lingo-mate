@@ -8,14 +8,17 @@ import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_language_button.dart';
+import '../../../../common/widgets/app_license_page.dart';
 import '../../../../common/widgets/app_platform_app_bar.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../common/widgets/settings_row.dart';
+import '../../../../core/settings/app_preferences.dart';
 import '../../../../core/settings/user_settings.dart';
 import '../../../../env.dart';
 import '../../../../navigation/route_const.dart';
+import '../widget/setting_labels.dart';
 
-/// Me tab S-17 (P1 part): app language, offline packs, setup again; the rest of Settings joins with T-1.11.
+/// Me tab S-17 (P1 part): app language, languages, offline packs, translation & voice, privacy & data, licenses, setup again (F-10).
 class MePage extends ConsumerWidget {
   const MePage({super.key});
 
@@ -26,6 +29,7 @@ class MePage extends ConsumerWidget {
     final settings = ref.watch(userSettingsProvider);
     final locale = settings.appLocale;
     final mine = settings.myLanguage;
+    final engine = ref.watch(appPreferencesProvider.select((p) => p.engine));
     return AppPlatformScaffold(
       appBar: AppPlatformAppBar(title: Text(l10n.meTitle)),
       body: ListView(
@@ -68,6 +72,26 @@ class MePage extends ConsumerWidget {
             icon: AppIcons.download,
             label: l10n.meOfflinePacks,
             onTap: () => context.pushNamed(AppRouteName.languagePacks),
+          ),
+          SettingsRow(
+            icon: AppIcons.speaker,
+            label: l10n.meTranslationVoice,
+            value: SettingLabels.engine(l10n, engine),
+            onTap: () => context.pushNamed(AppRouteName.translationVoice),
+          ),
+          SettingsRow(
+            icon: AppIcons.privacy,
+            label: l10n.mePrivacy,
+            onTap: () => context.pushNamed(AppRouteName.privacy),
+          ),
+          SettingsRow(
+            icon: AppIcons.info,
+            label: l10n.meLicenses,
+            onTap: () => showAppLicensePage(
+              context,
+              appName: l10n.appName,
+              legalese: l10n.aboutLegalese,
+            ),
           ),
           SettingsRow(
             icon: AppIcons.replay,

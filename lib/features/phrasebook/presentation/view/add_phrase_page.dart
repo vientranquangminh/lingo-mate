@@ -83,6 +83,7 @@ class _AddPhrasePageState extends ConsumerState<AddPhrasePage> {
     final result = await saveToPhrasebook(
       context,
       ref,
+      source: 'manual',
       sourceLang: _pair.a,
       sourceText: _source.text,
       targetLang: _pair.b,

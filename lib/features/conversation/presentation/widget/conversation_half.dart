@@ -1,6 +1,7 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../common/widgets/caption_scale.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/mic_button.dart';
@@ -83,11 +84,13 @@ class ConversationHalf extends StatelessWidget {
                           incoming == null || onLongPressIncoming == null
                           ? null
                           : () => onLongPressIncoming!(incoming!),
-                      child: _Incoming(
-                        turn: incoming,
-                        strings: strings,
-                        foreground: foreground,
-                        mutedForeground: mutedForeground,
+                      child: CaptionScale(
+                        child: _Incoming(
+                          turn: incoming,
+                          strings: strings,
+                          foreground: foreground,
+                          mutedForeground: mutedForeground,
+                        ),
                       ),
                     ),
                   ],

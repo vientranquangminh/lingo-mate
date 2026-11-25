@@ -9,11 +9,13 @@ import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/core/platform/system_settings.dart';
 import 'package:lingo_mate/core/sessions/session_repository.dart';
+import 'package:lingo_mate/core/settings/user_settings.dart';
 import 'package:lingo_mate/features/history/presentation/view/history_page.dart';
 import 'package:lingo_mate/features/history/presentation/view/transcript_page.dart';
 import 'package:lingo_mate/generated/l10n.dart';
 import 'package:lingo_mate/navigation/route_const.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Records what the share sheet was asked to show.
 class _FakeSystemSettings implements SystemSettings {
@@ -30,14 +32,20 @@ class _FakeSystemSettings implements SystemSettings {
     shared = text;
     return true;
   }
+
+  @override
+  Future<bool> keepScreenOn(bool on) async => true;
 }
 
 void main() {
   late AppDatabase db;
   late SessionRepository repo;
   late _FakeSystemSettings system;
+  late SharedPreferences prefs;
 
-  setUp(() {
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    prefs = await SharedPreferences.getInstance();
     db = AppDatabase(NativeDatabase.memory());
     repo = SessionRepository(db);
     system = _FakeSystemSettings();
@@ -116,6 +124,7 @@ void main() {
         overrides: [
           appDatabaseProvider.overrideWithValue(db),
           systemSettingsProvider.overrideWithValue(system),
+          sharedPreferencesProvider.overrideWithValue(prefs),
         ],
         child: MaterialApp.router(
           routerConfig: router,

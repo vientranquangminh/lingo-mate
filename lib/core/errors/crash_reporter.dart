@@ -29,6 +29,11 @@ class CrashReporter {
     };
   }
 
+  /// Turns crash collection on or off; debug builds never send.
+  Future<void> setEnabled(bool enabled) async {
+    await _crashlytics?.setCrashlyticsCollectionEnabled(enabled && !kDebugMode);
+  }
+
   /// Records a handled error.
   Future<void> recordNonFatal(
     Object error,

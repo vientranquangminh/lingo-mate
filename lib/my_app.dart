@@ -9,6 +9,7 @@ import 'package:overlay_support/overlay_support.dart';
 
 import 'common/resources/app_config.dart';
 import 'common/resources/app_theme.dart';
+import 'core/analytics/analytics_service.dart';
 import 'core/settings/user_settings.dart';
 import 'env.dart';
 import 'features/devtools/presentation/widget/latency_hud.dart';
@@ -21,6 +22,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
+    ref.watch(privacyConsentProvider);
     final appLocale = ref.watch(
       userSettingsProvider.select((s) => s.appLocale),
     );

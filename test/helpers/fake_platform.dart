@@ -46,4 +46,12 @@ class FakeSystemSettings implements SystemSettings {
     shared = text;
     return true;
   }
+
+  bool screenOn = false;
+
+  @override
+  Future<bool> keepScreenOn(bool on) async {
+    screenOn = on;
+    return true;
+  }
 }

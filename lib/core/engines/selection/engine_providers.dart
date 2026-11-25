@@ -7,6 +7,7 @@ import '../../../flavor_config.dart';
 import '../../config/remote_config_service.dart';
 import '../../di/di.dart';
 import '../../errors/crash_reporter.dart';
+import '../../settings/app_preferences.dart';
 import '../engines.dart';
 import '../translate/mlkit_text_translator.dart';
 import 'capability_matrix.dart';
@@ -116,10 +117,15 @@ final engineSelectionProvider =
           mode: request.mode,
           pair: request.pair,
           matrix: await ref.watch(capabilityMatrixProvider.future),
+          engineOrder: ref.watch(
+            appPreferencesProvider.select((p) => p.engine.order),
+          ),
           pinned: ref.watch(enginePinProvider),
           online: await ref.watch(onlineProvider.future),
           cloudBlockedForRegion: regionBlock.isBlocked(now),
-          liveEnabled: ref.watch(liveAvailableProvider),
+          liveEnabled:
+              ref.watch(liveAvailableProvider) &&
+              ref.watch(appPreferencesProvider.select((p) => p.allowLive)),
           standardFailing: ref.watch(errorBurstProvider).isFailing(now),
           packsInstalled: await ref.watch(
             packsInstalledProvider(request.pair).future,

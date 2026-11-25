@@ -133,6 +133,7 @@ class _QuickPhraseRowState extends ConsumerState<QuickPhraseRow> {
                 onPressed: () => saveToPhrasebook(
                   context,
                   ref,
+                  source: 'quick',
                   sourceLang: widget.pair.a,
                   sourceText: _source,
                   targetLang: widget.pair.b,
