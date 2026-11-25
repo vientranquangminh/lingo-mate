@@ -21,6 +21,10 @@ abstract class AppRouteName {
   static const phrasingReview = 'phrasing-review';
   static const glossary = 'glossary';
   static const glossarySet = 'glossary-set';
+  static const signIn = 'sign-in';
+  static const signInEmail = 'sign-in-email';
+  static const emailLink = 'email-link';
+  static const account = 'account';
 }
 
 abstract class AppRoutePath {
@@ -46,4 +50,8 @@ abstract class AppRoutePath {
   static const phrasingReview = 'review';
   static const glossary = 'glossary';
   static const glossarySet = ':id';
+  static const signIn = '/sign-in';
+  static const signInEmail = 'email';
+  static const emailLink = '/email-link';
+  static const account = 'account';
 }

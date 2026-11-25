@@ -98,7 +98,14 @@ void main() {
     expect(find.text('Translation & voice'), findsOneWidget);
     expect(find.text('Auto'), findsOneWidget);
     expect(find.text('Privacy & data'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Open-source licenses'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
     expect(find.text('Open-source licenses'), findsOneWidget);
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -300));
+    await settle(tester);
 
     await tester.tap(find.text('Open-source licenses'));
     await settle(tester);

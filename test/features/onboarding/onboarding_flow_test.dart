@@ -171,6 +171,11 @@ void main() {
 
       await tester.tap(find.text('Me'));
       await settle(tester);
+      await tester.scrollUntilVisible(
+        find.text('Run setup again'),
+        200,
+        scrollable: find.byType(Scrollable).last,
+      );
       await tester.tap(find.text('Run setup again'));
       await settle(tester);
 

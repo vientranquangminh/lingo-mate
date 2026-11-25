@@ -202,6 +202,11 @@ void main() {
 
     await tester.tap(find.text('Me'));
     await settle(tester);
+    await tester.scrollUntilVisible(
+      find.text('Run setup again'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
     expect(find.text('Run setup again'), findsOneWidget);
     expect(find.text('Offline packs'), findsOneWidget);
   });

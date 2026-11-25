@@ -372,6 +372,13 @@ class SessionRepository {
   Future<void> delete(String id) =>
       (_db.delete(_db.sessions)..where((s) => s.id.equals(id))).go();
 
+  /// Total seconds of finished sessions, for the Me stats (AC-13.7).
+  Stream<int> watchTotalSeconds() {
+    final total = _db.sessions.durationSec.sum();
+    final query = _db.selectOnly(_db.sessions)..addColumns([total]);
+    return query.watchSingle().map((row) => row.read(total) ?? 0);
+  }
+
   /// Stores the encoded summary of session [id] (AC-20.1).
   Future<void> saveSummary(String id, String summary) =>
       (_db.update(_db.sessions)..where((s) => s.id.equals(id))).write(

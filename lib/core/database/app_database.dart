@@ -35,6 +35,15 @@ class AppDatabase extends _$AppDatabase {
     }
   });
 
+  /// Deletes the user's rows (sessions, phrases, glossaries, review cards, usage) but keeps what belongs to the device, the downloaded language packs (AC-13.11).
+  Future<void> wipeUserData() => transaction(() async {
+    for (final table in allTables.toList().reversed) {
+      if (table.actualTableName != languagePacks.actualTableName) {
+        await delete(table).go();
+      }
+    }
+  });
+
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {
