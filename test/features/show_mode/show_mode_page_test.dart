@@ -36,4 +36,28 @@ void main() {
 
     expect(tester.widget<RotatedBox>(find.byType(RotatedBox)).quarterTurns, 2);
   });
+
+  testWidgets('greets the reader in the line\'s language (AC-11.8)', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('vi'),
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          ...GlobalMaterialLocalizations.delegates,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        builder: (context, child) {
+          ScreenUtil.init(context, designSize: AppConfiguration.mainAppSize);
+          return child!;
+        },
+        home: const ShowModePage(text: 'Merci beaucoup', lang: 'fr'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Traduit pour vous'), findsOneWidget);
+    expect(find.bySemanticsLabel('Phát'), findsOneWidget);
+  });
 }

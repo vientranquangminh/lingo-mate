@@ -6,7 +6,6 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../common/widgets/keep_screen_on.dart';
 import '../../../../common/extensions/build_context_ext.dart';
-import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/app_action_sheet.dart';
 import '../../../../common/widgets/app_banner.dart';
@@ -25,6 +24,7 @@ import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../../../../core/platform/system_settings.dart';
 import '../../../../generated/l10n.dart';
+import '../../../../l10n/partner_strings.dart';
 import '../../../../navigation/route_const.dart';
 import '../../data/model/conversation_models.dart';
 import '../../data/notifier/conversation_notifier.dart';
@@ -36,15 +36,6 @@ class ConversationPage extends ConsumerWidget {
   const ConversationPage({super.key, required this.pair});
 
   final LanguagePair pair;
-
-  /// Returns the partner-facing strings in [lang], English when the app has none (F-11).
-  static AppLocalizations partnerStrings(String lang) {
-    final locale = Locale(lang);
-    final supported = AppLocalizations.supportedLocales.any(
-      (l) => l.languageCode == lang,
-    );
-    return lookupAppLocalizations(supported ? locale : const Locale('en'));
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -62,7 +53,7 @@ class ConversationPage extends ConsumerWidget {
         );
       }
     });
-    final partner = partnerStrings(pair.b);
+    final partner = PartnerStrings.forLanguage(pair.b);
     return AppPlatformScaffold(
       backgroundColor: scheme.surface,
       body: KeepScreenOn(
@@ -74,7 +65,6 @@ class ConversationPage extends ConsumerWidget {
                   quarterTurns: 2,
                   child: ConversationHalf(
                     strings: partner,
-                    languageName: partner.languageName(pair.b),
                     incoming: state.lastBy(Speaker.a),
                     micState: _micState(state, Speaker.b),
                     onMic: () => _toggleMic(context, ref, Speaker.b),
@@ -93,8 +83,7 @@ class ConversationPage extends ConsumerWidget {
               _Divider(state: state, pair: pair),
               Expanded(
                 child: ConversationHalf(
-                  strings: l10n,
-                  languageName: l10n.languageName(pair.a),
+                  strings: PartnerStrings.fromLocalizations(l10n, pair.a),
                   incoming: state.lastBy(Speaker.b),
                   micState: _micState(state, Speaker.a),
                   onMic: () => _toggleMic(context, ref, Speaker.a),
@@ -206,6 +195,7 @@ class ConversationPage extends ConsumerWidget {
             extra: <String, String?>{
               'text': shown,
               'original': translation == null ? null : turn.original,
+              'lang': translation == null ? turn.from : turn.to,
             },
           ),
         ),

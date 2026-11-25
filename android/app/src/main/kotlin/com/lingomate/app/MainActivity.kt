@@ -1,6 +1,7 @@
 package com.lingomate.app
 
 import android.view.WindowManager
+import com.lingomate.app.channels.AppLocaleChannel
 import com.lingomate.app.channels.BackgroundChannel
 import com.lingomate.app.channels.PcmPlayerChannel
 import com.lingomate.app.channels.SystemSettingsChannel
@@ -12,11 +13,13 @@ class MainActivity : FlutterActivity() {
     private var pcmPlayer: PcmPlayerChannel? = null
     private var background: BackgroundChannel? = null
     private var systemSettings: SystemSettingsChannel? = null
+    private var appLocale: AppLocaleChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         pcmPlayer = PcmPlayerChannel(messenger)
+        appLocale = AppLocaleChannel(messenger, applicationContext)
         background = BackgroundChannel(messenger, applicationContext)
         systemSettings = SystemSettingsChannel(messenger, applicationContext) { on ->
             runOnUiThread {
@@ -36,6 +39,8 @@ class MainActivity : FlutterActivity() {
         background = null
         systemSettings?.dispose()
         systemSettings = null
+        appLocale?.dispose()
+        appLocale = null
         super.cleanUpFlutterEngine(flutterEngine)
     }
 }

@@ -8,8 +8,9 @@ import '../../../../common/widgets/app_circle_icon_button.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../core/engines/engine_instances.dart';
+import '../../../../l10n/partner_strings.dart';
 
-/// Show mode S-15: one line in large text for the other person to read, turnable 180°, with speak when [lang] is given (AC-09.4).
+/// Show mode S-15: one line in large text for the other person to read, turnable 180°, with speak and a hint in [lang] when given (AC-09.4, AC-11.8).
 class ShowModePage extends ConsumerStatefulWidget {
   const ShowModePage({
     super.key,
@@ -36,6 +37,10 @@ class _ShowModePageState extends ConsumerState<ShowModePage> {
     final l10n = context.localization;
     final scheme = Theme.of(context).colorScheme;
     final original = widget.original;
+    final lang = widget.lang;
+    final partnerHint = lang == null
+        ? null
+        : PartnerStrings.forLanguage(lang).showHint;
     return AppPlatformScaffold(
       backgroundColor: scheme.inverseSurface,
       body: SafeArea(
@@ -53,7 +58,7 @@ class _ShowModePageState extends ConsumerState<ShowModePage> {
                     onPressed: () => Navigator.of(context).maybePop(),
                   ),
                   const Spacer(),
-                  if (widget.lang != null) ...[
+                  if (lang != null) ...[
                     AppCircleIconButton(
                       icon: AppIcons.speaker,
                       semanticLabel: l10n.showModeSpeak,
@@ -61,7 +66,7 @@ class _ShowModePageState extends ConsumerState<ShowModePage> {
                       borderColor: scheme.onInverseSurface,
                       onPressed: () => ref
                           .read(speechSynthesizerProvider)
-                          .speak(widget.text, lang: widget.lang!),
+                          .speak(widget.text, lang: lang),
                     ),
                     SizedBox(width: AppParams.spacing8.w),
                   ],
@@ -100,6 +105,17 @@ class _ShowModePageState extends ConsumerState<ShowModePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        if (partnerHint != null) ...[
+                          Text(
+                            partnerHint,
+                            style: context.textTheme.labelLarge?.copyWith(
+                              color: scheme.onInverseSurface.withValues(
+                                alpha: 0.72,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: AppParams.spacing12.h),
+                        ],
                         Text(
                           widget.text,
                           style: context.textTheme.displaySmall?.copyWith(

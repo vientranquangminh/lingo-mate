@@ -308,13 +308,14 @@ class _Line extends ConsumerWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: 52.w,
+            ConstrainedBox(
+              constraints: BoxConstraints(minWidth: 44.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     time,
+                    softWrap: false,
                     style: context.textTheme.labelMedium?.copyWith(
                       color: scheme.onSurfaceVariant,
                     ),
@@ -331,6 +332,7 @@ class _Line extends ConsumerWidget {
                 ],
               ),
             ),
+            SizedBox(width: AppParams.spacing8.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

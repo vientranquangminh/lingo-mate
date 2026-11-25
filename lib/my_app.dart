@@ -10,47 +10,15 @@ import 'package:overlay_support/overlay_support.dart';
 import 'common/resources/app_config.dart';
 import 'common/resources/app_theme.dart';
 import 'core/analytics/analytics_service.dart';
+import 'core/settings/app_locale_sync.dart';
 import 'core/settings/user_settings.dart';
 import 'env.dart';
 import 'features/devtools/presentation/widget/latency_hud.dart';
 import 'generated/l10n.dart';
 import 'navigation/app_routes.dart';
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(goRouterProvider);
-    ref.watch(privacyConsentProvider);
-    final appLocale = ref.watch(
-      userSettingsProvider.select((s) => s.appLocale),
-    );
-    final locale = appLocale == null ? null : Locale(appLocale);
-    return OverlaySupport.global(
-      child: _isCupertinoPlatform
-          ? CupertinoApp.router(
-              localizationsDelegates: _localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: locale,
-              localeListResolutionCallback: resolveLocale,
-              debugShowCheckedModeBanner: false,
-              builder: (context, child) =>
-                  _buildRoot(context, child, cupertino: true),
-              routerConfig: router,
-            )
-          : MaterialApp.router(
-              localizationsDelegates: _localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              locale: locale,
-              localeListResolutionCallback: resolveLocale,
-              debugShowCheckedModeBanner: false,
-              builder: (context, child) =>
-                  _buildRoot(context, child, cupertino: false),
-              routerConfig: router,
-            ),
-    );
-  }
 
   /// Uses the first phone language the app supports, else English (AC-11.3).
   static Locale resolveLocale(
@@ -65,6 +33,60 @@ class MyApp extends ConsumerWidget {
       }
     }
     return const Locale('en');
+  }
+
+  @override
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  late final AppLifecycleListener _lifecycle;
+
+  @override
+  void initState() {
+    super.initState();
+    final sync = ref.read(appLocaleSyncProvider)..start();
+    _lifecycle = AppLifecycleListener(onResume: sync.pull);
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    ref.watch(appLocaleSyncProvider);
+    final router = ref.watch(goRouterProvider);
+    ref.watch(privacyConsentProvider);
+    final appLocale = ref.watch(
+      userSettingsProvider.select((s) => s.appLocale),
+    );
+    final locale = appLocale == null ? null : Locale(appLocale);
+    return OverlaySupport.global(
+      child: _isCupertinoPlatform
+          ? CupertinoApp.router(
+              localizationsDelegates: _localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: locale,
+              localeListResolutionCallback: MyApp.resolveLocale,
+              debugShowCheckedModeBanner: false,
+              builder: (context, child) =>
+                  _buildRoot(context, child, cupertino: true),
+              routerConfig: router,
+            )
+          : MaterialApp.router(
+              localizationsDelegates: _localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              locale: locale,
+              localeListResolutionCallback: MyApp.resolveLocale,
+              debugShowCheckedModeBanner: false,
+              builder: (context, child) =>
+                  _buildRoot(context, child, cupertino: false),
+              routerConfig: router,
+            ),
+    );
   }
 
   static const _localizationsDelegates = [

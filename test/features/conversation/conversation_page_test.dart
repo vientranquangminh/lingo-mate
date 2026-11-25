@@ -30,6 +30,7 @@ void main() {
     WidgetTester tester, {
     Locale locale = const Locale('en'),
     double textScale = 1,
+    LanguagePair pagePair = pair,
   }) async {
     tester.view
       ..physicalSize = const Size(1080, 2340)
@@ -55,7 +56,7 @@ void main() {
               child: child!,
             );
           },
-          home: const ConversationPage(pair: pair),
+          home: ConversationPage(pair: pagePair),
         ),
       ),
     );
@@ -89,6 +90,24 @@ void main() {
     expect(find.text('TIẾNG VIỆT'), findsOneWidget);
     expect(find.text('Chạm để nói'), findsOneWidget);
     expect(find.text('Tiêu chuẩn'), findsOneWidget);
+  });
+
+  testWidgets('partner half speaks a wave-1 partner language (AC-11.8)', (
+    tester,
+  ) async {
+    await pumpPage(tester, pagePair: const LanguagePair('vi', 'ja'));
+
+    final rotated = find.byType(RotatedBox);
+    expect(
+      find.descendant(of: rotated, matching: find.text('日本語')),
+      findsOneWidget,
+    );
+    expect(
+      find.descendant(of: rotated, matching: find.text('タップして話す')),
+      findsOneWidget,
+    );
+    expect(find.bySemanticsLabel('日本語のマイク'), findsOneWidget);
+    expect(find.text('VIETNAMESE'), findsOneWidget);
   });
 
   testWidgets('shows the translation on the partner half (AC-02.2)', (

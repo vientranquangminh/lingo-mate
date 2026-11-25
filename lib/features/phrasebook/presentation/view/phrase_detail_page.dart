@@ -179,6 +179,7 @@ class PhraseDetailPage extends ConsumerWidget {
                             extra: <String, String?>{
                               'text': item.phrase.targetText,
                               'original': item.phrase.sourceText,
+                              'lang': item.phrase.targetLang,
                             },
                           ),
                           text: l10n.phraseShowLarge,

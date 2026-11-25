@@ -292,6 +292,7 @@
   "showModeTitle": "Show mode",
   "showModeRotate": "Turn the text around",
   "showModeClose": "Close",
+  "showModePartnerHint": "Translated for you",
   "historyTitle": "History",
   "historySearchHint": "Search transcripts",
   "historyEmpty": "No sessions yet. Your conversations are saved here, on this phone only.",
