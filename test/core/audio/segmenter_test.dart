@@ -49,25 +49,25 @@ void main() {
   });
 
   test('cuts a long monologue at the latest pause of at least 250 ms', () {
-    run([(6000, true), (300, false), (4000, true), (260, false)]);
-    run([(5000, true)]);
+    run([(4000, true), (300, false), (3000, true), (260, false)]);
+    run([(1000, true)]);
 
     expect(out, hasLength(1));
     expect(out.single.startMs, 0);
-    expect(out.single.endMs, 10300);
+    expect(out.single.endMs, 7300);
 
     run([(600, false)]);
 
     expect(out, hasLength(2));
-    expect(out[1].startMs, 10420);
-    expect(out[1].endMs, 15560);
+    expect(out[1].startMs, 7420);
+    expect(out[1].endMs, 8560);
   });
 
-  test('hard-cuts at 15 s when no pause is long enough', () {
-    run([(7000, true), (200, false), (9000, true)]);
+  test('hard-cuts at 8 s when no pause is long enough', () {
+    run([(4000, true), (200, false), (5000, true)]);
 
     expect(out, hasLength(1));
-    expect(out.single.durationMs, 15000);
+    expect(out.single.durationMs, 8000);
   });
 
   test('flush emits the segment in progress', () {

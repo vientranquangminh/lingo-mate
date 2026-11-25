@@ -77,6 +77,7 @@ flutter:
     - assets/svgs/
     - assets/icons/
     - assets/quick_phrases/
+    - assets/models/
     - assets/fonts/OFL-BeVietnamPro.txt
   fonts:
     - family: BeVietnamPro

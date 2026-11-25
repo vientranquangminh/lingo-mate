@@ -8,7 +8,7 @@ class SegmenterConfig {
     this.speechThreshold = 0.5,
     this.silenceMs = 500,
     this.minSpeechMs = 400,
-    this.maxUtteranceMs = 15000,
+    this.maxUtteranceMs = 8000,
     this.minPauseForCutMs = 250,
     this.preRollMs = 200,
   });

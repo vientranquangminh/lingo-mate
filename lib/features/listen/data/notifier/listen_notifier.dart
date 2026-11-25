@@ -425,8 +425,15 @@ class ListenNotifier extends Notifier<ListenState> {
         captions: [...state.captions, caption],
         draft: () => null,
       );
-      await _translate(caption);
-      _record(caption.id, endMs - segment.durationMs, endMs);
+      unawaited(
+        _translate(caption)
+            .then((_) {
+              if (ref.mounted) {
+                _record(caption.id, endMs - segment.durationMs, endMs);
+              }
+            })
+            .catchError((Object _) {}),
+      );
     } catch (_) {
       if (ref.mounted) {
         state = state.copyWith(draft: () => null);

@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../ai/generative_model_factory.dart';
@@ -7,6 +8,7 @@ import '../audio/silero_voice_activity_detector.dart';
 import '../audio/voice_activity_detector.dart';
 import '../config/feature_switches.dart';
 import '../di/di.dart';
+import '../../gen/assets.gen.dart';
 import '../glossary/glossary_repository.dart';
 import '../glossary/glossary_translator.dart';
 import '../settings/app_preferences.dart';
@@ -25,10 +27,20 @@ final audioCaptureProvider = Provider<AudioCapture>(
   (ref) => getIt<AudioCapture>(),
 );
 
-/// Speech models found in the app's `models/` folder.
-final asrModelCatalogProvider = FutureProvider<AsrModelCatalog>(
-  (ref) async => (await AsrModelStore.open()).scan(),
-);
+/// Speech models found in the app's `models/` folder, after copying the bundled Silero VAD there.
+final asrModelCatalogProvider = FutureProvider<AsrModelCatalog>((ref) async {
+  final store = await AsrModelStore.open();
+  await store
+      .installFile(sileroVadFile, () async {
+        final data = await rootBundle.load(Assets.models.sileroVad);
+        return data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      })
+      .catchError((Object _) => '');
+  return store.scan();
+});
+
+/// File name of the Silero VAD model bundled with the app and copied next to the speech models.
+const sileroVadFile = 'silero_vad.onnx';
 
 /// Standard engine translator (Gemini through Firebase AI Logic).
 final geminiTranslatorProvider = Provider<TextTranslatorEngine>(
@@ -63,7 +75,13 @@ final vadFactoryProvider = FutureProvider<VoiceActivityDetector Function()>((
   if (silero == null) {
     return EnergyVoiceActivityDetector.new;
   }
-  return () => SileroVoiceActivityDetector(silero);
+  return () {
+    try {
+      return SileroVoiceActivityDetector(silero);
+    } catch (_) {
+      return EnergyVoiceActivityDetector();
+    }
+  };
 });
 
 /// On-device speech recognizer for the modes: the first sherpa-onnx Whisper model, else whisper.cpp; null when no model is installed.

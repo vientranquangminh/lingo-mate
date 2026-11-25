@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
@@ -96,6 +98,29 @@ void main() {
       expect(state.captions.single.original, 'こんにちは');
     },
   );
+
+  test('a slow translation does not hold back the next caption', () async {
+    fakes.recognizer.texts.addAll(['一', '二']);
+    fakes.standard.gate = Completer<void>();
+    final c = await build();
+    await notifier(c).start();
+
+    await speak();
+    await speak();
+
+    var captions = c.read(listenProvider(languages)).captions;
+    expect(captions.map((c) => c.original), ['一', '二']);
+    expect(captions.map((c) => c.status), [
+      CaptionStatus.translating,
+      CaptionStatus.translating,
+    ]);
+
+    fakes.standard.gate!.complete();
+    await pumpEventQueue();
+
+    captions = c.read(listenProvider(languages)).captions;
+    expect(captions.map((c) => c.translation), ['[vi] 一', '[vi] 二']);
+  });
 
   test('a 20 s monologue is cut and captions keep flowing (AC-03.4)', () async {
     fakes.recognizer.texts.addAll(['part one', 'part two']);

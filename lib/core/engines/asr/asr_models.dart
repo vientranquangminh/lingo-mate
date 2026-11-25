@@ -67,6 +67,20 @@ class AsrModelStore {
     return AsrModelStore(dir);
   }
 
+  /// Writes [name] from [load] into the folder unless it is already there; returns its path.
+  Future<String> installFile(
+    String name,
+    Future<Uint8List> Function() load,
+  ) async {
+    final file = File('${directory.path}/$name');
+    if (!await file.exists()) {
+      final temp = File('${file.path}.tmp');
+      await temp.writeAsBytes(await load(), flush: true);
+      await temp.rename(file.path);
+    }
+    return file.path;
+  }
+
   /// Lists `ggml-*.bin` files, `sherpa-onnx-whisper-*` folders and `silero_vad.onnx`.
   Future<AsrModelCatalog> scan() async {
     if (!await directory.exists()) {

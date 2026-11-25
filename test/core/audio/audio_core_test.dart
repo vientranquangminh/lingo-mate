@@ -86,6 +86,43 @@ void main() {
       expect(vad.speechProbability(frameAt(0, amplitude: 50)), 0);
       expect(vad.speechProbability(frameAt(0)), 0);
     });
+
+    test('raises the threshold above steady background noise', () {
+      final vad = EnergyVoiceActivityDetector();
+      const noise = 400;
+      const voice = 6000;
+
+      expect(vad.speechProbability(frameAt(0, amplitude: noise)), 1);
+      for (var t = 0; t < 8000; t += AudioFormat.frameMs) {
+        vad.speechProbability(frameAt(t, amplitude: noise));
+      }
+
+      expect(vad.noiseFloorDbfs, closeTo(-39.7, 0.3));
+      expect(vad.speechProbability(frameAt(8000, amplitude: noise)), 0);
+      expect(vad.speechProbability(frameAt(8020, amplitude: voice)), 1);
+    });
+
+    test('keeps steady loud speech as speech', () {
+      final vad = EnergyVoiceActivityDetector();
+      var speech = 0.0;
+      for (var t = 0; t < 20000; t += AudioFormat.frameMs) {
+        speech = vad.speechProbability(frameAt(t, amplitude: 4000));
+      }
+
+      expect(speech, 1);
+      expect(vad.noiseFloorDbfs, -35);
+    });
+
+    test('reset forgets the noise floor', () {
+      final vad = EnergyVoiceActivityDetector();
+      for (var t = 0; t < 8000; t += AudioFormat.frameMs) {
+        vad.speechProbability(frameAt(t, amplitude: 400));
+      }
+
+      vad.reset();
+
+      expect(vad.noiseFloorDbfs, -55);
+    });
   });
 
   group('LatencyTimeline', () {
