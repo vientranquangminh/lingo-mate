@@ -22,8 +22,8 @@ void main() {
     startMs: clock,
   );
 
-  test('emits a segment after 600 ms of silence, with 200 ms pre-roll', () {
-    run([(300, false), (1000, true), (580, false)]);
+  test('emits a segment after 500 ms of silence, with 200 ms pre-roll', () {
+    run([(300, false), (1000, true), (480, false)]);
     expect(out, isEmpty);
 
     run([(20, false)]);
@@ -34,7 +34,7 @@ void main() {
     expect(out.single.samples.length, 1200 * AudioFormat.samplesPerMs);
   });
 
-  test('keeps pauses shorter than 600 ms inside one segment', () {
+  test('keeps pauses shorter than 500 ms inside one segment', () {
     run([(500, true), (400, false), (500, true), (600, false)]);
 
     expect(out, hasLength(1));
@@ -79,9 +79,27 @@ void main() {
     expect(flushed.single.durationMs, 800);
   });
 
-  test('reports the share of speech frames', () {
-    run([(500, true), (500, false), (500, true), (600, false)]);
+  test('snapshot returns the speech so far without ending the utterance', () {
+    run([(300, false), (900, true)]);
 
-    expect(out.single.speechRatio, closeTo(1000 / 1500, 0.001));
+    final snapshot = segmenter.snapshot();
+
+    expect(segmenter.isActive, isTrue);
+    expect(snapshot?.startMs, 100);
+    expect(snapshot?.endMs, 1200);
+    run([(600, false)]);
+    expect(out.single.endMs, 1200);
+  });
+
+  test('snapshot is null without enough speech', () {
+    run([(200, true)]);
+
+    expect(segmenter.snapshot(), isNull);
+  });
+
+  test('reports the share of speech frames', () {
+    run([(500, true), (400, false), (500, true), (600, false)]);
+
+    expect(out.single.speechRatio, closeTo(1000 / 1400, 0.001));
   });
 }

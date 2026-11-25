@@ -55,7 +55,7 @@ void main() {
   });
 
   test(
-    'a tap, speech and 600 ms of silence give a translated turn (AC-02.2)',
+    'a tap, speech and 500 ms of silence give a translated turn (AC-02.2)',
     () async {
       fakes.recognizer.texts.add('Xin chào');
       final c = await build();
@@ -75,6 +75,25 @@ void main() {
       expect(fakes.tts.spoken, [('[en] Xin chào', 'en')]);
     },
   );
+
+  test('shows the words heard so far while the mic is open', () async {
+    fakes.recognizer
+      ..supportsPartials = true
+      ..texts.addAll(['Xin', 'Xin chào']);
+    final c = await build();
+    await notifier(c).toggleMic(Speaker.a);
+
+    fakes.capture.add(pcm(1200, amplitude: 4000));
+    await pumpEventQueue();
+    expect(c.read(conversationProvider(pair)).draft, 'Xin');
+
+    fakes.capture.add(pcm(700));
+    await pumpEventQueue();
+
+    final state = c.read(conversationProvider(pair));
+    expect(state.draft, isNull);
+    expect(state.lastBy(Speaker.a)?.original, 'Xin chào');
+  });
 
   test('the partner side speaks B and is translated into A', () async {
     fakes.recognizer.texts.add('Hello');

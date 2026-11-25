@@ -927,5 +927,9 @@
   "conversationLiveOn": "Live: speak naturally in either language. Translations play as you talk.",
   "engineLiveHint": "Realtime, translates while people talk",
   "engineStandardHint": "Online, after each sentence",
-  "engineOfflineHint": "On this phone, no internet needed"
+  "engineOfflineHint": "On this phone, no internet needed",
+  "draftHearing": "Hearing…",
+  "@draftHearing": {
+    "description": "Label above the words recognised so far while the person is still speaking."
+  }
 }

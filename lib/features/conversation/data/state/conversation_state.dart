@@ -22,7 +22,10 @@ class ConversationState extends Equatable {
     this.paused,
     this.liveDenial,
     this.liveStops = 0,
+    this.draft,
   });
+
+  final String? draft;
 
   final LanguagePair pair;
   final Speaker? listening;
@@ -63,6 +66,7 @@ class ConversationState extends Equatable {
     PauseReason? Function()? paused,
     LiveDenial? liveDenial,
     int? liveStops,
+    String? Function()? draft,
   }) {
     return ConversationState(
       pair: pair,
@@ -79,6 +83,7 @@ class ConversationState extends Equatable {
       paused: paused != null ? paused() : this.paused,
       liveDenial: liveDenial ?? this.liveDenial,
       liveStops: liveStops ?? this.liveStops,
+      draft: draft != null ? draft() : this.draft,
     );
   }
 
@@ -98,5 +103,6 @@ class ConversationState extends Equatable {
     paused,
     liveDenial,
     liveStops,
+    draft,
   ];
 }

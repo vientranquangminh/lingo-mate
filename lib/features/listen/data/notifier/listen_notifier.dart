@@ -9,6 +9,7 @@ import '../../../../core/audio/audio_pipeline.dart';
 import '../../../../core/audio/echo_gate.dart';
 import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/engines/engine_instances.dart';
+import '../../../../core/engines/asr/partial_transcriber.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/live/live_captioner.dart';
@@ -44,6 +45,9 @@ class ListenNotifier extends Notifier<ListenState> {
   ProviderSubscription<AsyncValue<EngineSelection>>? _selection;
   AudioPipeline? _pipeline;
   StreamSubscription<AudioSegment>? _segments;
+  StreamSubscription<AudioSegment>? _partials;
+  int _pendingSegments = 0;
+  String? _lastFrom;
   Future<void> _queue = Future.value();
   Future<String>? _sessionId;
   Future<void> _writes = Future.value();
@@ -173,9 +177,32 @@ class ListenNotifier extends Notifier<ListenState> {
       return;
     }
     _pipeline = pipeline;
-    _segments = pipeline.segments.listen(
-      (segment) => _queue = _queue.then((_) => _onSegment(recognizer, segment)),
+    final partialAsr = PartialTranscriber(
+      recognizer,
+      onText: (text) => state = state.copyWith(draft: () => text),
+      isIdle: () => ref.mounted && state.listening && _pendingSegments == 0,
     );
+    _segments = pipeline.segments.listen((segment) {
+      partialAsr.finish();
+      _pendingSegments++;
+      _queue = _queue.then((_) async {
+        try {
+          await _onSegment(recognizer, segment);
+        } finally {
+          _pendingSegments--;
+        }
+      });
+    });
+    if (recognizer.supportsPartials) {
+      _partials = pipeline.partials.listen((snapshot) {
+        final from = state.source == listenAutoSource
+            ? _lastFrom
+            : state.source;
+        if (from != null) {
+          unawaited(partialAsr.add(snapshot, from));
+        }
+      });
+    }
     state = state.copyWith(
       started: true,
       listening: true,
@@ -326,9 +353,11 @@ class ListenNotifier extends Notifier<ListenState> {
     _pipeline = null;
     await _segments?.cancel();
     _segments = null;
+    await _partials?.cancel();
+    _partials = null;
     await pipeline?.dispose();
     if (ref.mounted && state.listening) {
-      state = state.copyWith(listening: false);
+      state = state.copyWith(listening: false, draft: () => null);
     }
   }
 
@@ -372,10 +401,15 @@ class ListenNotifier extends Notifier<ListenState> {
     }
     try {
       final from = await _languageOf(recognizer, segment);
+      _lastFrom = from;
       await recognizer.ensureReady(from);
       final result = await recognizer.transcribe(segment, hintLang: from);
       final text = result.text.trim();
-      if (text.isEmpty || !ref.mounted) {
+      if (!ref.mounted) {
+        return;
+      }
+      if (text.isEmpty) {
+        state = state.copyWith(draft: () => null);
         return;
       }
       final endMs = _clock();
@@ -387,11 +421,16 @@ class ListenNotifier extends Notifier<ListenState> {
         original: text,
         atMs: (endMs - segment.durationMs - _sessionStartMs).clamp(0, 1 << 31),
       );
-      state = state.copyWith(captions: [...state.captions, caption]);
+      state = state.copyWith(
+        captions: [...state.captions, caption],
+        draft: () => null,
+      );
       await _translate(caption);
       _record(caption.id, endMs - segment.durationMs, endMs);
     } catch (_) {
-      return;
+      if (ref.mounted) {
+        state = state.copyWith(draft: () => null);
+      }
     }
   }
 
@@ -559,6 +598,7 @@ class ListenNotifier extends Notifier<ListenState> {
     _selection?.close();
     unawaited(_stopLive());
     unawaited(_segments?.cancel());
+    unawaited(_partials?.cancel());
     unawaited(_pipeline?.dispose());
     final session = _sessionId;
     if (session != null) {

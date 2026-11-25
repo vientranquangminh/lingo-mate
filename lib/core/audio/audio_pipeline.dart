@@ -21,6 +21,7 @@ class AudioPipeline {
        ringBuffer = ringBuffer ?? AudioRingBuffer();
 
   static const liveChunkMs = 100;
+  static const partialEveryMs = 1000;
 
   final AudioCapture _capture;
   final VoiceActivityDetector _vad;
@@ -32,12 +33,17 @@ class AudioPipeline {
   final _segments = StreamController<AudioSegment>.broadcast();
   final _liveChunks = StreamController<Uint8List>.broadcast();
   final _levels = StreamController<double>.broadcast();
+  final _partials = StreamController<AudioSegment>.broadcast();
+  int _sincePartialMs = 0;
   final _liveBuffer = BytesBuilder(copy: false);
   StreamSubscription<Uint8List>? _subscription;
   bool _gateWasOpen = true;
 
   /// Speech segments for the Offline and Standard pipelines.
   Stream<AudioSegment> get segments => _segments.stream;
+
+  /// The utterance in progress so far, about once a second while someone speaks.
+  Stream<AudioSegment> get partials => _partials.stream;
 
   /// 100 ms PCM16 chunks for the Live engine, gated like segments.
   Stream<Uint8List> get liveChunks => _liveChunks.stream;
@@ -89,6 +95,7 @@ class AudioPipeline {
     await _segments.close();
     await _liveChunks.close();
     await _levels.close();
+    await _partials.close();
   }
 
   /// Routes one frame through the ring buffer, gate, VAD and segmenter.
@@ -101,6 +108,7 @@ class AudioPipeline {
         _segmenter.reset();
         _vad.reset();
         _liveBuffer.clear();
+        _sincePartialMs = 0;
       }
       _gateWasOpen = false;
       return;
@@ -108,7 +116,25 @@ class AudioPipeline {
     _gateWasOpen = true;
     _addLive(frame);
     final probability = _vad.speechProbability(frame);
-    _segmenter.add(frame, probability).forEach(_segments.add);
+    final finished = _segmenter.add(frame, probability)..forEach(_segments.add);
+    _addPartial(frame, finished.isNotEmpty);
+  }
+
+  /// Emits a snapshot of the utterance in progress every [partialEveryMs].
+  void _addPartial(AudioFrame frame, bool finished) {
+    if (finished || !_segmenter.isActive) {
+      _sincePartialMs = 0;
+      return;
+    }
+    _sincePartialMs += frame.samples.length ~/ AudioFormat.samplesPerMs;
+    if (_sincePartialMs < partialEveryMs || !_partials.hasListener) {
+      return;
+    }
+    _sincePartialMs = 0;
+    final snapshot = _segmenter.snapshot();
+    if (snapshot != null) {
+      _partials.add(snapshot);
+    }
   }
 
   /// Collects frames into 100 ms chunks for the Live engine.

@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/auth/auth_models.dart';
 import '../../../../core/engines/live/live_access.dart';
+import '../../../../common/widgets/draft_line.dart';
 import '../../../../common/widgets/usage_sheet.dart';
 import '../../../../common/widgets/require_sign_in.dart';
 import '../../../../common/extensions/build_context_ext.dart';
@@ -128,6 +129,11 @@ class _ListenPageState extends ConsumerState<ListenPage> {
     ref
       ..listen(provider.select((s) => s.captions.length), (previous, next) {
         if (_follow && next > (previous ?? 0)) {
+          _scrollToLive();
+        }
+      })
+      ..listen(provider.select((s) => s.draft), (_, next) {
+        if (_follow && next != null) {
           _scrollToLive();
         }
       })
@@ -334,7 +340,8 @@ class _Captions extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.localization;
     final scheme = Theme.of(context).colorScheme;
-    if (state.captions.isEmpty) {
+    final draft = state.draft;
+    if (state.captions.isEmpty && draft == null) {
       final hint = !state.started
           ? l10n.listenIdle
           : state.listening
@@ -357,9 +364,15 @@ class _Captions extends StatelessWidget {
       child: ListView.builder(
         controller: controller,
         padding: EdgeInsets.symmetric(vertical: AppParams.spacing8.h),
-        itemCount: state.captions.length + (state.paused ? 1 : 0),
+        itemCount:
+            state.captions.length +
+            (draft != null ? 1 : 0) +
+            (state.paused ? 1 : 0),
         itemBuilder: (context, index) {
-          if (index == state.captions.length) {
+          if (index == state.captions.length && draft != null) {
+            return DraftLine(text: draft);
+          }
+          if (index >= state.captions.length) {
             return Padding(
               padding: EdgeInsets.all(AppParams.spacing20.r),
               child: Text(

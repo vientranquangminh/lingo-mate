@@ -21,7 +21,10 @@ class MeetingState extends Equatable {
     this.savedCount = 0,
     this.liveDenial,
     this.liveStops = 0,
+    this.draft,
   });
+
+  final String? draft;
 
   final String source;
   final String target;
@@ -51,6 +54,7 @@ class MeetingState extends Equatable {
     int? savedCount,
     LiveDenial? liveDenial,
     int? liveStops,
+    String? Function()? draft,
   }) {
     return MeetingState(
       source: source ?? this.source,
@@ -66,6 +70,7 @@ class MeetingState extends Equatable {
       savedCount: savedCount ?? this.savedCount,
       liveDenial: liveDenial ?? this.liveDenial,
       liveStops: liveStops ?? this.liveStops,
+      draft: draft != null ? draft() : this.draft,
     );
   }
 
@@ -84,5 +89,6 @@ class MeetingState extends Equatable {
     savedCount,
     liveDenial,
     liveStops,
+    draft,
   ];
 }

@@ -68,6 +68,25 @@ void main() {
     expect(state.engine, EngineKind.standard);
   });
 
+  test('shows the words heard so far until the line is ready', () async {
+    fakes.recognizer
+      ..supportsPartials = true
+      ..texts.addAll(['so we can', 'so we can ship by Friday']);
+    final c = await build();
+    await notifier(c).start(overlay: false);
+
+    fakes.capture.add(pcm(1200, amplitude: 4000));
+    await pumpEventQueue();
+    expect(c.read(meetingProvider).draft, 'so we can');
+
+    fakes.capture.add(pcm(700));
+    await pumpEventQueue();
+
+    final state = c.read(meetingProvider);
+    expect(state.draft, isNull);
+    expect(state.lines.single.original, 'so we can ship by Friday');
+  });
+
   test(
     'Start runs the service, the overlay and captions (AC-04.3, AC-04.4)',
     () async {

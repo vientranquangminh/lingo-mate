@@ -21,6 +21,9 @@ abstract interface class SpeechRecognizerEngine {
   /// Short id shown in devtools and benchmark CSVs.
   String get id;
 
+  /// Whether it is fast enough to re-run on the speech so far while someone talks.
+  bool get supportsPartials;
+
   /// Loads the model for a language, downloading nothing.
   Future<void> ensureReady(String lang);
 

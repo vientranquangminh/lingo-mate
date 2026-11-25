@@ -22,6 +22,9 @@ class SherpaWhisperEngine implements SpeechRecognizerEngine {
   Future<void>? _starting;
 
   @override
+  bool get supportsPartials => true;
+
+  @override
   String get id => 'sherpa-whisper-${model.name}';
 
   @override

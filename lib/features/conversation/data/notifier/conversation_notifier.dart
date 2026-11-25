@@ -9,6 +9,7 @@ import '../../../../core/audio/audio_pipeline.dart';
 import '../../../../core/audio/echo_gate.dart';
 import '../../../../core/audio/pcm_player.dart';
 import '../../../../core/audio/voice_activity_detector.dart';
+import '../../../../core/engines/asr/partial_transcriber.dart';
 import '../../../../core/engines/engine_instances.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/engines/live/live_access.dart';
@@ -52,6 +53,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
   int _sessionStartMs = 0;
   AudioPipeline? _pipeline;
   StreamSubscription<AudioSegment>? _segments;
+  StreamSubscription<AudioSegment>? _partials;
   Future<void> _queue = Future.value();
   int _nextId = 0;
   EngineSelection? _lastSelection;
@@ -112,16 +114,24 @@ class ConversationNotifier extends Notifier<ConversationState> {
     }
     final current = state.listening;
     await _stopListening();
-    if (current == speaker || !ref.mounted) {
+    if (!ref.mounted) {
+      return;
+    }
+    if (current == speaker) {
+      state = state.copyWith(draft: () => null);
       return;
     }
     if (state.speaking) {
       await _tts.stop();
     }
-    await _openMic((recognizer, segment) async {
-      await _stopListening();
-      await _recognize(speaker, recognizer, segment);
-    }, onOpen: () => state = state.copyWith(listening: () => speaker));
+    await _openMic(
+      (recognizer, segment) async {
+        await _stopListening();
+        await _recognize(speaker, recognizer, segment);
+      },
+      onOpen: () => state = state.copyWith(listening: () => speaker),
+      partialLang: state.languageOf(speaker),
+    );
   }
 
   /// Turns auto mode on (one open mic, each utterance assigned to A or B by language, AC-02.5) or off.
@@ -339,10 +349,11 @@ class ConversationNotifier extends Notifier<ConversationState> {
     }
   }
 
-  /// Opens the mic and routes each segment to [onSegment]; [onOpen] runs once the mic is live.
+  /// Opens the mic and routes each segment to [onSegment]; [onOpen] runs once the mic is live; with [partialLang], shows the words heard so far.
   Future<void> _openMic(
     Future<void> Function(SpeechRecognizerEngine, AudioSegment) onSegment, {
     required void Function() onOpen,
+    String? partialLang,
   }) async {
     final recognizer = await ref
         .read(speechRecognizerProvider.future)
@@ -374,9 +385,20 @@ class ConversationNotifier extends Notifier<ConversationState> {
       return;
     }
     _pipeline = pipeline;
-    _segments = pipeline.segments.listen(
-      (segment) => onSegment(recognizer, segment),
+    final partialAsr = PartialTranscriber(
+      recognizer,
+      onText: (text) => state = state.copyWith(draft: () => text),
+      isIdle: () => ref.mounted && state.listening != null,
     );
+    _segments = pipeline.segments.listen((segment) {
+      partialAsr.finish();
+      unawaited(onSegment(recognizer, segment));
+    });
+    if (partialLang != null && recognizer.supportsPartials) {
+      _partials = pipeline.partials.listen(
+        (snapshot) => unawaited(partialAsr.add(snapshot, partialLang)),
+      );
+    }
     state = state.copyWith(
       paused: () =>
           state.paused == PauseReason.micDenied ||
@@ -477,7 +499,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
         to: state.languageOf(speaker.other),
         original: text,
       );
-      state = state.copyWith(turns: [...state.turns, turn]);
+      state = state.copyWith(turns: [...state.turns, turn], draft: () => null);
       final endMs = _clock();
       _ensureSession();
       await _translate(turn);
@@ -494,7 +516,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
       return;
     } finally {
       if (ref.mounted) {
-        state = state.copyWith(processing: false);
+        state = state.copyWith(processing: false, draft: () => null);
       }
     }
   }
@@ -597,6 +619,11 @@ class ConversationNotifier extends Notifier<ConversationState> {
     _pipeline = null;
     await _segments?.cancel();
     _segments = null;
+    final partials = _partials;
+    _partials = null;
+    if (partials != null) {
+      await partials.cancel();
+    }
     if (pipeline != null) {
       await pipeline.dispose();
     }
@@ -669,6 +696,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
   void _dispose() {
     unawaited(_stopLive());
     unawaited(_segments?.cancel());
+    unawaited(_partials?.cancel());
     unawaited(_pipeline?.dispose());
     unawaited(_tts.stop().catchError((Object _) {}));
     final session = _sessionId;

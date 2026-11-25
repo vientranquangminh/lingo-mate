@@ -60,6 +60,8 @@ class FakeRecognizer implements SpeechRecognizerEngine {
   final texts = <String>[];
   final hints = <String?>[];
   final detections = <String?>[];
+  @override
+  bool supportsPartials = false;
 
   @override
   Future<String?> detectLanguage(
