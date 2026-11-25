@@ -10,6 +10,7 @@ class AppConfiguration {
   static Future<void> ensureAppConfiguration() async {
     await ScreenUtil.ensureScreenSize();
     await configureInjection();
+    await getIt.allReady();
     registerFontLicenses();
   }
 

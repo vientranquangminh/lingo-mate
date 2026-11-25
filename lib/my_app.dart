@@ -9,6 +9,7 @@ import 'package:overlay_support/overlay_support.dart';
 
 import 'common/resources/app_config.dart';
 import 'common/resources/app_theme.dart';
+import 'core/settings/user_settings.dart';
 import 'env.dart';
 import 'features/devtools/presentation/widget/latency_hud.dart';
 import 'generated/l10n.dart';
@@ -20,11 +21,17 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.watch(goRouterProvider);
+    final appLocale = ref.watch(
+      userSettingsProvider.select((s) => s.appLocale),
+    );
+    final locale = appLocale == null ? null : Locale(appLocale);
     return OverlaySupport.global(
       child: _isCupertinoPlatform
           ? CupertinoApp.router(
               localizationsDelegates: _localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
+              locale: locale,
+              localeListResolutionCallback: resolveLocale,
               debugShowCheckedModeBanner: false,
               builder: (context, child) =>
                   _buildRoot(context, child, cupertino: true),
@@ -33,12 +40,29 @@ class MyApp extends ConsumerWidget {
           : MaterialApp.router(
               localizationsDelegates: _localizationsDelegates,
               supportedLocales: AppLocalizations.supportedLocales,
+              locale: locale,
+              localeListResolutionCallback: resolveLocale,
               debugShowCheckedModeBanner: false,
               builder: (context, child) =>
                   _buildRoot(context, child, cupertino: false),
               routerConfig: router,
             ),
     );
+  }
+
+  /// Uses the first phone language the app supports, else English (AC-11.3).
+  static Locale resolveLocale(
+    List<Locale>? preferred,
+    Iterable<Locale> supported,
+  ) {
+    for (final locale in preferred ?? const <Locale>[]) {
+      for (final candidate in supported) {
+        if (candidate.languageCode == locale.languageCode) {
+          return candidate;
+        }
+      }
+    }
+    return const Locale('en');
   }
 
   static const _localizationsDelegates = [

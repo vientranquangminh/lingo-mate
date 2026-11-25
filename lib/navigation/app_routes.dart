@@ -2,14 +2,20 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../env.dart';
-import '../features/authentication/presentation/view/login_page.dart';
 import '../core/engines/selection/engine_selector.dart';
+import '../core/settings/user_settings.dart';
+import '../env.dart';
 import '../features/conversation/presentation/view/conversation_page.dart';
 import '../features/devtools/presentation/view/devtools_page.dart';
 import '../features/history/presentation/view/history_page.dart';
 import '../features/history/presentation/view/transcript_page.dart';
+import '../features/home/presentation/view/home_page.dart';
+import '../features/home/presentation/view/home_shell.dart';
 import '../features/language_packs/presentation/view/language_packs_page.dart';
+import '../features/me/presentation/view/me_page.dart';
+import '../features/onboarding/presentation/view/setup_page.dart';
+import '../features/onboarding/presentation/view/welcome_page.dart';
+import '../features/phrasebook/presentation/view/phrases_page.dart';
 import '../features/show_mode/presentation/view/show_mode_page.dart';
 import 'route_const.dart';
 
@@ -17,18 +23,114 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root',
 );
 
+/// Decides where a location may go: onboarding until it is done, never back to it afterwards (AC-01.5).
+String? onboardingRedirect({
+  required bool onboardingDone,
+  required String location,
+}) {
+  final inOnboarding =
+      location == AppRoutePath.welcome || location == AppRoutePath.setup;
+  if (location.startsWith(AppRoutePath.devtools)) {
+    return null;
+  }
+  if (!onboardingDone && !inOnboarding) {
+    return AppRoutePath.welcome;
+  }
+  if (onboardingDone && inOnboarding) {
+    return AppRoutePath.home;
+  }
+  return null;
+}
+
 final goRouterProvider = Provider((ref) {
-  return GoRouter(
+  final onboardingDone = ValueNotifier(
+    ref.read(userSettingsProvider).onboardingDone,
+  );
+  ref
+    ..listen(
+      userSettingsProvider.select((s) => s.onboardingDone),
+      (_, done) => onboardingDone.value = done,
+    )
+    ..onDispose(onboardingDone.dispose);
+  final router = GoRouter(
     navigatorKey: rootNavigatorKey,
-    initialLocation: Env.devtoolsEnabled
-        ? AppRoutePath.devtools
-        : AppRoutePath.onboarding,
+    initialLocation: onboardingDone.value
+        ? AppRoutePath.home
+        : AppRoutePath.welcome,
+    refreshListenable: onboardingDone,
+    redirect: (context, state) => onboardingRedirect(
+      onboardingDone: onboardingDone.value,
+      location: state.matchedLocation,
+    ),
     routes: [
       GoRoute(
-        name: AppRouteName.onboarding,
-        path: AppRoutePath.onboarding,
+        name: AppRouteName.welcome,
+        path: AppRoutePath.welcome,
         pageBuilder: (context, state) =>
-            CupertinoPage(child: const LoginPage()),
+            const CupertinoPage(child: WelcomePage()),
+      ),
+      GoRoute(
+        name: AppRouteName.setup,
+        path: AppRoutePath.setup,
+        pageBuilder: (context, state) =>
+            const CupertinoPage(child: SetupPage()),
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, shell) => HomeShell(shell: shell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRouteName.home,
+                path: AppRoutePath.home,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: HomePage()),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRouteName.phrases,
+                path: AppRoutePath.phrases,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: PhrasesPage()),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRouteName.history,
+                path: AppRoutePath.history,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: HistoryPage()),
+                routes: [
+                  GoRoute(
+                    name: AppRouteName.transcript,
+                    path: AppRoutePath.transcript,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) => CupertinoPage(
+                      child: TranscriptPage(
+                        sessionId: state.pathParameters['id']!,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                name: AppRouteName.me,
+                path: AppRoutePath.me,
+                pageBuilder: (context, state) =>
+                    const NoTransitionPage(child: MePage()),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         name: AppRouteName.languagePacks,
@@ -64,21 +166,6 @@ final goRouterProvider = Provider((ref) {
           );
         },
       ),
-      GoRoute(
-        name: AppRouteName.history,
-        path: AppRoutePath.history,
-        pageBuilder: (context, state) =>
-            const CupertinoPage(child: HistoryPage()),
-        routes: [
-          GoRoute(
-            name: AppRouteName.transcript,
-            path: AppRoutePath.transcript,
-            pageBuilder: (context, state) => CupertinoPage(
-              child: TranscriptPage(sessionId: state.pathParameters['id']!),
-            ),
-          ),
-        ],
-      ),
       if (Env.devtoolsEnabled)
         GoRoute(
           name: AppRouteName.devtools,
@@ -88,4 +175,6 @@ final goRouterProvider = Provider((ref) {
         ),
     ],
   );
+  ref.onDispose(router.dispose);
+  return router;
 });

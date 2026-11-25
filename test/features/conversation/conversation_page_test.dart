@@ -20,9 +20,9 @@ void main() {
   const pair = LanguagePair('vi', 'en');
   late ConversationFakes fakes;
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
-    fakes = ConversationFakes();
+    fakes = ConversationFakes()..prefs = await SharedPreferences.getInstance();
   });
 
   /// Pumps the conversation page with English strings and screen scaling.

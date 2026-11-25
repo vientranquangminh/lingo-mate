@@ -58,12 +58,18 @@ class ConversationNotifier extends Notifier<ConversationState> {
     _sessions = ref.read(sessionRepositoryProvider);
     _tts = ref.read(speechSynthesizerProvider);
     ref.onDispose(_dispose);
-    ref.listen(
-      engineSelectionProvider(_request),
-      (_, next) => next.whenData(_onSelection),
-      fireImmediately: true,
+    final current = ref
+        .listen(
+          engineSelectionProvider(_request),
+          (_, next) => next.whenData(_onSelection),
+        )
+        .read()
+        .value;
+    return ConversationState(
+      pair: pair,
+      engine: current?.conversationEngine,
+      blocked: current?.blocked ?? const {},
     );
-    return ConversationState(pair: pair);
   }
 
   /// Starts listening for [speaker], or stops when that side is already listening; leaves auto mode.
@@ -181,7 +187,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
 
   /// Tracks the engine; a change mid-session raises the switched notice (AC-02.7).
   void _onSelection(EngineSelection selection) {
-    final engine = _conversationEngine(selection);
+    final engine = selection.conversationEngine;
     final previous = state.engine;
     final switched = previous != null && engine != null && engine != previous;
     state = state.copyWith(
@@ -193,19 +199,6 @@ class ConversationNotifier extends Notifier<ConversationState> {
           ? null
           : state.paused,
     );
-  }
-
-  /// Maps Live to the text engines until two-way Live is settled (OQ-4, AC-02.9).
-  static EngineKind? _conversationEngine(EngineSelection selection) {
-    if (selection.engine != EngineKind.live) {
-      return selection.engine;
-    }
-    for (final engine in [EngineKind.standard, EngineKind.offline]) {
-      if (!selection.blocked.containsKey(engine)) {
-        return engine;
-      }
-    }
-    return null;
   }
 
   /// Recognises one utterance of [speaker] and translates it.

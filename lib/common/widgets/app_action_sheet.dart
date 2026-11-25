@@ -53,6 +53,8 @@ Future<void> showAppActionSheet({
     await showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
+      isScrollControlled: true,
+      useSafeArea: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(AppParams.radiusSheet.r),
@@ -62,56 +64,57 @@ Future<void> showAppActionSheet({
         final scheme = Theme.of(sheetContext).colorScheme;
         return SafeArea(
           top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppParams.spacing24.w,
-                ),
-                child: Text(
-                  title,
-                  style: sheetContext.textTheme.titleMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: AppParams.spacing24.w,
+                  ),
+                  child: Text(
+                    title,
+                    style: sheetContext.textTheme.titleMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: AppParams.spacing8.h),
-              for (final action in actions)
-                InkWell(
-                  onTap: () {
-                    chosen = action;
-                    Navigator.of(sheetContext).pop();
-                  },
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: AppParams.buttonHeight.h,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: AppParams.spacing24.w,
-                        vertical: AppParams.spacing12.h,
+                SizedBox(height: AppParams.spacing8.h),
+                for (final action in actions)
+                  InkWell(
+                    onTap: () {
+                      chosen = action;
+                      Navigator.of(sheetContext).pop();
+                    },
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: AppParams.buttonHeight.h,
                       ),
-                      child: Row(
-                        children: [
-                          AppIcon(action.icon, color: scheme.onSurface),
-                          SizedBox(width: AppParams.spacing16.w),
-                          Expanded(
-                            child: Text(
-                              action.label,
-                              style: sheetContext.textTheme.bodyLarge?.copyWith(
-                                color: scheme.onSurface,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: AppParams.spacing24.w,
+                          vertical: AppParams.spacing12.h,
+                        ),
+                        child: Row(
+                          children: [
+                            AppIcon(action.icon, color: scheme.onSurface),
+                            SizedBox(width: AppParams.spacing16.w),
+                            Expanded(
+                              child: Text(
+                                action.label,
+                                style: sheetContext.textTheme.bodyLarge
+                                    ?.copyWith(color: scheme.onSurface),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-              SizedBox(height: AppParams.spacing8.h),
-            ],
+                SizedBox(height: AppParams.spacing8.h),
+              ],
+            ),
           ),
         );
       },

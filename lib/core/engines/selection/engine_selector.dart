@@ -89,6 +89,19 @@ class EngineSelection extends Equatable {
 
   bool get hasEngine => engine != null;
 
+  /// The engine Conversation uses: Live maps to the text engines until two-way Live is settled (OQ-4, AC-02.9).
+  EngineKind? get conversationEngine {
+    if (engine != EngineKind.live) {
+      return engine;
+    }
+    for (final kind in [EngineKind.standard, EngineKind.offline]) {
+      if (!blocked.containsKey(kind)) {
+        return kind;
+      }
+    }
+    return null;
+  }
+
   @override
   List<Object?> get props => [engine, blocked];
 }

@@ -20,7 +20,9 @@ import 'package:lingo_mate/features/devtools/presentation/view/devtools_page.dar
 import 'package:lingo_mate/generated/l10n.dart';
 import 'package:lingo_mate/navigation/app_routes.dart';
 import 'package:lingo_mate/navigation/route_const.dart';
+import 'package:lingo_mate/core/settings/user_settings.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/audio/audio_test_utils.dart';
 
@@ -196,8 +198,12 @@ void main() {
     expect(find.text('Start mic test'), findsOneWidget);
   });
 
-  test('the router has no devtools route without DEVTOOLS_ENABLED', () {
-    final container = ProviderContainer();
+  test('the router has no devtools route without DEVTOOLS_ENABLED', () async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    final container = ProviderContainer(
+      overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
+    );
     addTearDown(container.dispose);
 
     final router = container.read(goRouterProvider);
