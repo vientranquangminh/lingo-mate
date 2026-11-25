@@ -110,7 +110,10 @@ class HomePage extends ConsumerWidget {
                       icon: AppIcons.modeListen,
                       title: l10n.homeListenTitle,
                       body: l10n.homeListenBody,
-                      onTap: () => showAppToast(context, l10n.homeComingSoon),
+                      onTap: () => context.pushNamed(
+                        AppRouteName.listen,
+                        queryParameters: {'from': pair.b, 'to': pair.a},
+                      ),
                     ),
                   ),
                   SizedBox(width: AppParams.spacing12.w),

@@ -12,6 +12,7 @@ import '../features/history/presentation/view/transcript_page.dart';
 import '../features/home/presentation/view/home_page.dart';
 import '../features/home/presentation/view/home_shell.dart';
 import '../features/language_packs/presentation/view/language_packs_page.dart';
+import '../features/listen/presentation/view/listen_page.dart';
 import '../features/me/presentation/view/me_page.dart';
 import '../features/me/presentation/view/privacy_page.dart';
 import '../features/me/presentation/view/translation_voice_page.dart';
@@ -201,6 +202,21 @@ final goRouterProvider = Provider((ref) {
           return CupertinoPage(
             child: ConversationPage(
               pair: LanguagePair(query['a'] ?? 'vi', query['b'] ?? 'en'),
+            ),
+          );
+        },
+      ),
+      GoRoute(
+        name: AppRouteName.listen,
+        path: AppRoutePath.listen,
+        pageBuilder: (context, state) {
+          final query = state.uri.queryParameters;
+          return CupertinoPage(
+            child: ListenPage(
+              languages: LanguagePair(
+                query['from'] ?? 'en',
+                query['to'] ?? 'vi',
+              ),
             ),
           );
         },

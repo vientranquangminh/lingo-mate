@@ -7,6 +7,7 @@ abstract class AppRouteName {
   static const devtools = 'devtools';
   static const languagePacks = 'language-packs';
   static const conversation = 'conversation';
+  static const listen = 'listen';
   static const showMode = 'show';
   static const history = 'history';
   static const transcript = 'transcript';
@@ -26,6 +27,7 @@ abstract class AppRoutePath {
   static const devtools = '/devtools';
   static const languagePacks = '/language-packs';
   static const conversation = '/conversation';
+  static const listen = '/listen';
   static const showMode = '/show';
   static const history = '/history';
   static const transcript = ':id';
