@@ -323,8 +323,11 @@ final goRouterProvider = Provider((ref) {
       GoRoute(
         name: AppRouteName.meeting,
         path: AppRoutePath.meeting,
-        pageBuilder: (context, state) =>
-            const CupertinoPage(child: MeetingPage()),
+        pageBuilder: (context, state) => CupertinoPage(
+          child: MeetingPage(
+            autoStart: state.uri.queryParameters['start'] == '1',
+          ),
+        ),
       ),
       GoRoute(
         name: AppRouteName.showMode,

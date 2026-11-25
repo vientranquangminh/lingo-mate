@@ -5,6 +5,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:lingo_mate/core/audio/audio_capture.dart';
+import 'package:lingo_mate/core/auth/auth_providers.dart';
 import 'package:lingo_mate/core/audio/audio_frame.dart';
 import 'package:lingo_mate/core/audio/voice_activity_detector.dart';
 import 'package:lingo_mate/core/config/feature_switches.dart';
@@ -15,6 +16,7 @@ import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/core/engines/tts/speech_synthesizer.dart';
 import 'package:lingo_mate/core/learning/learning_assistant.dart';
+import 'package:lingo_mate/core/platform/home_widget.dart';
 import 'package:lingo_mate/core/platform/mic_permission.dart';
 import 'package:lingo_mate/core/quota/quota_engine.dart';
 import 'package:lingo_mate/core/quota/quota_providers.dart';
@@ -180,6 +182,8 @@ class ConversationFakes {
   final learning = FakeLearningAssistant();
   FeatureSwitches? switches;
   QuotaLimits limits = const QuotaLimits(win5hSec: 1800, weekSec: 3600);
+  final links = StreamController<Uri>.broadcast();
+  final widget = FakeHomeWidget();
   int nowMs = 0;
   final db = AppDatabase(NativeDatabase.memory());
   late SharedPreferences prefs;
@@ -204,6 +208,8 @@ class ConversationFakes {
     onlineProvider.overrideWith((ref) => Stream.value(online)),
     learningAssistantProvider.overrideWithValue(learning),
     standardLimitsProvider.overrideWithValue(limits),
+    incomingLinksProvider.overrideWithValue(links.stream),
+    homeWidgetBridgeProvider.overrideWithValue(widget),
     featureSwitchesProvider.overrideWithValue(
       switches ?? FeatureSwitches(postSessionReview: reviewEnabled),
     ),
@@ -214,4 +220,13 @@ class ConversationFakes {
 
   /// The repository over the test database.
   SessionRepository get sessions => SessionRepository(db);
+}
+
+/// Records what the home screen widget was sent.
+class FakeHomeWidget implements HomeWidgetBridge {
+  final updates = <List<WidgetFavorite>>[];
+
+  @override
+  Future<void> update(List<WidgetFavorite> favorites) async =>
+      updates.add(favorites);
 }

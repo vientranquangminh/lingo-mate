@@ -35,8 +35,8 @@ void main() {
       'partner_languages': ['en'],
     });
     fakes = ConversationFakes()..prefs = await SharedPreferences.getInstance();
+    links = fakes.links;
     auth = FakeAuthService();
-    links = StreamController<Uri>.broadcast();
     cloud = FakeCloudStore();
     FlavorConfig(appFlavor: Flavor.production);
   });
@@ -60,7 +60,6 @@ void main() {
         ...fakes.overrides(),
         systemSettingsProvider.overrideWithValue(FakeSystemSettings()),
         authServiceProvider.overrideWithValue(auth),
-        incomingLinksProvider.overrideWithValue(links.stream),
         cloudStoreProvider.overrideWithValue(cloud),
       ],
     );

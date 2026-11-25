@@ -45,7 +45,9 @@ import '../widget/meeting_line_tile.dart';
 
 /// Meeting screen S-07: setup card, overlay permission flow, the full transcript with speaker changes, and Stop (F-04).
 class MeetingPage extends ConsumerStatefulWidget {
-  const MeetingPage({super.key});
+  const MeetingPage({super.key, this.autoStart = false});
+
+  final bool autoStart;
 
   @override
   ConsumerState<MeetingPage> createState() => _MeetingPageState();
@@ -70,6 +72,13 @@ class _MeetingPageState extends ConsumerState<MeetingPage> {
         }
       },
     );
+    if (widget.autoStart) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && !ref.read(meetingProvider).running) {
+          unawaited(_start());
+        }
+      });
+    }
   }
 
   @override

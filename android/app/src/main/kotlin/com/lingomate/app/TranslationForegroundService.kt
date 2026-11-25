@@ -18,6 +18,12 @@ class TranslationForegroundService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    override fun onDestroy() {
+        running = false
+        MeetingTileService.refresh(this)
+        super.onDestroy()
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_STOP -> {
@@ -25,7 +31,11 @@ class TranslationForegroundService : Service() {
                 stopSelf()
                 return START_NOT_STICKY
             }
-            else -> startInForeground()
+            else -> {
+                startInForeground()
+                running = true
+                MeetingTileService.refresh(this)
+            }
         }
         return START_NOT_STICKY
     }
@@ -78,6 +88,15 @@ class TranslationForegroundService : Service() {
         private const val CHANNEL_ID = "translation"
         private const val NOTIFICATION_ID = 1001
         private const val ACTION_STOP = "com.lingomate.app.STOP_TRANSLATION"
+
+        /** Whether the service is running, for the Quick Settings tile. */
+        @Volatile
+        var running = false
+            private set
+
+        /** The intent that stops captioning as the notification's Stop does. */
+        fun stopIntent(context: Context): Intent =
+            Intent(context, TranslationForegroundService::class.java).setAction(ACTION_STOP)
 
         /** Starts the service; call while the app is in the foreground. */
         fun start(context: Context) {
