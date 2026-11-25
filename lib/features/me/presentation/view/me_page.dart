@@ -18,6 +18,7 @@ import '../../../../core/settings/user_settings.dart';
 import '../../../../env.dart';
 import '../../../../navigation/route_const.dart';
 import '../widget/account_card.dart';
+import '../widget/plan_card.dart';
 import '../widget/setting_labels.dart';
 import '../widget/stats_row.dart';
 
@@ -51,6 +52,8 @@ class MePage extends ConsumerWidget {
                   const AccountCard(),
                   SizedBox(height: AppParams.spacing12.h),
                 ],
+                const PlanCard(),
+                SizedBox(height: AppParams.spacing12.h),
                 const StatsRow(),
               ],
             ),

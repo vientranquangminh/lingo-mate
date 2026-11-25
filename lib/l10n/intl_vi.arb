@@ -482,5 +482,19 @@
   "deleteAccountConfirmBody": "Không thể hoàn tác. Bạn có thể cần đăng nhập lại trước.",
   "deleteAccountFailed": "Chưa xoá được tài khoản. Kiểm tra kết nối rồi thử lại.",
   "deleteAccountEmailAgain": "Để an toàn, hãy xác nhận đó là bạn: mở liên kết đã gửi tới {email}, rồi chạm Xoá tài khoản lần nữa.",
-  "deleteAccountDone": "Đã xoá tài khoản"
+  "deleteAccountDone": "Đã xoá tài khoản",
+  "usageTitle": "Mức sử dụng",
+  "usageStandard": "Tiêu chuẩn",
+  "usageWindow": "Khung 5 giờ này",
+  "usageWeek": "Tuần này",
+  "usageMinutes": "{used}/{limit} phút",
+  "usageHours": "{used}/{limit} giờ",
+  "usageResets": "đặt lại lúc {time}",
+  "usageNotStarted": "bắt đầu khi bạn dùng lần tới",
+  "usageOfflineFree": "Dịch ngoại tuyến không bao giờ bị tính.",
+  "usageWarning": "Bạn đã dùng 80% thời lượng Tiêu chuẩn.",
+  "usageReached": "Đã hết thời lượng Tiêu chuẩn đến {time}; chuyển sang Ngoại tuyến.",
+  "usageSee": "Xem mức dùng",
+  "planFree": "Gói Miễn phí",
+  "planStandardWeek": "Tiêu chuẩn tuần này"
 }

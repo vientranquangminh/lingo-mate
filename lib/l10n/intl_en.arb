@@ -873,5 +873,53 @@
       }
     }
   },
-  "deleteAccountDone": "Account deleted"
+  "deleteAccountDone": "Account deleted",
+  "usageTitle": "Usage",
+  "usageStandard": "Standard",
+  "usageWindow": "This 5-hour window",
+  "usageWeek": "This week",
+  "usageMinutes": "{used}/{limit} min",
+  "@usageMinutes": {
+    "placeholders": {
+      "used": {
+        "type": "int"
+      },
+      "limit": {
+        "type": "int"
+      }
+    }
+  },
+  "usageHours": "{used}/{limit} h",
+  "@usageHours": {
+    "placeholders": {
+      "used": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
+    }
+  },
+  "usageResets": "resets {time}",
+  "@usageResets": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "usageNotStarted": "starts when you next use it",
+  "usageOfflineFree": "Offline translation is never counted.",
+  "usageWarning": "You've used 80% of your Standard time.",
+  "usageReached": "Standard time is used up until {time}; switching to Offline.",
+  "@usageReached": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "usageSee": "See usage",
+  "planFree": "Free plan",
+  "planStandardWeek": "Standard this week"
 }

@@ -8,15 +8,16 @@ import '../extensions/build_context_ext.dart';
 import '../resources/app_params.dart';
 import 'app_platform_text_button.dart';
 
-/// Shows a short message at the bottom of the screen (doc 08 Toast): 3 s, or [AppParams.undoDuration] with an action such as Undo.
+/// Shows a short message at the bottom of the screen (doc 08 Toast): 3 s, or [AppParams.undoDuration] with an action such as Undo; [overlay] is for callers outside a page.
 void showAppToast(
   BuildContext context,
   String message, {
   String? actionLabel,
   VoidCallback? onAction,
+  OverlayState? overlay,
 }) {
-  final overlay = Overlay.maybeOf(context, rootOverlay: true);
-  if (overlay == null) {
+  final target = overlay ?? Overlay.maybeOf(context, rootOverlay: true);
+  if (target == null) {
     return;
   }
   late final OverlayEntry entry;
@@ -40,7 +41,7 @@ void showAppToast(
             },
     ),
   );
-  overlay.insert(entry);
+  target.insert(entry);
   SemanticsService.sendAnnouncement(
     View.of(context),
     message,
