@@ -98,6 +98,7 @@ class FakeTranslator implements TextTranslatorEngine {
   bool available = true;
   final requests = <TranslateRequest>[];
   final scripted = <String, String>{};
+  Completer<void>? gate;
 
   @override
   String get id => kind.name;
@@ -108,6 +109,7 @@ class FakeTranslator implements TextTranslatorEngine {
   @override
   Future<Translation> translate(TranslateRequest request) async {
     requests.add(request);
+    await gate?.future;
     if (fail) {
       throw StateError('down');
     }

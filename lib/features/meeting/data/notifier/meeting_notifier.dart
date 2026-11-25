@@ -477,9 +477,16 @@ class MeetingNotifier extends Notifier<MeetingState> {
       );
       state = state.copyWith(lines: [...state.lines, line], draft: () => null);
       _pushOverlay();
-      await _translate(line);
-      _pushOverlay();
-      _record(line.id, endMs - segment.durationMs, endMs);
+      unawaited(
+        _translate(line)
+            .then((_) {
+              if (ref.mounted) {
+                _pushOverlay();
+                _record(line.id, endMs - segment.durationMs, endMs);
+              }
+            })
+            .catchError((Object _) {}),
+      );
     } catch (_) {
       if (ref.mounted) {
         state = state.copyWith(draft: () => null);

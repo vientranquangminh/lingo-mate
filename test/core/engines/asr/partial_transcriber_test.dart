@@ -45,15 +45,18 @@ void main() {
   late List<String> texts;
   late bool idle;
   late PartialTranscriber partials;
+  late int now;
 
   setUp(() {
     recognizer = _ManualRecognizer();
     texts = [];
     idle = true;
+    now = 0;
     partials = PartialTranscriber(
       recognizer,
       onText: texts.add,
       isIdle: () => idle,
+      nowMs: () => now,
     );
   });
 
@@ -85,6 +88,21 @@ void main() {
       expect(texts, isEmpty);
     },
   );
+
+  test('rests as long as the last run took before starting another', () async {
+    final run = partials.add(snapshot, 'en');
+    now = 800;
+    recognizer.pending.single.complete(const AsrResult(text: 'Hi', lang: 'en'));
+    await run;
+
+    now = 1500;
+    await partials.add(snapshot, 'en');
+    expect(recognizer.pending, hasLength(1));
+
+    now = 1600;
+    unawaited(partials.add(snapshot, 'en'));
+    expect(recognizer.pending, hasLength(2));
+  });
 
   test('drops a result that finished after the utterance ended', () async {
     final run = partials.add(snapshot, 'en');

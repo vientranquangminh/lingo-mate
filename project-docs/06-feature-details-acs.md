@@ -47,7 +47,7 @@ Status: Draft v0.1. Format: user stories (US) + acceptance criteria (AC) in Give
 | AC-03.1 | Given source language L and target = user language, When Start is tapped, Then captions stream as a list with original (secondary style) and translation (primary style). |
 | AC-03.2 | Given captions are auto-scrolling, When the user scrolls up, Then auto-scroll pauses and a "Jump to live" button appears; tapping it resumes. |
 | AC-03.3 | Given "Keep screen on" enabled, Then the screen does not sleep during the session. |
-| AC-03.4 | Given a monologue longer than 15 s without pause, Then it is cut at the nearest pause > 250 ms (or hard cut at 15 s) and captions keep flowing. |
+| AC-03.4 | Given a monologue longer than 8 s without pause, Then it is cut at the nearest pause > 250 ms (or hard cut at 8 s) and captions keep flowing. (Was 15 s; lowered for latency, owner feedback 2026-11-25.) |
 | AC-03.5 | Given font size slider changes, Then caption text resizes immediately and persists for next sessions. |
 | AC-03.6 | Given the session is paused, Then mic capture stops (indicator off) and no usage is counted. |
 

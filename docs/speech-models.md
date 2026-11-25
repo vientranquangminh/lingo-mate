@@ -12,8 +12,11 @@ speech model.
   `ggml-small-q5_1.bin` (https://huggingface.co/ggerganov/whisper.cpp/tree/main).
   The models are multilingual, so every language points at the same file and the phone
   keeps one copy (AC-06.6).
-- sherpa-onnx models are folders of three files and Silero VAD has no language, so neither
-  can be set through `asr_models`. Push them with adb if needed (`docs/benchmark.md` §3).
+- sherpa-onnx models are folders of three files, so they cannot be set through `asr_models`.
+  Push them with adb if needed (`docs/benchmark.md` §3). Silero VAD ships inside the app
+  (`assets/models/silero_vad.onnx`) and is copied into `models/` on first use.
+- For lower latency and a smaller download, prefer a quantized model such as
+  `ggml-base-q5_1.bin` (~57 MB) over `ggml-base.bin` (148 MB).
 - Which model to ship is open question OQ-3. Start with `ggml-base.bin` (fast), and switch
   to `ggml-small-q5_1.bin` later if Vietnamese accuracy is too low: change the file in
   Storage and the value in Remote Config, nothing else.
