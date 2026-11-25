@@ -46,11 +46,13 @@ class GlossaryRepository {
         _db.select(_db.glossarySets).join([
             leftOuterJoin(
               _db.glossaryTerms,
-              _db.glossaryTerms.setId.equalsExp(_db.glossarySets.id),
+              _db.glossaryTerms.setId.equalsExp(_db.glossarySets.id) &
+                  _db.glossaryTerms.deletedAt.isNull(),
               useColumns: false,
             ),
           ])
           ..addColumns([count])
+          ..where(_db.glossarySets.deletedAt.isNull())
           ..groupBy([_db.glossarySets.id])
           ..orderBy([OrderingTerm.asc(_db.glossarySets.name)]);
     return query.watch().map(
@@ -67,12 +69,12 @@ class GlossaryRepository {
   /// One set, or null once deleted.
   Stream<GlossarySet?> watchSet(String id) => (_db.select(
     _db.glossarySets,
-  )..where((s) => s.id.equals(id))).watchSingleOrNull();
+  )..where((s) => s.id.equals(id) & s.deletedAt.isNull())).watchSingleOrNull();
 
   /// Terms of set [setId], alphabetically.
   Stream<List<GlossaryTerm>> watchTerms(String setId) =>
       (_db.select(_db.glossaryTerms)
-            ..where((t) => t.setId.equals(setId))
+            ..where((t) => t.setId.equals(setId) & t.deletedAt.isNull())
             ..orderBy([(t) => OrderingTerm.asc(t.term)]))
           .watch();
 
@@ -86,6 +88,7 @@ class GlossaryRepository {
             id: id,
             name: name.trim(),
             createdAt: _now(),
+            updatedAt: Value(_now()),
           ),
         );
     return id;
@@ -94,12 +97,29 @@ class GlossaryRepository {
   /// Renames set [id].
   Future<void> renameSet(String id, String name) =>
       (_db.update(_db.glossarySets)..where((s) => s.id.equals(id))).write(
-        GlossarySetsCompanion(name: Value(name.trim())),
+        GlossarySetsCompanion(
+          name: Value(name.trim()),
+          updatedAt: Value(_now()),
+        ),
       );
 
-  /// Deletes set [id] with its terms.
-  Future<void> deleteSet(String id) =>
-      (_db.delete(_db.glossarySets)..where((s) => s.id.equals(id))).go();
+  /// Deletes set [id] with its terms, keeping tombstones so the delete syncs.
+  Future<void> deleteSet(String id) => _db.transaction(() async {
+    final gone = GlossaryTermsCompanion(
+      deletedAt: Value(_now()),
+      updatedAt: Value(_now()),
+    );
+    await (_db.update(
+      _db.glossaryTerms,
+    )..where((t) => t.setId.equals(id) & t.deletedAt.isNull())).write(gone);
+    await (_db.update(_db.glossarySets)..where((s) => s.id.equals(id))).write(
+      GlossarySetsCompanion(
+        deletedAt: Value(_now()),
+        updatedAt: Value(_now()),
+        active: const Value(false),
+      ),
+    );
+  });
 
   /// Makes set [id] the one used in sessions, or turns it off; at most one set is active (AC-18.1).
   Future<void> setActive(String id, bool active) => _db.transaction(() async {
@@ -131,6 +151,7 @@ class GlossaryRepository {
             translation: translation.trim(),
             note: Value(_blankToNull(note)),
             createdAt: _now(),
+            updatedAt: Value(_now()),
           ),
         );
     return id;
@@ -147,22 +168,33 @@ class GlossaryRepository {
       term: Value(term.trim()),
       translation: Value(translation.trim()),
       note: Value(_blankToNull(note)),
+      updatedAt: Value(_now()),
     ),
   );
 
-  /// Deletes term [id].
+  /// Deletes term [id], keeping a tombstone so the delete syncs.
   Future<void> deleteTerm(String id) =>
-      (_db.delete(_db.glossaryTerms)..where((t) => t.id.equals(id))).go();
+      (_db.update(_db.glossaryTerms)..where((t) => t.id.equals(id))).write(
+        GlossaryTermsCompanion(
+          deletedAt: Value(_now()),
+          updatedAt: Value(_now()),
+        ),
+      );
 
   /// Terms of the active set that appear in [text], either side, as source term → preferred translation (AC-18.2).
   Future<Map<String, String>> termsIn(String text) async {
-    final rows = await (_db.select(_db.glossaryTerms).join([
-      innerJoin(
-        _db.glossarySets,
-        _db.glossarySets.id.equalsExp(_db.glossaryTerms.setId),
-        useColumns: false,
-      ),
-    ])..where(_db.glossarySets.active.equals(true))).get();
+    final rows =
+        await (_db.select(_db.glossaryTerms).join([
+              innerJoin(
+                _db.glossarySets,
+                _db.glossarySets.id.equalsExp(_db.glossaryTerms.setId),
+                useColumns: false,
+              ),
+            ])..where(
+              _db.glossarySets.active.equals(true) &
+                  _db.glossaryTerms.deletedAt.isNull(),
+            ))
+            .get();
     final haystack = text.toLowerCase();
     final found = <String, String>{};
     for (final row in rows) {

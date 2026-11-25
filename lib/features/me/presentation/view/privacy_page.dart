@@ -10,7 +10,11 @@ import '../../../../common/widgets/app_platform_dialog.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../common/widgets/settings_row.dart';
 import '../../../../common/widgets/settings_toggle_rows.dart';
+import '../../../../common/widgets/require_sign_in.dart';
+import '../../../../core/auth/auth_models.dart';
+import '../../../../core/auth/auth_providers.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
+import '../../../../core/sync/sync_controller.dart';
 import '../../../../core/platform/system_settings.dart';
 import '../../../../core/settings/app_preferences.dart';
 import '../../../language_packs/data/notifier/language_packs_notifier.dart';
@@ -48,6 +52,18 @@ class PrivacyPage extends ConsumerWidget {
     await ref.read(dataEraserProvider)(models: models);
   }
 
+  /// What the sync row says: what syncs, and when it last did.
+  static String _syncDescription(BuildContext context, SyncState sync) {
+    final l10n = context.localization;
+    final at = sync.lastSyncedAt;
+    if (!sync.enabled || at == null) {
+      return l10n.syncDescription;
+    }
+    final time = MaterialLocalizations.of(context)
+        .formatTimeOfDay(TimeOfDay.fromDateTime(at));
+    return '${l10n.syncDescription} ${l10n.syncLast(time)}';
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.localization;
@@ -55,6 +71,7 @@ class PrivacyPage extends ConsumerWidget {
     final prefs = ref.watch(appPreferencesProvider);
     final notifier = ref.read(appPreferencesProvider.notifier);
     final wifiOnly = ref.watch(languagePacksProvider.select((s) => s.wifiOnly));
+    final sync = ref.watch(syncControllerProvider);
     return AppPlatformScaffold(
       appBar: AppPlatformAppBar(title: Text(l10n.mePrivacy)),
       body: ListView(
@@ -83,6 +100,19 @@ class PrivacyPage extends ConsumerWidget {
               ],
             ),
           ),
+          if (ref.watch(authServiceProvider).available)
+            SettingsSwitchRow(
+              label: l10n.syncSwitch,
+              description: _syncDescription(context, sync),
+              value: sync.enabled,
+              onChanged: (on) async {
+                if (on &&
+                    !await requireSignIn(context, ref, SignInReason.sync)) {
+                  return;
+                }
+                await ref.read(syncControllerProvider.notifier).setEnabled(on);
+              },
+            ),
           SettingsSwitchRow(
             label: l10n.privacyAnalytics,
             description: l10n.privacyAnalyticsBody,

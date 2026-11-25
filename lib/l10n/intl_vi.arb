@@ -461,5 +461,12 @@
   "meStatTranslated": "đã dịch",
   "meStatPhrases": "cụm từ đã lưu",
   "meStatDays": "{count} ngày",
-  "meStatStreak": "chuỗi ôn tập"
+  "meStatStreak": "chuỗi ôn tập",
+  "syncSwitch": "Đồng bộ sổ cụm từ và ôn tập",
+  "syncDescription": "Cụm từ, thẻ, thẻ ôn tập và bảng thuật ngữ đi theo tài khoản. Bản ghi vẫn ở trên điện thoại này.",
+  "syncLast": "Đồng bộ lần cuối lúc {time}.",
+  "syncMergeTitle": "Thêm cụm từ trên điện thoại này vào tài khoản?",
+  "syncMergeBody": "Điện thoại này có {count} cụm từ đã lưu. Gộp sẽ giữ chúng và thêm vào tài khoản, bỏ qua câu trùng. Không gộp sẽ xoá chúng khỏi điện thoại này.",
+  "syncMerge": "Gộp",
+  "syncDontMerge": "Không gộp"
 }

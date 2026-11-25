@@ -1,0 +1,77 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function serverOnlyFields() {
+      return ['plan', 'planState', 'planExpiresAt', 'liveTopupSec'];
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid)
+        && !request.resource.data.keys().hasAny(serverOnlyFields());
+      allow update: if isOwner(uid)
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(serverOnlyFields());
+
+      match /phrases/{id} {
+        allow read, write: if isOwner(uid);
+      }
+      match /srs/{id} {
+        allow read, write: if isOwner(uid);
+      }
+      match /glossary/{id} {
+        allow read, write: if isOwner(uid);
+      }
+      match /glossaryTerms/{id} {
+        allow read, write: if isOwner(uid);
+      }
+
+      match /usage/live {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+
+      match /usage/standard {
+        allow read: if isOwner(uid);
+        allow create: if isOwner(uid)
+          && request.resource.data.windowUsedSec <= 600
+          && request.resource.data.weekUsedSec <= 600;
+        allow update: if isOwner(uid)
+          && request.resource.data.windowStart >= resource.data.windowStart
+          && request.resource.data.weekStart >= resource.data.weekStart
+          && (request.resource.data.windowStart != resource.data.windowStart
+              || (request.resource.data.windowUsedSec >= resource.data.windowUsedSec
+                  && request.resource.data.windowUsedSec - resource.data.windowUsedSec <= 600))
+          && (request.resource.data.weekStart != resource.data.weekStart
+              || (request.resource.data.weekUsedSec >= resource.data.weekUsedSec
+                  && request.resource.data.weekUsedSec - resource.data.weekUsedSec <= 600))
+          && (request.resource.data.windowStart == resource.data.windowStart
+              || request.resource.data.windowUsedSec <= 600)
+          && (request.resource.data.weekStart == resource.data.weekStart
+              || request.resource.data.weekUsedSec <= 600);
+      }
+
+      match /transactions/{id} {
+        allow read: if isOwner(uid);
+        allow write: if false;
+      }
+    }
+
+    match /liveTokens/{id} {
+      allow read, write: if false;
+    }
+
+    match /deletionRequests/{id} {
+      allow read, write: if false;
+    }
+  }
+}

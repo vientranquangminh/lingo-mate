@@ -6,6 +6,8 @@ import 'package:lingo_mate/core/auth/auth_models.dart';
 import 'package:lingo_mate/core/auth/auth_providers.dart';
 import 'package:lingo_mate/core/phrases/phrase_repository.dart';
 import 'package:lingo_mate/core/platform/system_settings.dart';
+import 'package:lingo_mate/core/sync/cloud_store.dart';
+import 'package:lingo_mate/core/sync/sync_controller.dart';
 import 'package:lingo_mate/flavor_config.dart';
 import 'package:lingo_mate/my_app.dart';
 import 'package:lingo_mate/navigation/app_routes.dart';
@@ -13,6 +15,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/auth/auth_fakes.dart';
+import '../../core/sync/sync_fakes.dart';
 import '../../helpers/fake_platform.dart';
 import '../conversation/conversation_fakes.dart';
 import '../language_packs/language_packs_fakes.dart';
@@ -22,6 +25,7 @@ void main() {
   late ConversationFakes fakes;
   late FakeAuthService auth;
   late StreamController<Uri> links;
+  late FakeCloudStore cloud;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({
@@ -32,6 +36,7 @@ void main() {
     fakes = ConversationFakes()..prefs = await SharedPreferences.getInstance();
     auth = FakeAuthService();
     links = StreamController<Uri>.broadcast();
+    cloud = FakeCloudStore();
     FlavorConfig(appFlavor: Flavor.production);
   });
 
@@ -55,6 +60,7 @@ void main() {
         systemSettingsProvider.overrideWithValue(FakeSystemSettings()),
         authServiceProvider.overrideWithValue(auth),
         incomingLinksProvider.overrideWithValue(links.stream),
+        cloudStoreProvider.overrideWithValue(cloud),
       ],
     );
     addTearDown(container.dispose);
@@ -301,4 +307,72 @@ void main() {
     expect(auth.currentUser!.displayName, 'Minh');
     expect(find.text('Email link'), findsOneWidget);
   });
+
+  testWidgets(
+    'turning sync on asks to sign in, then uploads the phrasebook (AC-13.9)',
+    (tester) async {
+      await tester.runAsync(
+        () => PhraseRepository(fakes.db).save(
+          sourceLang: 'vi',
+          sourceText: 'Cảm ơn',
+          targetLang: 'en',
+          targetText: 'Thank you',
+        ),
+      );
+      final container = await pumpApp(tester);
+      container.read(goRouterProvider).push('/me/privacy');
+      await settle(tester);
+
+      await tester.tap(find.text('Sync phrasebook and review'));
+      await settle(tester);
+      expect(
+        find.text('Sign in to sync your phrasebook and review schedule.'),
+        findsOneWidget,
+      );
+      await tester.tap(find.text('Continue with Google'));
+      await settle(tester);
+      await settle(tester);
+
+      expect(container.read(syncControllerProvider).active, isTrue);
+      expect(cloud.docs('anon', CloudCollection.phrases), hasLength(1));
+      expect(cloud.profiles['anon']!['email'], 'minh@example.com');
+      await tester.runAsync(
+        () => container.read(syncControllerProvider.notifier).setEnabled(false),
+      );
+      await settle(tester);
+    },
+  );
+
+  testWidgets(
+    'signing in to an existing account can replace this phone\'s phrases (AC-13.4)',
+    (tester) async {
+      auth.googleResult = const SignInResult(SignInOutcome.switchedAccount);
+      await tester.runAsync(
+        () => PhraseRepository(fakes.db).save(
+          sourceLang: 'vi',
+          sourceText: 'Cảm ơn',
+          targetLang: 'en',
+          targetText: 'Thank you',
+        ),
+      );
+      final container = await pumpApp(tester);
+      container.read(goRouterProvider).push('/sign-in');
+      await settle(tester);
+
+      await tester.tap(find.text('Continue with Google'));
+      await settle(tester);
+      expect(
+        find.text("Add this phone's phrases to your account?"),
+        findsOneWidget,
+      );
+      await tester.tap(find.text("Don't merge"));
+      await settle(tester);
+
+      final left = await tester.runAsync(
+        () => PhraseRepository(fakes.db).watchCount().first,
+      );
+      expect(left, 0);
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
 }

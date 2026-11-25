@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/account_merge_prompt.dart';
 import '../../../../common/widgets/app_circle_icon_button.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_outlined_button.dart';
@@ -147,7 +148,10 @@ class _SignInPageState extends ConsumerState<SignInPage> {
     setState(() => _busy = false);
     if (result.succeeded) {
       showAppToast(context, l10n.signInDone);
-      context.pop(true);
+      await promptAccountMerge(context, ref, result);
+      if (mounted) {
+        context.pop(true);
+      }
     } else if (result.outcome != SignInOutcome.cancelled) {
       showAppToast(context, l10n.signInFailed);
     }

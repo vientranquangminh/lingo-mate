@@ -831,5 +831,26 @@
       }
     }
   },
-  "meStatStreak": "review streak"
+  "meStatStreak": "review streak",
+  "syncSwitch": "Sync phrasebook and review",
+  "syncDescription": "Phrases, tags, review cards and glossaries follow your account. Transcripts stay on this phone.",
+  "syncLast": "Last synced {time}.",
+  "@syncLast": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "syncMergeTitle": "Add this phone's phrases to your account?",
+  "syncMergeBody": "{count, plural, =1{This phone has 1 saved phrase.} other{This phone has {count} saved phrases.}} Merge keeps them and adds them to your account, skipping duplicates. Don't merge removes them from this phone.",
+  "@syncMergeBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncMerge": "Merge",
+  "syncDontMerge": "Don't merge"
 }
