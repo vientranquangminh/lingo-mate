@@ -46,6 +46,7 @@ class GeminiTextTranslator implements TextTranslatorEngine {
     final user = TranslatorPrompt.user(
       text: request.text,
       context: request.context,
+      glossary: request.glossary,
     );
     Object? lastError;
     for (var attempt = 0; attempt < 2; attempt++) {

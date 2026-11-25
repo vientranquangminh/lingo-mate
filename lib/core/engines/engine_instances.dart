@@ -5,6 +5,8 @@ import '../audio/audio_capture.dart';
 import '../audio/silero_voice_activity_detector.dart';
 import '../audio/voice_activity_detector.dart';
 import '../di/di.dart';
+import '../glossary/glossary_repository.dart';
+import '../glossary/glossary_translator.dart';
 import '../settings/app_preferences.dart';
 import 'asr/asr_models.dart';
 import 'asr/sherpa_whisper_engine.dart';
@@ -26,7 +28,10 @@ final asrModelCatalogProvider = FutureProvider<AsrModelCatalog>(
 
 /// Standard engine translator (Gemini through Firebase AI Logic).
 final geminiTranslatorProvider = Provider<TextTranslatorEngine>(
-  (ref) => GeminiTextTranslator.firebase(getIt<GenerativeModelFactory>()),
+  (ref) => GlossaryTranslator(
+    GeminiTextTranslator.firebase(getIt<GenerativeModelFactory>()),
+    ref.watch(glossaryRepositoryProvider).termsIn,
+  ),
 );
 
 /// Offline engine translator (ML Kit).

@@ -17,6 +17,8 @@ part 'app_database.g.dart';
     LanguagePacks,
     UsageLedger,
     SrsCards,
+    GlossarySets,
+    GlossaryTerms,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -24,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'lingo_mate'));
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   /// Deletes every row of every table, children first (AC-10.3).
   Future<void> wipe() => transaction(() async {
@@ -58,11 +60,39 @@ class AppDatabase extends _$AppDatabase {
         await m.createIndex(srsCardsDue);
         await _addMissingCards();
       }
+      if (from < 5) {
+        if (!await _hasColumn('sessions', 'summary')) {
+          await m.addColumn(sessions, sessions.summary);
+        }
+        for (final table in <TableInfo<Table, Object?>>[
+          glossarySets,
+          glossaryTerms,
+        ]) {
+          if (!await _hasTable(table.actualTableName)) {
+            await m.createTable(table);
+          }
+        }
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
+
+  /// Whether table [table] has column [column].
+  Future<bool> _hasColumn(String table, String column) async {
+    final rows = await customSelect('PRAGMA table_info($table)').get();
+    return rows.any((r) => r.read<String>('name') == column);
+  }
+
+  /// Whether table [table] exists.
+  Future<bool> _hasTable(String table) async {
+    final rows = await customSelect(
+      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
+      variables: [Variable.withString(table)],
+    ).get();
+    return rows.isNotEmpty;
+  }
 
   /// Adds forward and reverse cards, due now, for every phrase that has none (F-16).
   Future<void> _addMissingCards() async {

@@ -372,6 +372,12 @@ class SessionRepository {
   Future<void> delete(String id) =>
       (_db.delete(_db.sessions)..where((s) => s.id.equals(id))).go();
 
+  /// Stores the encoded summary of session [id] (AC-20.1).
+  Future<void> saveSummary(String id, String summary) =>
+      (_db.update(_db.sessions)..where((s) => s.id.equals(id))).write(
+        SessionsCompanion(summary: Value(summary)),
+      );
+
   /// Returns the transcript as plain text: the title, then original and translation per line (AC-07.5).
   static String plainText(SessionDetail detail, {String? title}) {
     final buffer = StringBuffer();

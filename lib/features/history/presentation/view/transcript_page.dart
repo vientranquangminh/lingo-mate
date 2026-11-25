@@ -23,6 +23,7 @@ import '../../../../core/engines/engines.dart';
 import '../../../../core/platform/system_settings.dart';
 import '../../../../core/sessions/session_repository.dart';
 import '../../data/notifier/history_providers.dart';
+import '../widget/session_learning_section.dart';
 import '../widget/history_format.dart';
 
 /// Transcript screen S-10: title, date, duration, engines used and every line, with rename, share and delete (F-07).
@@ -156,6 +157,7 @@ class _Transcript extends ConsumerWidget {
                 ],
               ),
               SizedBox(height: AppParams.spacing16.h),
+              SessionLearningSection(detail: detail, title: title),
             ],
           ),
         ),

@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../common/widgets/suggested_replies_sheet.dart';
 import '../../../../common/widgets/keep_screen_on.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
@@ -19,6 +20,7 @@ import '../../../../common/widgets/engine_sheet.dart';
 import '../../../../common/widgets/mic_button.dart';
 import '../../../../common/widgets/mic_permission_gate.dart';
 import '../../../../common/widgets/save_phrase_action.dart';
+import '../../../../core/learning/learning_models.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
@@ -94,6 +96,15 @@ class ConversationPage extends ConsumerWidget {
                   micForeground: scheme.onPrimary,
                   onLongPressIncoming: (turn) =>
                       _showActions(context, ref, turn),
+                  leading: AppCircleIconButton(
+                    icon: AppIcons.suggestReply,
+                    semanticLabel: l10n.learningSuggestReply,
+                    onPressed:
+                        state.turns.any((t) => t.translation != null) &&
+                            (ref.watch(onlineProvider).value ?? true)
+                        ? () => _suggest(context, ref)
+                        : null,
+                  ),
                   banner: state.paused != null
                       ? _PausedBanner(reason: state.paused!)
                       : state.auto
@@ -120,6 +131,29 @@ class ConversationPage extends ConsumerWidget {
       ),
     );
   }
+
+  /// Suggests three replies in the partner's language; a tapped one is spoken (AC-19.1, AC-19.2).
+  Future<void> _suggest(BuildContext context, WidgetRef ref) =>
+      showSuggestedRepliesSheet(
+        context,
+        recent: [
+          for (final turn in ref.read(conversationProvider(pair)).turns)
+            if (turn.translation != null)
+              LearningLine(
+                speaker: turn.speaker.name,
+                sourceLang: turn.from,
+                sourceText: turn.original,
+                targetLang: turn.to,
+                targetText: turn.translation!,
+              ),
+        ],
+        replyLang: pair.b,
+        userLang: pair.a,
+        pickHint: context.localization.learningTapToSpeak,
+        onPick: (reply) => ref
+            .read(conversationProvider(pair).notifier)
+            .speakText(reply.text, pair.b),
+      );
 
   /// Toggles [speaker]'s mic, explaining and asking for the microphone first when needed (AC-01.6).
   Future<void> _toggleMic(

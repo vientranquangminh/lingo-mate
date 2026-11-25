@@ -718,5 +718,50 @@
         "type": "String"
       }
     }
-  }
+  },
+  "learningReviewTitle": "How a native would say it",
+  "learningReviewButton": "How would a native say it?",
+  "learningReviewNothing": "Your lines already sound natural. Nothing to improve this time.",
+  "learningYouSaid": "You said",
+  "learningNativeWouldSay": "A native speaker would say",
+  "learningFailed": "Couldn't get an answer. Check your connection and try again.",
+  "learningRetry": "Try again",
+  "learningNeedsInternet": "Needs internet",
+  "learningWorking": "Working on it…",
+  "learningSummarize": "Summarize",
+  "learningSummaryTitle": "Summary",
+  "learningKeyTerms": "Key terms",
+  "learningActionItems": "Action items",
+  "learningShareSummary": "Share summary",
+  "learningSuggestReply": "Suggest reply",
+  "learningTapToSpeak": "Tap a reply to say it aloud.",
+  "learningTapToCopy": "Tap a reply to copy it.",
+  "meGlossary": "Glossary",
+  "glossaryTitle": "Glossary",
+  "glossaryIntro": "Keep preferred translations for names and terms, for example per client. The set in use guides Standard translations.",
+  "glossaryEmpty": "No glossary sets yet. Add one with +.",
+  "glossaryNewSet": "New glossary set",
+  "glossaryTermCount": "{count, plural, =1{1 term} other{{count} terms}}",
+  "@glossaryTermCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "glossaryInUse": "In use",
+  "glossaryUseInSessions": "Use in sessions",
+  "glossaryUseInSessionsDescription": "One set at a time; applies to Standard translations from the next line",
+  "glossaryNoTerms": "No terms yet. Add one with +.",
+  "glossaryAddTerm": "Add term",
+  "glossaryEditTerm": "Edit term",
+  "glossaryTerm": "Term",
+  "glossaryTranslation": "Preferred translation",
+  "glossaryNote": "Note (optional)",
+  "glossarySetActions": "Set actions",
+  "glossaryRenameSet": "Rename set",
+  "glossaryDeleteSet": "Delete set",
+  "glossaryDeleteSetTitle": "Delete this set?",
+  "glossaryDeleteSetBody": "Its terms are deleted too. This can't be undone.",
+  "glossaryDeleteTerm": "Delete term"
 }

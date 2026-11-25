@@ -7,7 +7,7 @@ session, then update it in the same pull request as each feature or fix.
 - Acceptance criteria: `project-docs/06-feature-details-acs.md`
 - Code map: `.agents/CONTEXT.md`
 
-Last updated: 2026-11-25. Phase 2 started at the owner's request: T-2.7 SRS review (#33).
+Last updated: 2026-11-25. Phase 2 started at the owner's request: T-2.7 SRS review (#33), T-2.8 learning helpers and glossary (#34).
 
 ## How to resume in a new session
 
@@ -70,7 +70,7 @@ other T-2.x tasks and Phase 3 wait until the owner asks.
 | Task | Feature | Status | PR / notes |
 |------|---------|--------|------------|
 | T-2.7 | SRS review and reminders (F-16) | ✅ · 📱 | #33. AC-16.3 timing needs a check on a phone (inexact alarm, doze) |
-| T-2.8 | Post-session review, glossary, suggested replies, summaries (F-17–F-20) | ⬜ | |
+| T-2.8 | Post-session review, glossary, suggested replies, summaries (F-17–F-20) | ✅ · 📱 | #34. AC-18.2 (glossary benchmark) and AC-19.1 (3 s p50) need measuring; the post-session review waits on `ff_post_session_review` in Remote Config |
 | T-2.9 | Privacy policy, Data safety, store listing (en, vi), screenshots | ⬜ | |
 
 ## P1 acceptance criteria
@@ -104,18 +104,24 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 |---------|-----|--------|--------------|
 | F-16 Review | 16.1, 16.2 | ✅ | `test/core/review/sm2_test.dart` (SM-2 reference values), `review_repository_test.dart`, `test/features/review/`; cards live in the local DB, so review needs no network |
 | | 16.3 reminder | ✅ · 📱 | Scheduling is tested (`review_reminder_test.dart`); check that the notification shows at the chosen time on a phone |
+| F-17 Post-session review | 17.1–17.3 | ✅ | `test/features/learning/learning_pages_test.dart`, `test/core/learning/`. Shown only while Remote Config `ff_post_session_review` is true (default false, doc 03 §11) |
+| F-18 Glossary | 18.1 | ✅ | `test/features/glossary/`, `test/core/glossary/glossary_test.dart`. The set switched to "Use in sessions" applies to the sessions that follow |
+| | 18.2 benchmark | 📱 | The prompt carries the matching terms (tested); the ≥ 90% rate needs benchmark glossary clips. No ASR hint yet: neither speech engine takes a prompt in our setup |
+| F-19 Suggested replies | 19.1, 19.2 | ✅ · 📱 | Conversation speaks, Meeting copies (page tests); 3 s p50 needs measuring on a phone |
+| F-20 Summary | 20.1, 20.2 | ✅ | `learning_pages_test.dart`: Meeting/Listen ≥ 3 min, stored in `sessions.summary`, shared as text |
 
 ## Next up (in order)
 
-1. **T-2.8** Post-session review, glossary, suggested replies and summaries (F-17–F-20).
-2. **T-2.9** Privacy policy, Data safety, store listing and screenshots.
-3. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
+1. **T-2.9** Privacy policy, Data safety, store listing and screenshots.
+2. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
 
 ## Waiting on the owner (device and account work)
 
 - Test the voice modes on a phone: the speech model is hosted (GitHub release `models-v1` of the public repo `vientranquangminh/lingomate-models`: `ggml-base.bin`, `ggml-small-q5_1.bin`, `silero_vad.onnx`) and Remote Config `asr_models` points every language at `ggml-base.bin` (2026-11-25). Download a pack in Offline packs, then try Conversation, Listen and Meeting. Switch to `ggml-small-q5_1.bin` if Vietnamese recognition is weak (OQ-3).
 - Run the T-0.4 to T-0.8 measurements on the reference phone and a low-end phone, then write the T-0.10 spike report (answers OQ-3, OQ-4, OQ-5).
 - Add the App Distribution secrets so CI can ship dev builds.
+- Turn on `ff_post_session_review` in Remote Config (dev) to try the post-session review (F-17), and measure Suggest reply latency (AC-19.1, 3 s p50).
+- Add glossary clips to `benchmark/` to measure AC-18.2.
 - Device check for the review reminder (AC-16.3): turn on Phrases → Review → settings → Daily reminder, pick a time a few minutes ahead with a card due, lock the phone and wait.
 - Device checks: the Meeting overlay (drag, tap to expand, Stop, long-press a line, position kept), AC-02.3, AC-02.4, AC-02.5, AC-04.6, AC-04.7, AC-04.9, AC-06.3, AC-09.2 (timing), AC-10.4 (DebugView) and AC-11.6 (system Settings → App languages on Android 13+, both directions).
 - Have native speakers review the partner strings for ja, ko, zh, th, id, es, fr and de in `lib/l10n/partner_strings.dart`.
@@ -131,6 +137,8 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 - Meeting (F-04) keeps one session in `meetingProvider` (not auto-disposed), so captions go on while the user moves around the app; the Home card says when it is running. A new speaker turn is a pause of 3 s or more (no diarization). The overlay shows a Toast when a line is saved. The Live toggle of S-07 waits on Live captions.
 - Partner strings for wave-1 languages that are not UI languages live in `PartnerStrings.bundled`; en and vi come from the ARB files.
 - Review (F-16) follows SM-2: the first answer of a session schedules the card; Again and Hard bring it back at the end of the session until it is graded Good or Easy, and those repeats don't change the schedule. Each phrase has a forward and a reverse card. The reminder is a daily inexact alarm set for the first reminder time on or after the earliest due card, re-synced when the app starts, goes to the background and after a session, so it only fires on days with cards due.
+- Learning helpers (T-2.8) run on `model_text_review` and ask for JSON. "User lines" for the post-session review are speaker `a` lines of a Conversation, the user's own half; tips are saved with the user's sentence as source, the native version as translation and the reason as note. Summaries are written in the user's language (`my_language`). Quota counting for these calls waits on T-2.5. Suggest reply sits on the user's half in Conversation (the divider had no room at 200% text) and in the Meeting header once there is a translated line.
+- The glossary has one active set at a time ("Use in sessions" on S-22); its terms that appear in an utterance, on either side, go into the Standard prompt. Offline (ML Kit) cannot take a glossary.
 - `RatedSpeechSynthesizer` applies the voice speed. Tests that override `speechSynthesizerProvider` bypass it.
 
 ## Log
@@ -138,4 +146,4 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | Date | Change |
 |------|--------|
 | 2026-11-24 | Phase 0 foundations and spikes (#2–#11); design system T-1.1 (#12–#15) |
-| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28); listen mode T-1.6 (#29); meeting mode T-1.7 (#30); speech model hosting guide (#31) and GitHub Releases setup (#32); Phase 2 starts: SRS review T-2.7 (#33) |
+| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28); listen mode T-1.6 (#29); meeting mode T-1.7 (#30); speech model hosting guide (#31) and GitHub Releases setup (#32); Phase 2 starts: SRS review T-2.7 (#33); learning helpers and glossary T-2.8 (#34) |

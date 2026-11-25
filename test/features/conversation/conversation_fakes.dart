@@ -13,11 +13,13 @@ import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/core/engines/tts/speech_synthesizer.dart';
+import 'package:lingo_mate/core/learning/learning_assistant.dart';
 import 'package:lingo_mate/core/platform/mic_permission.dart';
 import 'package:lingo_mate/core/sessions/session_repository.dart';
 import 'package:lingo_mate/core/settings/user_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/learning/learning_fakes.dart';
 import '../../helpers/fake_platform.dart';
 
 import 'package:lingo_mate/features/conversation/data/notifier/conversation_notifier.dart';
@@ -167,12 +169,14 @@ class ConversationFakes {
   final offline = FakeTranslator(EngineKind.offline);
   final tts = FakeSynthesizer();
   bool hasRecognizer = true;
+  bool online = true;
+  final learning = FakeLearningAssistant();
   int nowMs = 0;
   final db = AppDatabase(NativeDatabase.memory());
   late SharedPreferences prefs;
 
   /// Overrides every device-bound provider used by Conversation.
-  List<Override> overrides() => [
+  List<Override> overrides({bool reviewEnabled = true}) => [
     audioCaptureProvider.overrideWith((ref) => capture),
     vadFactoryProvider.overrideWith(
       (ref) async => EnergyVoiceActivityDetector.new,
@@ -188,7 +192,9 @@ class ConversationFakes {
     engineSelectionProvider.overrideWith(
       (ref, request) async => ref.watch(fakeSelectionProvider),
     ),
-    onlineProvider.overrideWith((ref) => Stream.value(true)),
+    onlineProvider.overrideWith((ref) => Stream.value(online)),
+    learningAssistantProvider.overrideWithValue(learning),
+    postSessionReviewEnabledProvider.overrideWithValue(reviewEnabled),
     appDatabaseProvider.overrideWithValue(db),
     micPermissionProvider.overrideWithValue(FakeMicPermission()),
     sharedPreferencesProvider.overrideWithValue(prefs),

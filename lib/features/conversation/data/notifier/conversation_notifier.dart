@@ -189,6 +189,9 @@ class ConversationNotifier extends Notifier<ConversationState> {
     }
   }
 
+  /// Speaks [text] in [lang] with the mic gated, as for a translation (F-19).
+  Future<void> speakText(String text, String lang) => _speak(text, lang);
+
   /// Tracks the engine; a change mid-session raises the switched notice (AC-02.7).
   void _onSelection(EngineSelection selection) {
     final engine = selection.conversationEngine;

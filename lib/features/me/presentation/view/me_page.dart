@@ -80,6 +80,11 @@ class MePage extends ConsumerWidget {
             onTap: () => context.pushNamed(AppRouteName.translationVoice),
           ),
           SettingsRow(
+            icon: AppIcons.glossary,
+            label: l10n.meGlossary,
+            onTap: () => context.pushNamed(AppRouteName.glossary),
+          ),
+          SettingsRow(
             icon: AppIcons.privacy,
             label: l10n.mePrivacy,
             onTap: () => context.pushNamed(AppRouteName.privacy),

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/common/resources/app_config.dart';
+import 'package:lingo_mate/common/widgets/app_circle_icon_button.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
@@ -109,6 +110,48 @@ void main() {
     expect(find.bySemanticsLabel('日本語のマイク'), findsOneWidget);
     expect(find.text('VIETNAMESE'), findsOneWidget);
   });
+
+  testWidgets(
+    'Suggest reply offers 3 replies and speaks the tapped one (AC-19.1, AC-19.2)',
+    (tester) async {
+      fakes.recognizer.texts.add('Xin chào');
+      await pumpPage(tester);
+      expect(
+        tester
+            .widget<AppCircleIconButton>(
+              find.byWidgetPredicate(
+                (w) =>
+                    w is AppCircleIconButton &&
+                    w.semanticLabel == 'Suggest reply',
+              ),
+            )
+            .onPressed,
+        isNull,
+      );
+
+      await tester.tap(find.bySemanticsLabel('Microphone for Vietnamese'));
+      await settle(tester);
+      fakes.nowMs += 1000;
+      fakes.capture
+        ..add(pcm(1000, amplitude: 4000))
+        ..add(pcm(700));
+      await settle(tester);
+      await tester.pump(const Duration(seconds: 1));
+
+      await tester.tap(find.bySemanticsLabel('Suggest reply'));
+      await settle(tester);
+      await tester.pumpAndSettle();
+      expect(find.text('Sounds good to me.'), findsOneWidget);
+      expect(find.text('Nghe ổn đó.'), findsOneWidget);
+      expect(fakes.learning.lastReplyLang, 'en');
+      expect(fakes.learning.asked.single.single.sourceText, 'Xin chào');
+
+      await tester.tap(find.text('Sounds good to me.'));
+      await settle(tester);
+      await tester.pumpAndSettle();
+      expect(fakes.tts.spoken, contains(('Sounds good to me.', 'en')));
+    },
+  );
 
   testWidgets('shows the translation on the partner half (AC-02.2)', (
     tester,

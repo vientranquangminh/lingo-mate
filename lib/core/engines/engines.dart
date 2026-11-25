@@ -41,15 +41,26 @@ class TranslateRequest extends Equatable {
     required this.to,
     required this.text,
     this.context = const [],
+    this.glossary = const {},
   });
 
   final String from;
   final String to;
   final String text;
   final List<String> context;
+  final Map<String, String> glossary;
+
+  /// Returns a copy with [terms] as the glossary.
+  TranslateRequest withGlossary(Map<String, String> terms) => TranslateRequest(
+    from: from,
+    to: to,
+    text: text,
+    context: context,
+    glossary: terms,
+  );
 
   @override
-  List<Object?> get props => [from, to, text, context];
+  List<Object?> get props => [from, to, text, context, glossary];
 }
 
 /// Translated text and the engine that produced it.
