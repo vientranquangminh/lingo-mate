@@ -13,8 +13,8 @@ changes with it.
 
 ## Privacy policy
 
-1. Replace `CONTACT_EMAIL` in `hosting/public/privacy.html` and `privacy-vi.html` with the
-   support address shown on the store listing.
+1. The pages give the owner's support address as the contact; keep it the same as the
+   store listing's contact email.
 2. Deploy the pages: `firebase deploy --only hosting --project <project-id>`. The app opens
    the URL in Remote Config `privacy_policy_url`, which defaults to
    `https://lingo-mate-4f38d.web.app/privacy` (the dev project). Once the production

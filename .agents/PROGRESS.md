@@ -71,7 +71,7 @@ other T-2.x tasks and Phase 3 wait until the owner asks.
 |------|---------|--------|------------|
 | T-2.7 | SRS review and reminders (F-16) | ✅ · 📱 | #33. AC-16.3 timing needs a check on a phone (inexact alarm, doze) |
 | T-2.8 | Post-session review, glossary, suggested replies, summaries (F-17–F-20) | ✅ · 📱 | #34. AC-18.2 (glossary benchmark) and AC-19.1 (3 s p50) need measuring; the post-session review waits on `ff_post_session_review` in Remote Config |
-| T-2.9 | Privacy policy, Data safety, store listing (en, vi), screenshots | ✅ | #35. `docs/store/` and `hosting/public/`. The owner fills in the contact email, deploys hosting and enters it all in Play Console |
+| T-2.9 | Privacy policy, Data safety, store listing (en, vi), screenshots | ✅ | #35. `docs/store/` and `hosting/public/`. The owner deploys hosting and enters the kit in Play Console later |
 
 ## P1 acceptance criteria
 
@@ -119,7 +119,8 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 - Test the voice modes on a phone: the speech model is hosted (GitHub release `models-v1` of the public repo `vientranquangminh/lingomate-models`: `ggml-base.bin`, `ggml-small-q5_1.bin`, `silero_vad.onnx`) and Remote Config `asr_models` points every language at `ggml-base.bin` (2026-11-25). Download a pack in Offline packs, then try Conversation, Listen and Meeting. Switch to `ggml-small-q5_1.bin` if Vietnamese recognition is weak (OQ-3).
 - Run the T-0.4 to T-0.8 measurements on the reference phone and a low-end phone, then write the T-0.10 spike report (answers OQ-3, OQ-4, OQ-5).
 - Add the App Distribution secrets so CI can ship dev builds.
-- Store kit (T-2.9, `docs/store/README.md`): replace `CONTACT_EMAIL` in `hosting/public/privacy*.html`, run `firebase deploy --only hosting`, paste the listing, Data safety answers, screenshots, icon and feature graphic into Play Console, and settle the store name (OQ-7). Move hosting and `privacy_policy_url` to the production project with T-2.1.
+- Privacy policy (T-2.9): the contact email is filled in; run `firebase login` and `firebase deploy --only hosting --project lingo-mate-4f38d` to publish `/privacy` and `/privacy-vi`. Move hosting and `privacy_policy_url` to the production project with T-2.1.
+- Later (owner): paste the listing, Data safety answers, screenshots, icon and feature graphic from `docs/store/` into Play Console, after the store name check (OQ-7).
 - Turn on `ff_post_session_review` in Remote Config (dev) to try the post-session review (F-17), and measure Suggest reply latency (AC-19.1, 3 s p50).
 - Add glossary clips to `benchmark/` to measure AC-18.2.
 - Device check for the review reminder (AC-16.3): turn on Phrases → Review → settings → Daily reminder, pick a time a few minutes ahead with a card due, lock the phone and wait.
