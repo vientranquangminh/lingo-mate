@@ -3,6 +3,7 @@ package com.lingomate.app.channels
 import android.content.Context
 import com.lingomate.app.BackgroundEvents
 import com.lingomate.app.CaptionOverlay
+import com.lingomate.app.OverlayLine
 import com.lingomate.app.TranslationForegroundService
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -30,7 +31,14 @@ class BackgroundChannel(messenger: BinaryMessenger, private val context: Context
                 }
                 "showOverlay" -> result.success(overlay.show())
                 "updateOverlay" -> {
-                    overlay.update(call.argument<List<String>>("lines") ?: emptyList())
+                    val lines = call.argument<List<Map<String, String>>>("lines").orEmpty().map {
+                        OverlayLine(it["original"].orEmpty(), it["translation"].orEmpty())
+                    }
+                    overlay.update(
+                        lines,
+                        call.argument<String>("engineLabel").orEmpty(),
+                        call.argument<String>("engine").orEmpty(),
+                    )
                     result.success(null)
                 }
                 "hideOverlay" -> {

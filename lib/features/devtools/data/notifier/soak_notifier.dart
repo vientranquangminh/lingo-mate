@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../core/audio/audio_capture.dart';
 import '../../../../core/audio/audio_pipeline.dart';
@@ -10,17 +9,6 @@ import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/background/background_capture.dart';
 import '../state/soak_state.dart';
 import 'devtools_providers.dart';
-
-/// Foreground service and overlay used by the soak test.
-final backgroundCaptureProvider = Provider<BackgroundCapture>(
-  (ref) => const NativeBackgroundCapture(),
-);
-
-/// Asks for the notification permission the foreground service needs on Android 13+.
-final notificationPermissionProvider = Provider<Future<void> Function()>(
-  (ref) =>
-      () => Permission.notification.request(),
-);
 
 /// Monotonic milliseconds used to time the soak; replaced in tests.
 final soakClockProvider = Provider<int Function()>((ref) {
@@ -147,7 +135,12 @@ class SoakNotifier extends Notifier<SoakState> {
     if (_overlayLines.length > 8) {
       _overlayLines.removeAt(0);
     }
-    unawaited(_background?.updateOverlay(List.of(_overlayLines)));
+    unawaited(
+      _background?.updateOverlay([
+        for (final text in _overlayLines)
+          OverlayLine(original: '', translation: text),
+      ]),
+    );
   }
 
   /// Stops capture, the service and the overlay.

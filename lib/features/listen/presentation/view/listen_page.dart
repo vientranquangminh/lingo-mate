@@ -20,6 +20,7 @@ import '../../../../common/widgets/engine_chip.dart';
 import '../../../../common/widgets/engine_sheet.dart';
 import '../../../../common/widgets/keep_screen_on.dart';
 import '../../../../common/widgets/mic_permission_gate.dart';
+import '../../../../common/widgets/source_language_pill.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
@@ -264,7 +265,7 @@ class _Header extends ConsumerWidget {
                 runSpacing: AppParams.spacing8.h,
                 crossAxisAlignment: WrapCrossAlignment.center,
                 children: [
-                  _SourcePill(
+                  SourceLanguagePill(
                     source: sourceLabel,
                     target: state.target.toUpperCase(),
                     semanticLabel: l10n.listenSourceSemantics(sourceName),
@@ -294,64 +295,6 @@ class _Header extends ConsumerWidget {
               onPressed: () => showCaptionSettingsSheet(context),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// The `JA ▾ → VI` pill: the speaker's language, which opens the picker, and the user's language.
-class _SourcePill extends StatelessWidget {
-  const _SourcePill({
-    required this.source,
-    required this.target,
-    required this.semanticLabel,
-    required this.onTap,
-  });
-
-  final String source;
-  final String target;
-  final String semanticLabel;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final style = context.textTheme.labelLarge?.copyWith(
-      color: scheme.onSurface,
-    );
-    return Semantics(
-      button: true,
-      label: semanticLabel,
-      excludeSemantics: true,
-      child: Material(
-        color: Colors.transparent,
-        shape: StadiumBorder(side: BorderSide(color: scheme.outlineVariant)),
-        child: InkWell(
-          onTap: onTap,
-          customBorder: const StadiumBorder(),
-          child: Padding(
-            padding: AppParams.pillPadding.r,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(source, style: style),
-                AppIcon(
-                  AppIcons.chevronDown,
-                  size: 16,
-                  color: scheme.onSurface,
-                ),
-                SizedBox(width: AppParams.spacing4.w),
-                AppIcon(
-                  AppIcons.chevronRight,
-                  size: 16,
-                  color: scheme.onSurfaceVariant,
-                ),
-                SizedBox(width: AppParams.spacing4.w),
-                Text(target, style: style),
-              ],
-            ),
-          ),
         ),
       ),
     );

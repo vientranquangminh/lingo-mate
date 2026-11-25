@@ -11,7 +11,6 @@ import '../../../../common/widgets/app_circle_icon_button.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_text_button.dart';
 import '../../../../common/widgets/app_scaffold.dart';
-import '../../../../common/widgets/app_toast.dart';
 import '../../../../common/widgets/engine_chip.dart';
 import '../../../../common/widgets/engine_sheet.dart';
 import '../../../../common/widgets/quick_phrase_card.dart';
@@ -21,6 +20,7 @@ import '../../../../core/quick_phrases/quick_phrases.dart';
 import '../../../../core/sessions/session_repository.dart';
 import '../../../../core/settings/user_settings.dart';
 import '../../../../navigation/route_const.dart';
+import '../../../meeting/data/notifier/meeting_notifier.dart';
 import '../../../language_packs/data/model/pack_models.dart';
 import '../../../language_packs/data/notifier/language_packs_notifier.dart';
 
@@ -121,8 +121,10 @@ class HomePage extends ConsumerWidget {
                     child: _ModeCard(
                       icon: AppIcons.modeMeeting,
                       title: l10n.homeMeetingTitle,
-                      body: l10n.homeMeetingBody,
-                      onTap: () => showAppToast(context, l10n.homeComingSoon),
+                      body: ref.watch(meetingProvider.select((s) => s.running))
+                          ? l10n.homeMeetingRunning
+                          : l10n.homeMeetingBody,
+                      onTap: () => context.pushNamed(AppRouteName.meeting),
                     ),
                   ),
                 ],

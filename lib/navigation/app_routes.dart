@@ -14,6 +14,7 @@ import '../features/home/presentation/view/home_shell.dart';
 import '../features/language_packs/presentation/view/language_packs_page.dart';
 import '../features/listen/presentation/view/listen_page.dart';
 import '../features/me/presentation/view/me_page.dart';
+import '../features/meeting/presentation/view/meeting_page.dart';
 import '../features/me/presentation/view/privacy_page.dart';
 import '../features/me/presentation/view/translation_voice_page.dart';
 import '../features/onboarding/presentation/view/setup_page.dart';
@@ -220,6 +221,12 @@ final goRouterProvider = Provider((ref) {
             ),
           );
         },
+      ),
+      GoRoute(
+        name: AppRouteName.meeting,
+        path: AppRoutePath.meeting,
+        pageBuilder: (context, state) =>
+            const CupertinoPage(child: MeetingPage()),
       ),
       GoRoute(
         name: AppRouteName.showMode,

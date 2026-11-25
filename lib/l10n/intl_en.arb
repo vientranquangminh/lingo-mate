@@ -408,7 +408,6 @@
   "homeListenBody": "Captions for lectures and tours",
   "homeMeetingTitle": "Meeting",
   "homeMeetingBody": "Floating captions for Zoom, Meet",
-  "homeComingSoon": "Coming soon",
   "homeOfflineReady": "Offline ready: {count, plural, =0{no languages} =1{1 language} other{{count} languages}}",
   "@homeOfflineReady": {
     "placeholders": {
@@ -622,5 +621,32 @@
   "listenCaptionSettings": "Caption settings",
   "listenPausedNoEngine": "Translation is paused: no internet and the offline packs for these languages are missing. Captions are kept.",
   "listenPausedNoSpeechModel": "No speech model on this phone yet. Download a language pack to get captions.",
-  "listenPausedMicDenied": "Microphone access is off. Allow it in Settings to get captions."
+  "listenPausedMicDenied": "Microphone access is off. Allow it in Settings to get captions.",
+  "meetingTitle": "Meeting",
+  "meetingSetupTitle": "Put your phone next to the laptop speaker",
+  "meetingSetupBody": "Keep it about 50 cm from the speaker at normal volume. Captions keep running when you switch apps or the screen turns off.",
+  "meetingConsent": "Let the others know you are translating the meeting. Audio is processed and discarded — nothing is recorded.",
+  "meetingDontShowAgain": "Don't show again",
+  "meetingIdle": "Tap Start, then switch to your meeting app. Captions float on top of it.",
+  "meetingWaiting": "Listening to the meeting… captions appear here.",
+  "meetingStart": "Start",
+  "meetingStop": "Stop",
+  "meetingNewSpeaker": "New speaker",
+  "meetingOverlayToggle": "Floating captions",
+  "meetingInAppOnly": "Floating captions are off: captions show in this app only.",
+  "meetingAllowOverlay": "Allow",
+  "meetingOverlayTitle": "Show captions over other apps",
+  "meetingOverlayBody": "To read captions on top of Zoom or Meet, allow Lingo Mate to display over other apps.",
+  "meetingOverlayOpenSettings": "Open settings",
+  "meetingOverlayInAppOnly": "Captions in the app only",
+  "meetingPickSource": "Meeting language",
+  "meetingSourceSemantics": "Meeting language: {language}",
+  "@meetingSourceSemantics": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "homeMeetingRunning": "Meeting captions are running"
 }

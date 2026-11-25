@@ -105,19 +105,18 @@ void main() {
   });
 
   test('locales_config.xml declares exactly the supported languages', () {
-    final xml = File(
-      'android/app/src/main/res/xml/locales_config.xml',
-    ).readAsStringSync();
-    final declared = RegExp(
-      r'<locale android:name="([^"]+)"',
-    ).allMatches(xml).map((m) => m.group(1)).toSet();
+    final xml = File('android/app/src/main/res/xml/locales_config.xml')
+        .readAsStringSync();
+    final declared = RegExp(r'<locale android:name="([^"]+)"')
+        .allMatches(xml)
+        .map((m) => m.group(1))
+        .toSet();
     expect(
       declared,
       AppLocalizations.supportedLocales.map((l) => l.toLanguageTag()).toSet(),
     );
-    final manifest = File(
-      'android/app/src/main/AndroidManifest.xml',
-    ).readAsStringSync();
+    final manifest = File('android/app/src/main/AndroidManifest.xml')
+        .readAsStringSync();
     expect(manifest, contains('android:localeConfig="@xml/locales_config"'));
   });
 }

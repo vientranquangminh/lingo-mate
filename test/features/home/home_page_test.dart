@@ -7,6 +7,7 @@ import 'package:lingo_mate/core/sessions/session_repository.dart';
 import 'package:lingo_mate/core/settings/user_settings.dart';
 import 'package:lingo_mate/flavor_config.dart';
 import 'package:lingo_mate/features/listen/presentation/view/listen_page.dart';
+import 'package:lingo_mate/features/meeting/presentation/view/meeting_page.dart';
 import 'package:lingo_mate/my_app.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -97,7 +98,23 @@ void main() {
     await settle(tester);
 
     expect(find.byType(ListenPage), findsOneWidget);
-    expect(find.bySemanticsLabel("Speaker's language: English"), findsOneWidget);
+    expect(
+      find.bySemanticsLabel("Speaker's language: English"),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('the Meeting card opens Meeting', (tester) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.text('Meeting'));
+    await settle(tester);
+
+    expect(find.byType(MeetingPage), findsOneWidget);
+    expect(
+      find.text('Put your phone next to the laptop speaker'),
+      findsOneWidget,
+    );
   });
 
   testWidgets('the swap button turns the pair around', (tester) async {

@@ -40,6 +40,7 @@ final _screens = <_Screen Function()>[
   () => const _Screen('home', '/'),
   () => const _Screen('conversation', '/conversation?a=vi&b=en'),
   () => const _Screen('listen', '/listen?from=en&to=vi'),
+  () => const _Screen('meeting', '/meeting'),
   () => const _Screen('phrases_mine', '/phrases'),
   () => const _Screen('phrases_quick', '/phrases?tab=quick'),
   () => const _Screen('situation', '/phrases/quick/restaurant'),
