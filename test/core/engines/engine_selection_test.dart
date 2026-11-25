@@ -155,6 +155,7 @@ void main() {
       bool liveQuotaOk = true,
       bool standardQuotaOk = true,
       bool standardFailing = false,
+      bool standardEnabled = true,
       EngineKind? pinned,
     }) => EngineSelector.select(
       EngineSelectionInput(
@@ -168,6 +169,7 @@ void main() {
         liveQuotaOk: liveQuotaOk,
         standardQuotaOk: standardQuotaOk,
         standardFailing: standardFailing,
+        standardEnabled: standardEnabled,
         pinned: pinned,
       ),
     );
@@ -210,6 +212,13 @@ void main() {
 
       expect(s.engine, EngineKind.offline);
       expect(s.blocked[EngineKind.standard], EngineBlock.standardFailing);
+    });
+
+    test('the Standard kill switch falls back to Offline', () {
+      final s = select(standardEnabled: false);
+
+      expect(s.engine, EngineKind.offline);
+      expect(s.blocked[EngineKind.standard], EngineBlock.standardDisabled);
     });
 
     test('Live comes first when enabled, and gives way when out of quota', () {

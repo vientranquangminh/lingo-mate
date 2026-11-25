@@ -20,6 +20,7 @@ import '../../../../common/widgets/engine_sheet.dart';
 import '../../../../common/widgets/mic_button.dart';
 import '../../../../common/widgets/mic_permission_gate.dart';
 import '../../../../common/widgets/save_phrase_action.dart';
+import '../../../../core/config/feature_switches.dart';
 import '../../../../core/learning/learning_models.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
@@ -96,15 +97,20 @@ class ConversationPage extends ConsumerWidget {
                   micForeground: scheme.onPrimary,
                   onLongPressIncoming: (turn) =>
                       _showActions(context, ref, turn),
-                  leading: AppCircleIconButton(
-                    icon: AppIcons.suggestReply,
-                    semanticLabel: l10n.learningSuggestReply,
-                    onPressed:
-                        state.turns.any((t) => t.translation != null) &&
-                            (ref.watch(onlineProvider).value ?? true)
-                        ? () => _suggest(context, ref)
-                        : null,
-                  ),
+                  leading:
+                      !ref.watch(
+                        featureSwitchesProvider.select((s) => s.suggestReply),
+                      )
+                      ? null
+                      : AppCircleIconButton(
+                          icon: AppIcons.suggestReply,
+                          semanticLabel: l10n.learningSuggestReply,
+                          onPressed:
+                              state.turns.any((t) => t.translation != null) &&
+                                  (ref.watch(onlineProvider).value ?? true)
+                              ? () => _suggest(context, ref)
+                              : null,
+                        ),
                   banner: state.paused != null
                       ? _PausedBanner(reason: state.paused!)
                       : state.auto

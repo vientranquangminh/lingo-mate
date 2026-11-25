@@ -27,6 +27,7 @@ import '../../../../common/widgets/source_language_pill.dart';
 import '../../../../common/widgets/app_toast.dart';
 import '../../../../common/widgets/suggested_replies_sheet.dart';
 import '../../../../core/background/background_capture.dart';
+import '../../../../core/config/feature_switches.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/learning/learning_models.dart';
 import '../../../../core/platform/system_settings.dart';
@@ -340,7 +341,10 @@ class _Header extends ConsumerWidget {
                 ],
               ),
             ),
-            if (state.lines.any((l) => l.translation != null))
+            if (state.lines.any((l) => l.translation != null) &&
+                ref.watch(
+                  featureSwitchesProvider.select((s) => s.suggestReply),
+                ))
               AppCircleIconButton(
                 icon: AppIcons.suggestReply,
                 semanticLabel: l10n.learningSuggestReply,

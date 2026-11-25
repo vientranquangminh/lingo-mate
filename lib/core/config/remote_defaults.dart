@@ -16,6 +16,10 @@ abstract final class RemoteDefaults {
   static const ffManageSubscription = 'ff_manage_subscription';
   static const asrModels = 'asr_models';
   static const privacyPolicyUrl = 'privacy_policy_url';
+  static const ffStandardEnabled = 'ff_standard_enabled';
+  static const ffSummary = 'ff_summary';
+  static const ffSuggestReply = 'ff_suggest_reply';
+  static const ffGlossary = 'ff_glossary';
 
   static const _quotaLimitsJson =
       '{"free":{"standard":{"win5hSec":1800,"weekSec":3600},'
@@ -41,5 +45,9 @@ abstract final class RemoteDefaults {
     ffManageSubscription: false,
     asrModels: '{}',
     privacyPolicyUrl: 'https://lingo-mate-4f38d.web.app/privacy',
+    ffStandardEnabled: true,
+    ffSummary: true,
+    ffSuggestReply: true,
+    ffGlossary: true,
   };
 }

@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lingo_mate/core/config/feature_switches.dart';
 import 'package:lingo_mate/core/database/app_database.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
@@ -140,6 +141,18 @@ void main() {
         expect(system.shared, contains('Action items\n• Minh gửi bản thử'));
       },
     );
+
+    testWidgets('the summary kill switch hides Summarize', (tester) async {
+      fakes.switches = const FeatureSwitches(summary: false);
+      final id = await seed(
+        tester,
+        mode: SessionMode.meeting,
+        durationSec: 200,
+      );
+      await pumpAt(tester, '/history/$id');
+
+      expect(find.text('Summarize'), findsNothing);
+    });
 
     testWidgets('short sessions and conversations offer no summary', (
       tester,

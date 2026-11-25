@@ -8,7 +8,7 @@ import 'package:lingo_mate/core/database/app_database.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
-import 'package:lingo_mate/core/learning/learning_assistant.dart';
+import 'package:lingo_mate/core/config/feature_switches.dart';
 import 'package:lingo_mate/core/platform/system_settings.dart';
 import 'package:lingo_mate/core/sessions/session_repository.dart';
 import 'package:lingo_mate/core/settings/user_settings.dart';
@@ -135,7 +135,7 @@ void main() {
           appDatabaseProvider.overrideWithValue(db),
           systemSettingsProvider.overrideWithValue(system),
           sharedPreferencesProvider.overrideWithValue(prefs),
-          postSessionReviewEnabledProvider.overrideWithValue(false),
+          featureSwitchesProvider.overrideWithValue(const FeatureSwitches()),
           onlineProvider.overrideWith((ref) => Stream.value(true)),
         ],
         child: MaterialApp.router(

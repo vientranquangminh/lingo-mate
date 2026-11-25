@@ -4,6 +4,7 @@ import '../ai/generative_model_factory.dart';
 import '../audio/audio_capture.dart';
 import '../audio/silero_voice_activity_detector.dart';
 import '../audio/voice_activity_detector.dart';
+import '../config/feature_switches.dart';
 import '../di/di.dart';
 import '../glossary/glossary_repository.dart';
 import '../glossary/glossary_translator.dart';
@@ -30,7 +31,9 @@ final asrModelCatalogProvider = FutureProvider<AsrModelCatalog>(
 final geminiTranslatorProvider = Provider<TextTranslatorEngine>(
   (ref) => GlossaryTranslator(
     GeminiTextTranslator.firebase(getIt<GenerativeModelFactory>()),
-    ref.watch(glossaryRepositoryProvider).termsIn,
+    ref.watch(featureSwitchesProvider.select((s) => s.glossary))
+        ? ref.watch(glossaryRepositoryProvider).termsIn
+        : (_) async => const {},
   ),
 );
 

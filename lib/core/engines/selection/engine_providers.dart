@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../flavor_config.dart';
+import '../../config/feature_switches.dart';
 import '../../config/remote_config_service.dart';
 import '../../di/di.dart';
 import '../../errors/crash_reporter.dart';
@@ -132,6 +133,9 @@ final engineSelectionProvider =
               ref.watch(liveAvailableProvider) &&
               ref.watch(appPreferencesProvider.select((p) => p.allowLive)),
           standardFailing: ref.watch(errorBurstProvider).isFailing(now),
+          standardEnabled: ref.watch(
+            featureSwitchesProvider.select((s) => s.standard),
+          ),
           packsInstalled: await ref.watch(
             packsInstalledProvider(request.pair).future,
           ),
