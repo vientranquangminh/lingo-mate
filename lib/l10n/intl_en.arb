@@ -583,7 +583,7 @@
   "settingsCaptionExtraLarge": "Extra large",
   "settingsCaptionPreview": "Could we get the bill, please?",
   "settingsKeepScreenOn": "Keep screen on",
-  "settingsKeepScreenOnBody": "The screen stays on during a conversation.",
+  "settingsKeepScreenOnBody": "The screen stays on while a conversation or captions are running.",
   "privacyIntro": "What you say is never stored on our servers. Offline translation stays on your phone; Standard and Live send audio or text to Google only to translate it.",
   "privacyAnalytics": "Share usage analytics",
   "privacyAnalyticsBody": "Anonymous events such as which mode you used — never what you said.",
@@ -599,5 +599,28 @@
   "privacyDeleteConfirmBody": "Everything is deleted and setup starts again.",
   "privacyDeleteConfirm": "Delete everything",
   "aboutLegalese": "Speech and translation run partly on device with Google ML Kit.",
-  "appName": "Lingo Mate"
+  "appName": "Lingo Mate",
+  "listenTitle": "Listen",
+  "listenAuto": "Auto",
+  "listenPickSource": "Speaker's language",
+  "listenSourceSemantics": "Speaker's language: {language}",
+  "@listenSourceSemantics": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "listenStart": "Start",
+  "listenPause": "Pause",
+  "listenResume": "Resume",
+  "listenStop": "Stop",
+  "listenJumpToLive": "Jump to live",
+  "listenIdle": "Tap Start and hold the phone towards the speaker.",
+  "listenWaiting": "Listening… captions appear here.",
+  "listenPausedNote": "Paused. The microphone is off.",
+  "listenCaptionSettings": "Caption settings",
+  "listenPausedNoEngine": "Translation is paused: no internet and the offline packs for these languages are missing. Captions are kept.",
+  "listenPausedNoSpeechModel": "No speech model on this phone yet. Download a language pack to get captions.",
+  "listenPausedMicDenied": "Microphone access is off. Allow it in Settings to get captions."
 }

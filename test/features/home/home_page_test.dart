@@ -6,6 +6,7 @@ import 'package:lingo_mate/core/platform/system_settings.dart';
 import 'package:lingo_mate/core/sessions/session_repository.dart';
 import 'package:lingo_mate/core/settings/user_settings.dart';
 import 'package:lingo_mate/flavor_config.dart';
+import 'package:lingo_mate/features/listen/presentation/view/listen_page.dart';
 import 'package:lingo_mate/my_app.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -85,6 +86,18 @@ void main() {
     expect(find.text('Phrases'), findsOneWidget);
     expect(find.text('History'), findsOneWidget);
     expect(find.text('Me'), findsOneWidget);
+  });
+
+  testWidgets('the Listen card opens Listen from the partner language', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.text('Listen'));
+    await settle(tester);
+
+    expect(find.byType(ListenPage), findsOneWidget);
+    expect(find.bySemanticsLabel("Speaker's language: English"), findsOneWidget);
   });
 
   testWidgets('the swap button turns the pair around', (tester) async {
