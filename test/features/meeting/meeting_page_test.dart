@@ -51,7 +51,10 @@ void main() {
   tearDown(() => fakes.db.close());
 
   /// Pumps the Meeting page in English.
-  Future<ProviderContainer> pumpPage(WidgetTester tester) async {
+  Future<ProviderContainer> pumpPage(
+    WidgetTester tester, {
+    bool autoStart = false,
+  }) async {
     tester.view
       ..physicalSize = const Size(1080, 2340)
       ..devicePixelRatio = 3;
@@ -85,7 +88,7 @@ void main() {
               );
               return child!;
             },
-            home: const MeetingPage(),
+            home: MeetingPage(autoStart: autoStart),
           ),
         ),
       ),
@@ -218,6 +221,17 @@ void main() {
     expect(find.text('[vi] so we can ship by Friday'), findsOneWidget);
     expect(find.bySemanticsLabel('Suggest reply'), findsNothing);
   });
+
+  testWidgets(
+    'opened from the Quick Settings tile, Meeting starts by itself (AC-23.2)',
+    (tester) async {
+      await pumpPage(tester, autoStart: true);
+      await settle(tester);
+
+      expect(background.serviceRunning, isTrue);
+      expect(find.text('Stop'), findsOneWidget);
+    },
+  );
 
   testWidgets('without the overlay permission, Meeting runs in the app only '
       'and says so (AC-04.2)', (tester) async {

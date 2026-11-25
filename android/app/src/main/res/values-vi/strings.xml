@@ -9,4 +9,8 @@
     <string name="overlay_stop">Dừng dịch</string>
     <string name="overlay_saved">Đã lưu vào sổ cụm từ</string>
     <string name="notification_channel_review">Nhắc ôn tập</string>
+    <string name="widget_conversation">Bắt đầu trò chuyện</string>
+    <string name="widget_empty">Đánh dấu sao cụm từ nhanh để thấy chúng ở đây.</string>
+    <string name="widget_description">Bắt đầu trò chuyện và nói nhanh các cụm từ yêu thích.</string>
+    <string name="tile_meeting">Phụ đề cuộc họp</string>
 </resources>

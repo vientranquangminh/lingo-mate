@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lingo_mate/core/auth/auth_providers.dart';
 import 'package:lingo_mate/core/database/app_database.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/platform/mic_permission.dart';
@@ -50,6 +51,7 @@ void main() {
     systemSettingsProvider.overrideWithValue(FakeSystemSettings()),
     deviceLanguageProvider.overrideWithValue(device),
     onlineProvider.overrideWith((ref) => Stream.value(true)),
+    incomingLinksProvider.overrideWithValue(const Stream.empty()),
   ];
 
   /// Pumps the real app.

@@ -14,12 +14,15 @@ import 'common/resources/app_config.dart';
 import 'common/resources/app_theme.dart';
 import 'common/widgets/account_merge_prompt.dart';
 import 'common/widgets/app_toast.dart';
+import 'common/widgets/speak_or_show.dart';
 import 'common/widgets/usage_sheet.dart';
 import 'core/analytics/analytics_service.dart';
 import 'core/auth/auth_models.dart';
 import 'core/auth/auth_providers.dart';
 import 'core/quota/quota_engine.dart';
 import 'core/quota/quota_providers.dart';
+import 'core/platform/home_widget.dart';
+import 'core/quick_phrases/quick_phrases.dart';
 import 'core/review/review_reminder.dart';
 import 'core/settings/app_locale_sync.dart';
 import 'core/sync/sync_controller.dart';
@@ -103,17 +106,61 @@ class _MyAppState extends ConsumerState<MyApp> {
   /// Signs in anonymously and listens for email sign-in links (AC-13.1, AC-13.5).
   void _startAccount() {
     final auth = ref.read(authServiceProvider);
-    if (!auth.available) {
-      return;
+    if (auth.available) {
+      unawaited(auth.ensureSignedIn().catchError((Object _) {}));
     }
-    unawaited(auth.ensureSignedIn().catchError((Object _) {}));
     _links = ref
         .read(incomingLinksProvider)
-        .listen((uri) => _onLink(uri.toString()), onError: (Object _) {});
+        .listen((uri) => _onLink(uri), onError: (Object _) {});
   }
 
-  /// Completes an email sign-in link, or opens the screen that needs the user.
-  Future<void> _onLink(String link) async {
+  /// Opens the screen an app link asks for: Conversation, Meeting or a quick phrase (F-23).
+  Future<void> _openAppLink(AppLink link) async {
+    final router = ref.read(goRouterProvider);
+    final pair = ref.read(userSettingsProvider).pair;
+    switch (link) {
+      case ConversationLink():
+        unawaited(
+          router.pushNamed(
+            AppRouteName.conversation,
+            queryParameters: {'a': pair.a, 'b': pair.b},
+          ),
+        );
+      case MeetingLink(:final start):
+        unawaited(
+          router.pushNamed(
+            AppRouteName.meeting,
+            queryParameters: {if (start) 'start': '1'},
+          ),
+        );
+      case QuickPhraseLink(:final key):
+        final catalog = await ref.read(quickPhraseCatalogProvider.future);
+        final phrase = catalog.phrase(key);
+        final context = rootNavigatorKey.currentState?.overlay?.context;
+        if (phrase == null || context == null || !context.mounted) {
+          return;
+        }
+        await speakOrShow(
+          context,
+          ref,
+          text: phrase.text(pair.b),
+          lang: pair.b,
+          original: phrase.text(pair.a),
+        );
+    }
+  }
+
+  /// Handles an incoming link: an app link, or an email sign-in link that completes or opens the screen that needs the user.
+  Future<void> _onLink(Uri uri) async {
+    final appLink = AppLink.parse(uri);
+    if (appLink != null) {
+      await _openAppLink(appLink);
+      return;
+    }
+    if (!ref.read(authServiceProvider).available) {
+      return;
+    }
+    final link = uri.toString();
     final (outcome, result) = await ref
         .read(authServiceProvider)
         .completeEmailLink(link);
@@ -157,7 +204,8 @@ class _MyAppState extends ConsumerState<MyApp> {
     final router = ref.watch(goRouterProvider);
     ref
       ..watch(privacyConsentProvider)
-      ..watch(syncControllerProvider);
+      ..watch(syncControllerProvider)
+      ..watch(homeWidgetSyncProvider);
     final appLocale = ref.watch(
       userSettingsProvider.select((s) => s.appLocale),
     );

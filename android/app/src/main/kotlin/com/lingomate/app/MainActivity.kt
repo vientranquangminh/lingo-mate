@@ -3,6 +3,7 @@ package com.lingomate.app
 import android.view.WindowManager
 import com.lingomate.app.channels.AppLocaleChannel
 import com.lingomate.app.channels.BackgroundChannel
+import com.lingomate.app.channels.HomeWidgetChannel
 import com.lingomate.app.channels.PcmPlayerChannel
 import com.lingomate.app.channels.ReviewReminderChannel
 import com.lingomate.app.channels.SystemSettingsChannel
@@ -16,6 +17,7 @@ class MainActivity : FlutterActivity() {
     private var systemSettings: SystemSettingsChannel? = null
     private var appLocale: AppLocaleChannel? = null
     private var reviewReminder: ReviewReminderChannel? = null
+    private var homeWidget: HomeWidgetChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -24,6 +26,7 @@ class MainActivity : FlutterActivity() {
         appLocale = AppLocaleChannel(messenger, applicationContext)
         background = BackgroundChannel(messenger, applicationContext)
         reviewReminder = ReviewReminderChannel(messenger, applicationContext)
+        homeWidget = HomeWidgetChannel(messenger, applicationContext)
         systemSettings = SystemSettingsChannel(messenger, applicationContext) { on ->
             runOnUiThread {
                 if (on) {
@@ -46,6 +49,8 @@ class MainActivity : FlutterActivity() {
         appLocale = null
         reviewReminder?.dispose()
         reviewReminder = null
+        homeWidget?.dispose()
+        homeWidget = null
         super.cleanUpFlutterEngine(flutterEngine)
     }
 }

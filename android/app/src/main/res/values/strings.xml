@@ -9,4 +9,8 @@
     <string name="overlay_stop">Stop translating</string>
     <string name="overlay_saved">Saved to phrasebook</string>
     <string name="notification_channel_review">Review reminders</string>
+    <string name="widget_conversation">Start conversation</string>
+    <string name="widget_empty">Star quick phrases to see them here.</string>
+    <string name="widget_description">Start a conversation and say your favourite quick phrases.</string>
+    <string name="tile_meeting">Meeting captions</string>
 </resources>
