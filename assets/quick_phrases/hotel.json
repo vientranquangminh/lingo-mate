@@ -1,0 +1,345 @@
+{
+ "key": "hotel",
+ "icon": "sit_hotel",
+ "phrases": [
+  {
+   "key": "hotel.reservation",
+   "text": {
+    "en": "I have a reservation.",
+    "vi": "Tôi đã đặt phòng trước.",
+    "ja": "予約しています。",
+    "ko": "예약했어요.",
+    "zh": "我有预订。",
+    "th": "ฉันจองห้องไว้แล้ว",
+    "id": "Saya sudah memesan kamar.",
+    "es": "Tengo una reserva.",
+    "fr": "J'ai une réservation.",
+    "de": "Ich habe eine Reservierung."
+   }
+  },
+  {
+   "key": "hotel.reservation_name",
+   "text": {
+    "en": "The reservation is under my name.",
+    "vi": "Phòng được đặt dưới tên tôi.",
+    "ja": "私の名前で予約しています。",
+    "ko": "제 이름으로 예약했어요.",
+    "zh": "预订用的是我的名字。",
+    "th": "จองไว้ในชื่อของฉัน",
+    "id": "Pemesanannya atas nama saya.",
+    "es": "La reserva está a mi nombre.",
+    "fr": "La réservation est à mon nom.",
+    "de": "Die Reservierung läuft auf meinen Namen."
+   }
+  },
+  {
+   "key": "hotel.room_available",
+   "text": {
+    "en": "Do you have a room available tonight?",
+    "vi": "Tối nay còn phòng trống không?",
+    "ja": "今夜空いている部屋はありますか？",
+    "ko": "오늘 밤 빈방 있어요?",
+    "zh": "今晚有空房吗？",
+    "th": "คืนนี้มีห้องว่างไหม",
+    "id": "Apakah ada kamar kosong malam ini?",
+    "es": "¿Tienen una habitación libre esta noche?",
+    "fr": "Avez-vous une chambre libre ce soir ?",
+    "de": "Haben Sie heute Nacht ein Zimmer frei?"
+   }
+  },
+  {
+   "key": "hotel.nights",
+   "text": {
+    "en": "I'd like to stay {n} nights.",
+    "vi": "Tôi muốn ở {n} đêm.",
+    "ja": "{n}泊したいです。",
+    "ko": "{n}박 묵고 싶어요.",
+    "zh": "我想住{n}晚。",
+    "th": "ฉันอยากพัก {n} คืน",
+    "id": "Saya ingin menginap {n} malam.",
+    "es": "Quiero quedarme {n} noches.",
+    "fr": "Je voudrais rester {n} nuits.",
+    "de": "Ich möchte {n} Nächte bleiben."
+   },
+   "slot": {
+    "name": "n",
+    "values": [
+     "1",
+     "2",
+     "3",
+     "7"
+    ]
+   }
+  },
+  {
+   "key": "hotel.price_night",
+   "text": {
+    "en": "How much is it per night?",
+    "vi": "Giá một đêm là bao nhiêu?",
+    "ja": "一泊いくらですか？",
+    "ko": "1박에 얼마예요?",
+    "zh": "一晚多少钱？",
+    "th": "คืนละเท่าไร",
+    "id": "Berapa harga per malam?",
+    "es": "¿Cuánto cuesta por noche?",
+    "fr": "Combien coûte la nuit ?",
+    "de": "Wie viel kostet es pro Nacht?"
+   }
+  },
+  {
+   "key": "hotel.breakfast_included",
+   "text": {
+    "en": "Is breakfast included?",
+    "vi": "Có bao gồm bữa sáng không?",
+    "ja": "朝食は含まれていますか？",
+    "ko": "조식 포함인가요?",
+    "zh": "含早餐吗？",
+    "th": "รวมอาหารเช้าไหม",
+    "id": "Apakah sudah termasuk sarapan?",
+    "es": "¿El desayuno está incluido?",
+    "fr": "Le petit-déjeuner est-il compris ?",
+    "de": "Ist das Frühstück inbegriffen?"
+   }
+  },
+  {
+   "key": "hotel.breakfast_time",
+   "text": {
+    "en": "What time is breakfast?",
+    "vi": "Bữa sáng phục vụ lúc mấy giờ?",
+    "ja": "朝食は何時からですか？",
+    "ko": "조식은 몇 시예요?",
+    "zh": "早餐几点？",
+    "th": "อาหารเช้ากี่โมง",
+    "id": "Sarapan jam berapa?",
+    "es": "¿A qué hora es el desayuno?",
+    "fr": "À quelle heure est le petit-déjeuner ?",
+    "de": "Wann gibt es Frühstück?"
+   }
+  },
+  {
+   "key": "hotel.checkout_time",
+   "text": {
+    "en": "What time is check-out?",
+    "vi": "Mấy giờ phải trả phòng?",
+    "ja": "チェックアウトは何時ですか？",
+    "ko": "체크아웃은 몇 시예요?",
+    "zh": "几点退房？",
+    "th": "เช็คเอาท์กี่โมง",
+    "id": "Jam berapa check-out?",
+    "es": "¿A qué hora hay que dejar la habitación?",
+    "fr": "À quelle heure faut-il libérer la chambre ?",
+    "de": "Wann ist der Check-out?"
+   }
+  },
+  {
+   "key": "hotel.late_checkout",
+   "text": {
+    "en": "Can I check out late?",
+    "vi": "Tôi có thể trả phòng muộn không?",
+    "ja": "レイトチェックアウトはできますか？",
+    "ko": "늦게 체크아웃할 수 있어요?",
+    "zh": "可以晚点退房吗？",
+    "th": "ขอเช็คเอาท์ช้าได้ไหม",
+    "id": "Bisakah saya check-out lebih lambat?",
+    "es": "¿Puedo dejar la habitación más tarde?",
+    "fr": "Puis-je libérer la chambre plus tard ?",
+    "de": "Kann ich später auschecken?"
+   }
+  },
+  {
+   "key": "hotel.wifi_password",
+   "text": {
+    "en": "What is the Wi-Fi password?",
+    "vi": "Mật khẩu Wi-Fi là gì?",
+    "ja": "Wi-Fiのパスワードは何ですか？",
+    "ko": "와이파이 비밀번호가 뭐예요?",
+    "zh": "Wi-Fi密码是多少？",
+    "th": "รหัส Wi-Fi คืออะไร",
+    "id": "Apa kata sandi Wi-Fi-nya?",
+    "es": "¿Cuál es la contraseña del Wi-Fi?",
+    "fr": "Quel est le mot de passe du Wi-Fi ?",
+    "de": "Wie lautet das WLAN-Passwort?"
+   }
+  },
+  {
+   "key": "hotel.store_luggage",
+   "text": {
+    "en": "Can you keep my luggage?",
+    "vi": "Bạn có thể giữ hành lý giúp tôi không?",
+    "ja": "荷物を預かってもらえますか？",
+    "ko": "짐을 맡아 주실 수 있어요?",
+    "zh": "可以帮我寄存行李吗？",
+    "th": "ฝากกระเป๋าได้ไหม",
+    "id": "Bisakah Anda menyimpan koper saya?",
+    "es": "¿Me pueden guardar el equipaje?",
+    "fr": "Pouvez-vous garder mes bagages ?",
+    "de": "Können Sie mein Gepäck aufbewahren?"
+   }
+  },
+  {
+   "key": "hotel.aircon_broken",
+   "text": {
+    "en": "The air conditioning doesn't work.",
+    "vi": "Máy lạnh không hoạt động.",
+    "ja": "エアコンが動きません。",
+    "ko": "에어컨이 안 돼요.",
+    "zh": "空调坏了。",
+    "th": "แอร์ไม่ทำงาน",
+    "id": "AC-nya tidak berfungsi.",
+    "es": "El aire acondicionado no funciona.",
+    "fr": "La climatisation ne marche pas.",
+    "de": "Die Klimaanlage funktioniert nicht."
+   }
+  },
+  {
+   "key": "hotel.no_hot_water",
+   "text": {
+    "en": "There's no hot water.",
+    "vi": "Không có nước nóng.",
+    "ja": "お湯が出ません。",
+    "ko": "뜨거운 물이 안 나와요.",
+    "zh": "没有热水。",
+    "th": "ไม่มีน้ำร้อน",
+    "id": "Tidak ada air panas.",
+    "es": "No hay agua caliente.",
+    "fr": "Il n'y a pas d'eau chaude.",
+    "de": "Es gibt kein warmes Wasser."
+   }
+  },
+  {
+   "key": "hotel.more_towels",
+   "text": {
+    "en": "Could I have more towels, please?",
+    "vi": "Cho tôi thêm khăn tắm được không?",
+    "ja": "タオルをもう少しいただけますか？",
+    "ko": "수건 좀 더 주시겠어요?",
+    "zh": "可以多给我几条毛巾吗？",
+    "th": "ขอผ้าเช็ดตัวเพิ่มได้ไหม",
+    "id": "Boleh saya minta handuk tambahan?",
+    "es": "¿Me podría dar más toallas, por favor?",
+    "fr": "Pourrais-je avoir plus de serviettes, s'il vous plaît ?",
+    "de": "Könnte ich bitte mehr Handtücher bekommen?"
+   }
+  },
+  {
+   "key": "hotel.clean_room",
+   "text": {
+    "en": "Please clean my room.",
+    "vi": "Vui lòng dọn phòng giúp tôi.",
+    "ja": "部屋の掃除をお願いします。",
+    "ko": "방 청소 부탁드려요.",
+    "zh": "请打扫一下我的房间。",
+    "th": "ช่วยทำความสะอาดห้องให้ด้วย",
+    "id": "Tolong bersihkan kamar saya.",
+    "es": "Por favor, limpien mi habitación.",
+    "fr": "Pouvez-vous faire le ménage dans ma chambre ?",
+    "de": "Bitte reinigen Sie mein Zimmer."
+   }
+  },
+  {
+   "key": "hotel.locked_out",
+   "text": {
+    "en": "I locked myself out of my room.",
+    "vi": "Tôi bị khóa ngoài phòng.",
+    "ja": "部屋に鍵を置いたまま閉めてしまいました。",
+    "ko": "방 키를 안에 두고 문이 잠겼어요.",
+    "zh": "我把自己锁在房间外面了。",
+    "th": "ฉันลืมกุญแจไว้ในห้อง",
+    "id": "Saya terkunci di luar kamar.",
+    "es": "Me he quedado fuera de mi habitación.",
+    "fr": "Je me suis enfermé dehors.",
+    "de": "Ich habe mich aus meinem Zimmer ausgesperrt."
+   }
+  },
+  {
+   "key": "hotel.key_not_working",
+   "text": {
+    "en": "My room key doesn't work.",
+    "vi": "Thẻ phòng của tôi không dùng được.",
+    "ja": "ルームキーが使えません。",
+    "ko": "방 키가 안 돼요.",
+    "zh": "我的房卡不能用。",
+    "th": "คีย์การ์ดห้องใช้ไม่ได้",
+    "id": "Kunci kamar saya tidak berfungsi.",
+    "es": "La llave de mi habitación no funciona.",
+    "fr": "Ma clé de chambre ne fonctionne pas.",
+    "de": "Mein Zimmerschlüssel funktioniert nicht."
+   }
+  },
+  {
+   "key": "hotel.quiet_room",
+   "text": {
+    "en": "Could I have a quieter room?",
+    "vi": "Cho tôi phòng yên tĩnh hơn được không?",
+    "ja": "もっと静かな部屋はありますか？",
+    "ko": "좀 더 조용한 방으로 바꿀 수 있어요?",
+    "zh": "可以换一间安静点的房间吗？",
+    "th": "ขอห้องที่เงียบกว่านี้ได้ไหม",
+    "id": "Boleh saya minta kamar yang lebih tenang?",
+    "es": "¿Podría tener una habitación más tranquila?",
+    "fr": "Pourrais-je avoir une chambre plus calme ?",
+    "de": "Könnte ich ein ruhigeres Zimmer bekommen?"
+   }
+  },
+  {
+   "key": "hotel.call_taxi",
+   "text": {
+    "en": "Could you call a taxi for me?",
+    "vi": "Bạn gọi giúp tôi một chiếc taxi được không?",
+    "ja": "タクシーを呼んでもらえますか？",
+    "ko": "택시 좀 불러 주시겠어요?",
+    "zh": "可以帮我叫辆出租车吗？",
+    "th": "ช่วยเรียกแท็กซี่ให้หน่อยได้ไหม",
+    "id": "Bisakah Anda memanggilkan taksi untuk saya?",
+    "es": "¿Me podría pedir un taxi?",
+    "fr": "Pourriez-vous m'appeler un taxi ?",
+    "de": "Könnten Sie mir ein Taxi rufen?"
+   }
+  },
+  {
+   "key": "hotel.safe",
+   "text": {
+    "en": "Is there a safe in the room?",
+    "vi": "Trong phòng có két sắt không?",
+    "ja": "部屋に金庫はありますか？",
+    "ko": "방에 금고가 있어요?",
+    "zh": "房间里有保险箱吗？",
+    "th": "ในห้องมีตู้เซฟไหม",
+    "id": "Apakah ada brankas di kamar?",
+    "es": "¿Hay una caja fuerte en la habitación?",
+    "fr": "Y a-t-il un coffre-fort dans la chambre ?",
+    "de": "Gibt es einen Safe im Zimmer?"
+   }
+  },
+  {
+   "key": "hotel.pay_card",
+   "text": {
+    "en": "Can I pay by card?",
+    "vi": "Tôi trả bằng thẻ được không?",
+    "ja": "カードで払えますか？",
+    "ko": "카드로 결제할 수 있어요?",
+    "zh": "可以刷卡吗？",
+    "th": "จ่ายด้วยบัตรได้ไหม",
+    "id": "Bisakah saya bayar dengan kartu?",
+    "es": "¿Puedo pagar con tarjeta?",
+    "fr": "Puis-je payer par carte ?",
+    "de": "Kann ich mit Karte bezahlen?"
+   }
+  },
+  {
+   "key": "hotel.receipt",
+   "text": {
+    "en": "Could I have a receipt, please?",
+    "vi": "Cho tôi xin hóa đơn được không?",
+    "ja": "領収書をいただけますか？",
+    "ko": "영수증 주시겠어요?",
+    "zh": "可以给我开张收据吗？",
+    "th": "ขอใบเสร็จได้ไหม",
+    "id": "Boleh saya minta kuitansinya?",
+    "es": "¿Me da un recibo, por favor?",
+    "fr": "Je peux avoir un reçu, s'il vous plaît ?",
+    "de": "Könnte ich bitte eine Quittung bekommen?"
+   }
+  }
+ ]
+}

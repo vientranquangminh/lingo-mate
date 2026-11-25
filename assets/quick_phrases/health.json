@@ -1,0 +1,321 @@
+{
+ "key": "health",
+ "icon": "sit_health",
+ "phrases": [
+  {
+   "key": "health.help",
+   "text": {
+    "en": "Help!",
+    "vi": "Cứu tôi với!",
+    "ja": "助けて！",
+    "ko": "도와주세요!",
+    "zh": "救命！",
+    "th": "ช่วยด้วย",
+    "id": "Tolong!",
+    "es": "¡Socorro!",
+    "fr": "Au secours !",
+    "de": "Hilfe!"
+   }
+  },
+  {
+   "key": "health.ambulance",
+   "text": {
+    "en": "Please call an ambulance.",
+    "vi": "Làm ơn gọi xe cấp cứu.",
+    "ja": "救急車を呼んでください。",
+    "ko": "구급차를 불러 주세요.",
+    "zh": "请叫救护车。",
+    "th": "ช่วยเรียกรถพยาบาลด้วย",
+    "id": "Tolong panggil ambulans.",
+    "es": "Llame a una ambulancia, por favor.",
+    "fr": "Appelez une ambulance, s'il vous plaît.",
+    "de": "Bitte rufen Sie einen Krankenwagen."
+   }
+  },
+  {
+   "key": "health.police",
+   "text": {
+    "en": "Please call the police.",
+    "vi": "Làm ơn gọi cảnh sát.",
+    "ja": "警察を呼んでください。",
+    "ko": "경찰을 불러 주세요.",
+    "zh": "请报警。",
+    "th": "ช่วยเรียกตำรวจด้วย",
+    "id": "Tolong panggil polisi.",
+    "es": "Llame a la policía, por favor.",
+    "fr": "Appelez la police, s'il vous plaît.",
+    "de": "Bitte rufen Sie die Polizei."
+   }
+  },
+  {
+   "key": "health.need_doctor",
+   "text": {
+    "en": "I need a doctor.",
+    "vi": "Tôi cần bác sĩ.",
+    "ja": "医者が必要です。",
+    "ko": "의사가 필요해요.",
+    "zh": "我需要看医生。",
+    "th": "ฉันต้องการหมอ",
+    "id": "Saya butuh dokter.",
+    "es": "Necesito un médico.",
+    "fr": "J'ai besoin d'un médecin.",
+    "de": "Ich brauche einen Arzt."
+   }
+  },
+  {
+   "key": "health.hospital",
+   "text": {
+    "en": "Where is the nearest hospital?",
+    "vi": "Bệnh viện gần nhất ở đâu?",
+    "ja": "一番近い病院はどこですか？",
+    "ko": "가장 가까운 병원이 어디예요?",
+    "zh": "最近的医院在哪里？",
+    "th": "โรงพยาบาลที่ใกล้ที่สุดอยู่ที่ไหน",
+    "id": "Di mana rumah sakit terdekat?",
+    "es": "¿Dónde está el hospital más cercano?",
+    "fr": "Où est l'hôpital le plus proche ?",
+    "de": "Wo ist das nächste Krankenhaus?"
+   }
+  },
+  {
+   "key": "health.pharmacy",
+   "text": {
+    "en": "Where is a pharmacy?",
+    "vi": "Nhà thuốc ở đâu?",
+    "ja": "薬局はどこですか？",
+    "ko": "약국이 어디예요?",
+    "zh": "药店在哪里？",
+    "th": "ร้านขายยาอยู่ที่ไหน",
+    "id": "Di mana apotek?",
+    "es": "¿Dónde hay una farmacia?",
+    "fr": "Où est une pharmacie ?",
+    "de": "Wo ist eine Apotheke?"
+   }
+  },
+  {
+   "key": "health.feel_sick",
+   "text": {
+    "en": "I feel sick.",
+    "vi": "Tôi thấy không khỏe.",
+    "ja": "気分が悪いです。",
+    "ko": "몸이 안 좋아요.",
+    "zh": "我觉得不舒服。",
+    "th": "ฉันรู้สึกไม่สบาย",
+    "id": "Saya merasa tidak enak badan.",
+    "es": "Me encuentro mal.",
+    "fr": "Je ne me sens pas bien.",
+    "de": "Mir ist übel."
+   }
+  },
+  {
+   "key": "health.headache",
+   "text": {
+    "en": "I have a headache.",
+    "vi": "Tôi bị đau đầu.",
+    "ja": "頭が痛いです。",
+    "ko": "머리가 아파요.",
+    "zh": "我头疼。",
+    "th": "ฉันปวดหัว",
+    "id": "Saya sakit kepala.",
+    "es": "Me duele la cabeza.",
+    "fr": "J'ai mal à la tête.",
+    "de": "Ich habe Kopfschmerzen."
+   }
+  },
+  {
+   "key": "health.stomach",
+   "text": {
+    "en": "I have a stomach ache.",
+    "vi": "Tôi bị đau bụng.",
+    "ja": "お腹が痛いです。",
+    "ko": "배가 아파요.",
+    "zh": "我肚子疼。",
+    "th": "ฉันปวดท้อง",
+    "id": "Saya sakit perut.",
+    "es": "Me duele el estómago.",
+    "fr": "J'ai mal au ventre.",
+    "de": "Ich habe Bauchschmerzen."
+   }
+  },
+  {
+   "key": "health.fever",
+   "text": {
+    "en": "I have a fever.",
+    "vi": "Tôi bị sốt.",
+    "ja": "熱があります。",
+    "ko": "열이 나요.",
+    "zh": "我发烧了。",
+    "th": "ฉันมีไข้",
+    "id": "Saya demam.",
+    "es": "Tengo fiebre.",
+    "fr": "J'ai de la fièvre.",
+    "de": "Ich habe Fieber."
+   }
+  },
+  {
+   "key": "health.hurts_here",
+   "text": {
+    "en": "It hurts here.",
+    "vi": "Tôi đau ở đây.",
+    "ja": "ここが痛いです。",
+    "ko": "여기가 아파요.",
+    "zh": "这里疼。",
+    "th": "เจ็บตรงนี้",
+    "id": "Sakit di sini.",
+    "es": "Me duele aquí.",
+    "fr": "J'ai mal ici.",
+    "de": "Es tut hier weh."
+   }
+  },
+  {
+   "key": "health.allergic_medicine",
+   "text": {
+    "en": "I'm allergic to penicillin.",
+    "vi": "Tôi bị dị ứng penicillin.",
+    "ja": "ペニシリンアレルギーがあります。",
+    "ko": "페니실린 알레르기가 있어요.",
+    "zh": "我对青霉素过敏。",
+    "th": "ฉันแพ้ยาเพนิซิลลิน",
+    "id": "Saya alergi penisilin.",
+    "es": "Soy alérgico a la penicilina.",
+    "fr": "Je suis allergique à la pénicilline.",
+    "de": "Ich bin allergisch gegen Penicillin."
+   }
+  },
+  {
+   "key": "health.diabetic",
+   "text": {
+    "en": "I'm diabetic.",
+    "vi": "Tôi bị tiểu đường.",
+    "ja": "糖尿病があります。",
+    "ko": "저는 당뇨병이 있어요.",
+    "zh": "我有糖尿病。",
+    "th": "ฉันเป็นเบาหวาน",
+    "id": "Saya penderita diabetes.",
+    "es": "Soy diabético.",
+    "fr": "Je suis diabétique.",
+    "de": "Ich bin Diabetiker."
+   }
+  },
+  {
+   "key": "health.take_medicine",
+   "text": {
+    "en": "I take this medicine.",
+    "vi": "Tôi đang dùng thuốc này.",
+    "ja": "この薬を飲んでいます。",
+    "ko": "이 약을 먹고 있어요.",
+    "zh": "我在吃这种药。",
+    "th": "ฉันกินยานี้อยู่",
+    "id": "Saya minum obat ini.",
+    "es": "Tomo este medicamento.",
+    "fr": "Je prends ce médicament.",
+    "de": "Ich nehme dieses Medikament."
+   }
+  },
+  {
+   "key": "health.pregnant",
+   "text": {
+    "en": "I'm pregnant.",
+    "vi": "Tôi đang mang thai.",
+    "ja": "妊娠しています。",
+    "ko": "임신 중이에요.",
+    "zh": "我怀孕了。",
+    "th": "ฉันตั้งครรภ์",
+    "id": "Saya sedang hamil.",
+    "es": "Estoy embarazada.",
+    "fr": "Je suis enceinte.",
+    "de": "Ich bin schwanger."
+   }
+  },
+  {
+   "key": "health.lost_passport",
+   "text": {
+    "en": "I lost my passport.",
+    "vi": "Tôi bị mất hộ chiếu.",
+    "ja": "パスポートをなくしました。",
+    "ko": "여권을 잃어버렸어요.",
+    "zh": "我的护照丢了。",
+    "th": "ฉันทำพาสปอร์ตหาย",
+    "id": "Paspor saya hilang.",
+    "es": "He perdido mi pasaporte.",
+    "fr": "J'ai perdu mon passeport.",
+    "de": "Ich habe meinen Reisepass verloren."
+   }
+  },
+  {
+   "key": "health.stolen",
+   "text": {
+    "en": "My wallet was stolen.",
+    "vi": "Ví của tôi bị lấy cắp.",
+    "ja": "財布を盗まれました。",
+    "ko": "지갑을 도둑맞았어요.",
+    "zh": "我的钱包被偷了。",
+    "th": "กระเป๋าสตางค์ของฉันถูกขโมย",
+    "id": "Dompet saya dicuri.",
+    "es": "Me han robado la cartera.",
+    "fr": "On m'a volé mon portefeuille.",
+    "de": "Mein Portemonnaie wurde gestohlen."
+   }
+  },
+  {
+   "key": "health.embassy",
+   "text": {
+    "en": "Where is the embassy?",
+    "vi": "Đại sứ quán ở đâu?",
+    "ja": "大使館はどこですか？",
+    "ko": "대사관이 어디예요?",
+    "zh": "大使馆在哪里？",
+    "th": "สถานทูตอยู่ที่ไหน",
+    "id": "Di mana kedutaan besar?",
+    "es": "¿Dónde está la embajada?",
+    "fr": "Où est l'ambassade ?",
+    "de": "Wo ist die Botschaft?"
+   }
+  },
+  {
+   "key": "health.emergency",
+   "text": {
+    "en": "It's an emergency.",
+    "vi": "Đây là trường hợp khẩn cấp.",
+    "ja": "緊急です。",
+    "ko": "응급 상황이에요.",
+    "zh": "这是紧急情况。",
+    "th": "นี่เป็นเหตุฉุกเฉิน",
+    "id": "Ini keadaan darurat.",
+    "es": "Es una emergencia.",
+    "fr": "C'est une urgence.",
+    "de": "Es ist ein Notfall."
+   }
+  },
+  {
+   "key": "health.insurance",
+   "text": {
+    "en": "I have travel insurance.",
+    "vi": "Tôi có bảo hiểm du lịch.",
+    "ja": "旅行保険に入っています。",
+    "ko": "여행자 보험이 있어요.",
+    "zh": "我有旅游保险。",
+    "th": "ฉันมีประกันการเดินทาง",
+    "id": "Saya punya asuransi perjalanan.",
+    "es": "Tengo seguro de viaje.",
+    "fr": "J'ai une assurance voyage.",
+    "de": "Ich habe eine Reiseversicherung."
+   }
+  },
+  {
+   "key": "health.speak_english",
+   "text": {
+    "en": "Does anyone here speak English?",
+    "vi": "Ở đây có ai nói tiếng Anh không?",
+    "ja": "英語を話せる人はいますか？",
+    "ko": "여기 영어 할 수 있는 분 있어요?",
+    "zh": "这里有人会说英语吗？",
+    "th": "ที่นี่มีใครพูดภาษาอังกฤษได้ไหม",
+    "id": "Ada yang bisa berbahasa Inggris di sini?",
+    "es": "¿Alguien aquí habla inglés?",
+    "fr": "Quelqu'un parle anglais ici ?",
+    "de": "Spricht hier jemand Englisch?"
+   }
+  }
+ ]
+}

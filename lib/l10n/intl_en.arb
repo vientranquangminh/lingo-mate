@@ -439,7 +439,6 @@
   },
   "homeSwapLanguages": "Swap languages",
   "homePickLanguage": "Choose a language",
-  "phrasesComingSoon": "Your phrasebook and quick phrases will live here.",
   "meTitle": "Me",
   "meSettings": "Settings",
   "meOfflinePacks": "Offline packs",
@@ -469,7 +468,6 @@
       }
     }
   },
-  "phrasesQuickComingSoon": "Quick phrases by situation are coming next.",
   "phraseSaved": "Saved to phrasebook",
   "phraseDuplicate": "Already in phrasebook",
   "phraseSave": "Save to phrasebook",
@@ -513,5 +511,48 @@
   "addPhraseTranslation": "Translation",
   "addPhraseSave": "Save",
   "addPhraseNoEngine": "No translation engine is available. Type the translation yourself.",
-  "addPhraseFailed": "Couldn't translate. Type the translation yourself."
+  "addPhraseFailed": "Couldn't translate. Type the translation yourself.",
+  "quickTranslateInto": "Translate into: {language}",
+  "@quickTranslateInto": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "quickFavorites": "Favorites",
+  "quickPhraseCount": "{count, plural, =1{1 phrase} other{{count} phrases}}",
+  "@quickPhraseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "situationAirport": "Airport",
+  "situationHotel": "Hotel",
+  "situationRestaurant": "Restaurant",
+  "situationTaxi": "Taxi & directions",
+  "situationShopping": "Shopping",
+  "situationHealth": "Health & emergency",
+  "situationSmalltalk": "Small talk",
+  "situationMeeting": "Meeting basics",
+  "quickSubtitle": "{from} → {to} · works offline",
+  "@quickSubtitle": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "quickHint": "Tap a phrase to play it · Long-press to show it large",
+  "quickStar": "Add to favorites",
+  "quickUnstar": "Remove from favorites",
+  "quickVoiceMissing": "No voice for this language is installed, so the phrase is shown instead. Install a voice in Settings to hear it.",
+  "homeFavoritePhrases": "Favorite phrases",
+  "homeSeeAll": "See all",
+  "showModeSpeak": "Speak"
 }

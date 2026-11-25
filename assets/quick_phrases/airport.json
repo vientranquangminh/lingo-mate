@@ -1,0 +1,353 @@
+{
+ "key": "airport",
+ "icon": "sit_airport",
+ "phrases": [
+  {
+   "key": "airport.where_checkin",
+   "text": {
+    "en": "Where is the check-in counter?",
+    "vi": "Quầy làm thủ tục ở đâu?",
+    "ja": "チェックインカウンターはどこですか？",
+    "ko": "체크인 카운터가 어디예요?",
+    "zh": "值机柜台在哪里？",
+    "th": "เคาน์เตอร์เช็คอินอยู่ที่ไหน",
+    "id": "Di mana konter check-in?",
+    "es": "¿Dónde está el mostrador de facturación?",
+    "fr": "Où est le comptoir d'enregistrement ?",
+    "de": "Wo ist der Check-in-Schalter?"
+   }
+  },
+  {
+   "key": "airport.window_seat",
+   "text": {
+    "en": "Can I have a window seat, please?",
+    "vi": "Cho tôi ghế cạnh cửa sổ được không?",
+    "ja": "窓側の席をお願いできますか？",
+    "ko": "창가 자리로 주시겠어요?",
+    "zh": "可以给我靠窗的座位吗？",
+    "th": "ขอที่นั่งริมหน้าต่างได้ไหม",
+    "id": "Boleh saya minta kursi dekat jendela?",
+    "es": "¿Me puede dar un asiento de ventanilla, por favor?",
+    "fr": "Je peux avoir une place côté hublot, s'il vous plaît ?",
+    "de": "Kann ich bitte einen Fensterplatz bekommen?"
+   }
+  },
+  {
+   "key": "airport.aisle_seat",
+   "text": {
+    "en": "Can I have an aisle seat, please?",
+    "vi": "Cho tôi ghế cạnh lối đi được không?",
+    "ja": "通路側の席をお願いできますか？",
+    "ko": "통로 쪽 자리로 주시겠어요?",
+    "zh": "可以给我靠过道的座位吗？",
+    "th": "ขอที่นั่งริมทางเดินได้ไหม",
+    "id": "Boleh saya minta kursi dekat lorong?",
+    "es": "¿Me puede dar un asiento de pasillo, por favor?",
+    "fr": "Je peux avoir une place côté couloir, s'il vous plaît ?",
+    "de": "Kann ich bitte einen Platz am Gang bekommen?"
+   }
+  },
+  {
+   "key": "airport.bags",
+   "text": {
+    "en": "I have {n} bags to check in.",
+    "vi": "Tôi có {n} kiện hành lý ký gửi.",
+    "ja": "預ける荷物が{n}個あります。",
+    "ko": "부칠 짐이 {n}개 있어요.",
+    "zh": "我有{n}件行李要托运。",
+    "th": "ฉันมีกระเป๋าโหลด {n} ใบ",
+    "id": "Saya punya {n} koper untuk bagasi.",
+    "es": "Tengo {n} maletas para facturar.",
+    "fr": "J'ai {n} bagages à enregistrer.",
+    "de": "Ich habe {n} Gepäckstücke aufzugeben."
+   },
+   "slot": {
+    "name": "n",
+    "values": [
+     "1",
+     "2",
+     "3"
+    ]
+   }
+  },
+  {
+   "key": "airport.where_gate",
+   "text": {
+    "en": "Where is my gate?",
+    "vi": "Cổng lên máy bay của tôi ở đâu?",
+    "ja": "私の搭乗口はどこですか？",
+    "ko": "제 탑승구가 어디예요?",
+    "zh": "我的登机口在哪里？",
+    "th": "ประตูขึ้นเครื่องของฉันอยู่ที่ไหน",
+    "id": "Di mana gerbang keberangkatan saya?",
+    "es": "¿Dónde está mi puerta de embarque?",
+    "fr": "Où est ma porte d'embarquement ?",
+    "de": "Wo ist mein Gate?"
+   }
+  },
+  {
+   "key": "airport.boarding_time",
+   "text": {
+    "en": "What time does boarding start?",
+    "vi": "Mấy giờ bắt đầu lên máy bay?",
+    "ja": "搭乗開始は何時ですか？",
+    "ko": "탑승은 몇 시에 시작해요?",
+    "zh": "几点开始登机？",
+    "th": "เริ่มขึ้นเครื่องกี่โมง",
+    "id": "Jam berapa mulai boarding?",
+    "es": "¿A qué hora empieza el embarque?",
+    "fr": "À quelle heure commence l'embarquement ?",
+    "de": "Wann beginnt das Boarding?"
+   }
+  },
+  {
+   "key": "airport.delayed",
+   "text": {
+    "en": "Is the flight delayed?",
+    "vi": "Chuyến bay có bị hoãn không?",
+    "ja": "フライトは遅れていますか？",
+    "ko": "비행기가 지연되나요?",
+    "zh": "航班延误了吗？",
+    "th": "เที่ยวบินล่าช้าไหม",
+    "id": "Apakah penerbangannya ditunda?",
+    "es": "¿El vuelo tiene retraso?",
+    "fr": "Le vol est-il retardé ?",
+    "de": "Hat der Flug Verspätung?"
+   }
+  },
+  {
+   "key": "airport.missed_flight",
+   "text": {
+    "en": "I missed my flight. What can I do?",
+    "vi": "Tôi bị lỡ chuyến bay. Tôi phải làm gì?",
+    "ja": "飛行機に乗り遅れました。どうすればいいですか？",
+    "ko": "비행기를 놓쳤어요. 어떻게 해야 하나요?",
+    "zh": "我误机了，该怎么办？",
+    "th": "ฉันตกเครื่อง ต้องทำอย่างไร",
+    "id": "Saya ketinggalan pesawat. Apa yang bisa saya lakukan?",
+    "es": "He perdido mi vuelo. ¿Qué puedo hacer?",
+    "fr": "J'ai raté mon vol. Que puis-je faire ?",
+    "de": "Ich habe meinen Flug verpasst. Was kann ich tun?"
+   }
+  },
+  {
+   "key": "airport.connecting",
+   "text": {
+    "en": "I have a connecting flight.",
+    "vi": "Tôi có chuyến bay nối chuyến.",
+    "ja": "乗り継ぎ便があります。",
+    "ko": "환승 비행기가 있어요.",
+    "zh": "我要转机。",
+    "th": "ฉันมีเที่ยวบินต่อเครื่อง",
+    "id": "Saya punya penerbangan lanjutan.",
+    "es": "Tengo un vuelo de conexión.",
+    "fr": "J'ai un vol en correspondance.",
+    "de": "Ich habe einen Anschlussflug."
+   }
+  },
+  {
+   "key": "airport.baggage_claim",
+   "text": {
+    "en": "Where is baggage claim?",
+    "vi": "Khu nhận hành lý ở đâu?",
+    "ja": "手荷物受取所はどこですか？",
+    "ko": "수하물 찾는 곳이 어디예요?",
+    "zh": "行李提取处在哪里？",
+    "th": "จุดรับกระเป๋าอยู่ที่ไหน",
+    "id": "Di mana tempat pengambilan bagasi?",
+    "es": "¿Dónde está la recogida de equipajes?",
+    "fr": "Où est la livraison des bagages ?",
+    "de": "Wo ist die Gepäckausgabe?"
+   }
+  },
+  {
+   "key": "airport.lost_bag",
+   "text": {
+    "en": "My bag didn't arrive.",
+    "vi": "Hành lý của tôi không đến.",
+    "ja": "荷物が出てきませんでした。",
+    "ko": "제 짐이 안 나왔어요.",
+    "zh": "我的行李没有到。",
+    "th": "กระเป๋าของฉันไม่มา",
+    "id": "Koper saya tidak datang.",
+    "es": "Mi maleta no ha llegado.",
+    "fr": "Mon bagage n'est pas arrivé.",
+    "de": "Mein Gepäck ist nicht angekommen."
+   }
+  },
+  {
+   "key": "airport.damaged_bag",
+   "text": {
+    "en": "My suitcase is damaged.",
+    "vi": "Vali của tôi bị hỏng.",
+    "ja": "スーツケースが壊れています。",
+    "ko": "제 여행 가방이 파손됐어요.",
+    "zh": "我的行李箱坏了。",
+    "th": "กระเป๋าเดินทางของฉันเสียหาย",
+    "id": "Koper saya rusak.",
+    "es": "Mi maleta está dañada.",
+    "fr": "Ma valise est abîmée.",
+    "de": "Mein Koffer ist beschädigt."
+   }
+  },
+  {
+   "key": "airport.nothing_declare",
+   "text": {
+    "en": "I have nothing to declare.",
+    "vi": "Tôi không có gì cần khai báo.",
+    "ja": "申告するものはありません。",
+    "ko": "신고할 물건이 없어요.",
+    "zh": "我没有需要申报的物品。",
+    "th": "ฉันไม่มีของต้องสำแดง",
+    "id": "Saya tidak punya barang yang perlu dilaporkan.",
+    "es": "No tengo nada que declarar.",
+    "fr": "Je n'ai rien à déclarer.",
+    "de": "Ich habe nichts zu verzollen."
+   }
+  },
+  {
+   "key": "airport.tourism",
+   "text": {
+    "en": "I'm here on holiday.",
+    "vi": "Tôi đến đây để du lịch.",
+    "ja": "観光で来ました。",
+    "ko": "관광하러 왔어요.",
+    "zh": "我是来旅游的。",
+    "th": "ฉันมาเที่ยว",
+    "id": "Saya ke sini untuk berlibur.",
+    "es": "Estoy aquí de vacaciones.",
+    "fr": "Je suis ici en vacances.",
+    "de": "Ich bin im Urlaub hier."
+   }
+  },
+  {
+   "key": "airport.business_trip",
+   "text": {
+    "en": "I'm here on business.",
+    "vi": "Tôi đến đây công tác.",
+    "ja": "仕事で来ました。",
+    "ko": "출장으로 왔어요.",
+    "zh": "我是来出差的。",
+    "th": "ฉันมาทำธุระ",
+    "id": "Saya ke sini untuk urusan bisnis.",
+    "es": "Estoy aquí por trabajo.",
+    "fr": "Je suis ici pour le travail.",
+    "de": "Ich bin geschäftlich hier."
+   }
+  },
+  {
+   "key": "airport.stay_days",
+   "text": {
+    "en": "I'm staying for {n} days.",
+    "vi": "Tôi ở lại {n} ngày.",
+    "ja": "{n}日間滞在します。",
+    "ko": "{n}일 동안 머물러요.",
+    "zh": "我待{n}天。",
+    "th": "ฉันจะอยู่ {n} วัน",
+    "id": "Saya tinggal selama {n} hari.",
+    "es": "Me quedo {n} días.",
+    "fr": "Je reste {n} jours.",
+    "de": "Ich bleibe {n} Tage."
+   },
+   "slot": {
+    "name": "n",
+    "values": [
+     "3",
+     "5",
+     "7",
+     "14"
+    ]
+   }
+  },
+  {
+   "key": "airport.taxi_where",
+   "text": {
+    "en": "Where can I get a taxi?",
+    "vi": "Tôi có thể bắt taxi ở đâu?",
+    "ja": "タクシー乗り場はどこですか？",
+    "ko": "택시는 어디서 탈 수 있어요?",
+    "zh": "在哪里可以打车？",
+    "th": "เรียกแท็กซี่ได้ที่ไหน",
+    "id": "Di mana saya bisa naik taksi?",
+    "es": "¿Dónde puedo tomar un taxi?",
+    "fr": "Où puis-je prendre un taxi ?",
+    "de": "Wo bekomme ich ein Taxi?"
+   }
+  },
+  {
+   "key": "airport.train_city",
+   "text": {
+    "en": "How do I get to the city centre?",
+    "vi": "Làm sao để vào trung tâm thành phố?",
+    "ja": "市内中心部へはどう行けばいいですか？",
+    "ko": "시내 중심가로 어떻게 가요?",
+    "zh": "怎么去市中心？",
+    "th": "ไปใจกลางเมืองได้อย่างไร",
+    "id": "Bagaimana cara ke pusat kota?",
+    "es": "¿Cómo llego al centro de la ciudad?",
+    "fr": "Comment aller au centre-ville ?",
+    "de": "Wie komme ich ins Stadtzentrum?"
+   }
+  },
+  {
+   "key": "airport.wifi",
+   "text": {
+    "en": "Is there free Wi-Fi here?",
+    "vi": "Ở đây có Wi-Fi miễn phí không?",
+    "ja": "ここに無料Wi-Fiはありますか？",
+    "ko": "여기 무료 와이파이 있어요?",
+    "zh": "这里有免费Wi-Fi吗？",
+    "th": "ที่นี่มี Wi-Fi ฟรีไหม",
+    "id": "Apakah ada Wi-Fi gratis di sini?",
+    "es": "¿Hay Wi-Fi gratis aquí?",
+    "fr": "Y a-t-il du Wi-Fi gratuit ici ?",
+    "de": "Gibt es hier kostenloses WLAN?"
+   }
+  },
+  {
+   "key": "airport.exchange",
+   "text": {
+    "en": "Where can I exchange money?",
+    "vi": "Tôi có thể đổi tiền ở đâu?",
+    "ja": "両替所はどこですか？",
+    "ko": "환전은 어디서 할 수 있어요?",
+    "zh": "在哪里可以换钱？",
+    "th": "แลกเงินได้ที่ไหน",
+    "id": "Di mana saya bisa menukar uang?",
+    "es": "¿Dónde puedo cambiar dinero?",
+    "fr": "Où puis-je changer de l'argent ?",
+    "de": "Wo kann ich Geld wechseln?"
+   }
+  },
+  {
+   "key": "airport.restroom",
+   "text": {
+    "en": "Where is the restroom?",
+    "vi": "Nhà vệ sinh ở đâu?",
+    "ja": "トイレはどこですか？",
+    "ko": "화장실이 어디예요?",
+    "zh": "洗手间在哪里？",
+    "th": "ห้องน้ำอยู่ที่ไหน",
+    "id": "Di mana toilet?",
+    "es": "¿Dónde está el baño?",
+    "fr": "Où sont les toilettes ?",
+    "de": "Wo ist die Toilette?"
+   }
+  },
+  {
+   "key": "airport.sim_card",
+   "text": {
+    "en": "Where can I buy a SIM card?",
+    "vi": "Tôi có thể mua thẻ SIM ở đâu?",
+    "ja": "SIMカードはどこで買えますか？",
+    "ko": "유심은 어디서 살 수 있어요?",
+    "zh": "在哪里可以买SIM卡？",
+    "th": "ซื้อซิมการ์ดได้ที่ไหน",
+    "id": "Di mana saya bisa membeli kartu SIM?",
+    "es": "¿Dónde puedo comprar una tarjeta SIM?",
+    "fr": "Où puis-je acheter une carte SIM ?",
+    "de": "Wo kann ich eine SIM-Karte kaufen?"
+   }
+  }
+ ]
+}

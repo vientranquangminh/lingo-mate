@@ -14,13 +14,16 @@ import '../../../../core/phrases/phrase_repository.dart';
 import '../../../../navigation/route_const.dart';
 import '../../data/notifier/phrasebook_providers.dart';
 import '../widget/phrase_row.dart';
+import '../widget/quick_tab.dart';
 
 /// Which half of the Phrases tab is open.
 enum PhrasesTab { quick, mine }
 
 /// Phrases tab: `Quick | Mine`; Mine is the phrasebook S-11 (F-08).
 class PhrasesPage extends ConsumerStatefulWidget {
-  const PhrasesPage({super.key});
+  const PhrasesPage({super.key, this.initialTab = PhrasesTab.mine});
+
+  final PhrasesTab initialTab;
 
   @override
   ConsumerState<PhrasesPage> createState() => _PhrasesPageState();
@@ -28,8 +31,16 @@ class PhrasesPage extends ConsumerStatefulWidget {
 
 class _PhrasesPageState extends ConsumerState<PhrasesPage> {
   final _search = TextEditingController();
-  PhrasesTab _tab = PhrasesTab.mine;
+  late PhrasesTab _tab = widget.initialTab;
   PhraseFilter _filter = const PhraseFilter();
+
+  @override
+  void didUpdateWidget(PhrasesPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialTab != oldWidget.initialTab) {
+      _tab = widget.initialTab;
+    }
+  }
 
   @override
   void dispose() {
@@ -86,7 +97,7 @@ class _PhrasesPageState extends ConsumerState<PhrasesPage> {
             ),
             Expanded(
               child: _tab == PhrasesTab.quick
-                  ? _Message(l10n.phrasesQuickComingSoon)
+                  ? const QuickTab()
                   : _Mine(
                       search: _search,
                       filter: _filter,

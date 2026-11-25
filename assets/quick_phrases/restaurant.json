@@ -1,0 +1,345 @@
+{
+ "key": "restaurant",
+ "icon": "sit_restaurant",
+ "phrases": [
+  {
+   "key": "restaurant.table_for",
+   "text": {
+    "en": "Do you have a table for {n}?",
+    "vi": "Có bàn cho {n} người không?",
+    "ja": "{n}人ですが、席はありますか？",
+    "ko": "{n}명 자리 있어요?",
+    "zh": "有{n}个人的位子吗？",
+    "th": "มีโต๊ะสำหรับ {n} คนไหม",
+    "id": "Ada meja untuk {n} orang?",
+    "es": "¿Tienen mesa para {n}?",
+    "fr": "Avez-vous une table pour {n} ?",
+    "de": "Haben Sie einen Tisch für {n}?"
+   },
+   "slot": {
+    "name": "n",
+    "values": [
+     "1",
+     "2",
+     "3",
+     "4"
+    ]
+   }
+  },
+  {
+   "key": "restaurant.menu",
+   "text": {
+    "en": "Could I see the menu?",
+    "vi": "Cho tôi xem thực đơn được không?",
+    "ja": "メニューを見せてください。",
+    "ko": "메뉴판 좀 보여 주시겠어요?",
+    "zh": "可以看一下菜单吗？",
+    "th": "ขอดูเมนูหน่อยได้ไหม",
+    "id": "Boleh saya lihat menunya?",
+    "es": "¿Me trae la carta, por favor?",
+    "fr": "Je peux voir la carte ?",
+    "de": "Kann ich bitte die Speisekarte sehen?"
+   }
+  },
+  {
+   "key": "restaurant.english_menu",
+   "text": {
+    "en": "Do you have a menu in English?",
+    "vi": "Có thực đơn tiếng Anh không?",
+    "ja": "英語のメニューはありますか？",
+    "ko": "영어 메뉴 있어요?",
+    "zh": "有英文菜单吗？",
+    "th": "มีเมนูภาษาอังกฤษไหม",
+    "id": "Ada menu dalam bahasa Inggris?",
+    "es": "¿Tienen la carta en inglés?",
+    "fr": "Avez-vous une carte en anglais ?",
+    "de": "Haben Sie eine Speisekarte auf Englisch?"
+   }
+  },
+  {
+   "key": "restaurant.recommend",
+   "text": {
+    "en": "What do you recommend?",
+    "vi": "Bạn gợi ý món gì?",
+    "ja": "おすすめは何ですか？",
+    "ko": "추천 메뉴가 뭐예요?",
+    "zh": "你推荐什么？",
+    "th": "แนะนำอะไรดี",
+    "id": "Apa yang Anda rekomendasikan?",
+    "es": "¿Qué me recomienda?",
+    "fr": "Que me conseillez-vous ?",
+    "de": "Was empfehlen Sie?"
+   }
+  },
+  {
+   "key": "restaurant.spicy",
+   "text": {
+    "en": "Is this spicy?",
+    "vi": "Món này có cay không?",
+    "ja": "これは辛いですか？",
+    "ko": "이거 매워요?",
+    "zh": "这个辣吗？",
+    "th": "อันนี้เผ็ดไหม",
+    "id": "Apakah ini pedas?",
+    "es": "¿Esto pica?",
+    "fr": "C'est épicé ?",
+    "de": "Ist das scharf?"
+   }
+  },
+  {
+   "key": "restaurant.not_spicy",
+   "text": {
+    "en": "Not spicy, please.",
+    "vi": "Làm ơn đừng cho cay.",
+    "ja": "辛くしないでください。",
+    "ko": "안 맵게 해 주세요.",
+    "zh": "请不要放辣。",
+    "th": "ไม่เอาเผ็ดนะ",
+    "id": "Tolong jangan pedas.",
+    "es": "Sin picante, por favor.",
+    "fr": "Pas épicé, s'il vous plaît.",
+    "de": "Bitte nicht scharf."
+   }
+  },
+  {
+   "key": "restaurant.vegetarian",
+   "text": {
+    "en": "I'm vegetarian.",
+    "vi": "Tôi ăn chay.",
+    "ja": "私はベジタリアンです。",
+    "ko": "저는 채식주의자예요.",
+    "zh": "我吃素。",
+    "th": "ฉันกินมังสวิรัติ",
+    "id": "Saya vegetarian.",
+    "es": "Soy vegetariano.",
+    "fr": "Je suis végétarien.",
+    "de": "Ich bin Vegetarier."
+   }
+  },
+  {
+   "key": "restaurant.allergy_peanuts",
+   "text": {
+    "en": "I'm allergic to peanuts.",
+    "vi": "Tôi bị dị ứng đậu phộng.",
+    "ja": "ピーナッツアレルギーがあります。",
+    "ko": "땅콩 알레르기가 있어요.",
+    "zh": "我对花生过敏。",
+    "th": "ฉันแพ้ถั่วลิสง",
+    "id": "Saya alergi kacang tanah.",
+    "es": "Soy alérgico a los cacahuetes.",
+    "fr": "Je suis allergique aux cacahuètes.",
+    "de": "Ich bin allergisch gegen Erdnüsse."
+   }
+  },
+  {
+   "key": "restaurant.allergy_seafood",
+   "text": {
+    "en": "I'm allergic to seafood.",
+    "vi": "Tôi bị dị ứng hải sản.",
+    "ja": "魚介類アレルギーがあります。",
+    "ko": "해산물 알레르기가 있어요.",
+    "zh": "我对海鲜过敏。",
+    "th": "ฉันแพ้อาหารทะเล",
+    "id": "Saya alergi makanan laut.",
+    "es": "Soy alérgico al marisco.",
+    "fr": "Je suis allergique aux fruits de mer.",
+    "de": "Ich bin allergisch gegen Meeresfrüchte."
+   }
+  },
+  {
+   "key": "restaurant.no_onion",
+   "text": {
+    "en": "Could you leave out the onions?",
+    "vi": "Có thể không cho hành được không?",
+    "ja": "玉ねぎ抜きにできますか？",
+    "ko": "양파 빼 주실 수 있어요?",
+    "zh": "可以不放洋葱吗？",
+    "th": "ไม่ใส่หัวหอมได้ไหม",
+    "id": "Bisa tanpa bawang?",
+    "es": "¿Podría quitar la cebolla?",
+    "fr": "Pourriez-vous enlever les oignons ?",
+    "de": "Könnten Sie die Zwiebeln weglassen?"
+   }
+  },
+  {
+   "key": "restaurant.order_this",
+   "text": {
+    "en": "I'll have this, please.",
+    "vi": "Cho tôi món này.",
+    "ja": "これをください。",
+    "ko": "이걸로 주세요.",
+    "zh": "我要这个。",
+    "th": "เอาอันนี้",
+    "id": "Saya pesan ini.",
+    "es": "Quiero esto, por favor.",
+    "fr": "Je vais prendre ça, s'il vous plaît.",
+    "de": "Ich nehme das, bitte."
+   }
+  },
+  {
+   "key": "restaurant.same",
+   "text": {
+    "en": "The same for me, please.",
+    "vi": "Cho tôi giống vậy.",
+    "ja": "私も同じものをお願いします。",
+    "ko": "저도 같은 걸로 주세요.",
+    "zh": "我也要一样的。",
+    "th": "เอาเหมือนกัน",
+    "id": "Saya pesan yang sama.",
+    "es": "Lo mismo para mí, por favor.",
+    "fr": "La même chose pour moi, s'il vous plaît.",
+    "de": "Für mich das Gleiche, bitte."
+   }
+  },
+  {
+   "key": "restaurant.water",
+   "text": {
+    "en": "Could I have some water?",
+    "vi": "Cho tôi xin ít nước được không?",
+    "ja": "お水をいただけますか？",
+    "ko": "물 좀 주시겠어요?",
+    "zh": "可以给我一杯水吗？",
+    "th": "ขอน้ำหน่อยได้ไหม",
+    "id": "Boleh saya minta air putih?",
+    "es": "¿Me trae agua, por favor?",
+    "fr": "Je peux avoir de l'eau ?",
+    "de": "Könnte ich etwas Wasser bekommen?"
+   }
+  },
+  {
+   "key": "restaurant.how_long",
+   "text": {
+    "en": "How long will it take?",
+    "vi": "Phải đợi bao lâu?",
+    "ja": "どのくらい時間がかかりますか？",
+    "ko": "얼마나 걸려요?",
+    "zh": "要等多久？",
+    "th": "ต้องรอนานไหม",
+    "id": "Berapa lama waktunya?",
+    "es": "¿Cuánto tardará?",
+    "fr": "Combien de temps faut-il attendre ?",
+    "de": "Wie lange dauert es?"
+   }
+  },
+  {
+   "key": "restaurant.not_ordered",
+   "text": {
+    "en": "This isn't what I ordered.",
+    "vi": "Đây không phải món tôi gọi.",
+    "ja": "これは注文したものと違います。",
+    "ko": "이거 제가 주문한 게 아니에요.",
+    "zh": "这不是我点的。",
+    "th": "อันนี้ไม่ใช่ที่ฉันสั่ง",
+    "id": "Ini bukan yang saya pesan.",
+    "es": "Esto no es lo que pedí.",
+    "fr": "Ce n'est pas ce que j'ai commandé.",
+    "de": "Das habe ich nicht bestellt."
+   }
+  },
+  {
+   "key": "restaurant.delicious",
+   "text": {
+    "en": "It's delicious!",
+    "vi": "Ngon quá!",
+    "ja": "とてもおいしいです！",
+    "ko": "정말 맛있어요!",
+    "zh": "太好吃了！",
+    "th": "อร่อยมาก",
+    "id": "Enak sekali!",
+    "es": "¡Está delicioso!",
+    "fr": "C'est délicieux !",
+    "de": "Das ist köstlich!"
+   }
+  },
+  {
+   "key": "restaurant.takeaway",
+   "text": {
+    "en": "Can I take this to go?",
+    "vi": "Tôi mang phần này về được không?",
+    "ja": "持ち帰りにできますか？",
+    "ko": "포장해 갈 수 있어요?",
+    "zh": "这个可以打包吗？",
+    "th": "ห่อกลับบ้านได้ไหม",
+    "id": "Bisa dibungkus?",
+    "es": "¿Me lo puede poner para llevar?",
+    "fr": "Je peux l'emporter ?",
+    "de": "Kann ich das mitnehmen?"
+   }
+  },
+  {
+   "key": "restaurant.bill",
+   "text": {
+    "en": "Check, please.",
+    "vi": "Tính tiền giúp tôi.",
+    "ja": "お会計お願いします。",
+    "ko": "계산서 주세요.",
+    "zh": "买单。",
+    "th": "เช็คบิลด้วย",
+    "id": "Minta bonnya.",
+    "es": "La cuenta, por favor.",
+    "fr": "L'addition, s'il vous plaît.",
+    "de": "Die Rechnung, bitte."
+   }
+  },
+  {
+   "key": "restaurant.split_bill",
+   "text": {
+    "en": "Can we pay separately?",
+    "vi": "Chúng tôi trả riêng được không?",
+    "ja": "別々に払えますか？",
+    "ko": "따로 계산할 수 있어요?",
+    "zh": "可以分开付吗？",
+    "th": "แยกจ่ายได้ไหม",
+    "id": "Bisa bayar terpisah?",
+    "es": "¿Podemos pagar por separado?",
+    "fr": "Pouvons-nous payer séparément ?",
+    "de": "Können wir getrennt bezahlen?"
+   }
+  },
+  {
+   "key": "restaurant.pay_card",
+   "text": {
+    "en": "Can I pay by card?",
+    "vi": "Tôi trả bằng thẻ được không?",
+    "ja": "カードで払えますか？",
+    "ko": "카드로 결제할 수 있어요?",
+    "zh": "可以刷卡吗？",
+    "th": "จ่ายด้วยบัตรได้ไหม",
+    "id": "Bisakah saya bayar dengan kartu?",
+    "es": "¿Puedo pagar con tarjeta?",
+    "fr": "Puis-je payer par carte ?",
+    "de": "Kann ich mit Karte bezahlen?"
+   }
+  },
+  {
+   "key": "restaurant.service_charge",
+   "text": {
+    "en": "Is service included?",
+    "vi": "Đã bao gồm phí phục vụ chưa?",
+    "ja": "サービス料は含まれていますか？",
+    "ko": "봉사료 포함인가요?",
+    "zh": "包含服务费吗？",
+    "th": "รวมค่าบริการแล้วไหม",
+    "id": "Apakah sudah termasuk biaya layanan?",
+    "es": "¿El servicio está incluido?",
+    "fr": "Le service est-il compris ?",
+    "de": "Ist das Trinkgeld inbegriffen?"
+   }
+  },
+  {
+   "key": "restaurant.thank_meal",
+   "text": {
+    "en": "Thank you for the meal.",
+    "vi": "Cảm ơn vì bữa ăn.",
+    "ja": "ごちそうさまでした。",
+    "ko": "잘 먹었습니다.",
+    "zh": "谢谢款待。",
+    "th": "ขอบคุณสำหรับอาหาร",
+    "id": "Terima kasih atas makanannya.",
+    "es": "Gracias por la comida.",
+    "fr": "Merci pour le repas.",
+    "de": "Danke für das Essen."
+   }
+  }
+ ]
+}
