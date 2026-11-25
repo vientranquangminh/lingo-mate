@@ -67,6 +67,8 @@ class RemoteConfigService {
 
   String get modelTextTranslate => _string(RemoteDefaults.modelTextTranslate);
   String get modelTextReview => _string(RemoteDefaults.modelTextReview);
+  String get modelSpeechTranslate =>
+      _string(RemoteDefaults.modelSpeechTranslate);
   String get privacyPolicyUrl => _string(RemoteDefaults.privacyPolicyUrl);
   String get modelLiveTranslate => _string(RemoteDefaults.modelLiveTranslate);
   String get modelLiveFallback => _string(RemoteDefaults.modelLiveFallback);
@@ -80,6 +82,7 @@ class RemoteConfigService {
   bool get summaryEnabled => _bool(RemoteDefaults.ffSummary);
   bool get suggestReplyEnabled => _bool(RemoteDefaults.ffSuggestReply);
   bool get glossaryEnabled => _bool(RemoteDefaults.ffGlossary);
+  bool get cloudSpeechEnabled => _bool(RemoteDefaults.ffCloudSpeech);
   bool get paywallEnabled => _bool(RemoteDefaults.ffPaywall);
   bool get emailLinkSigninEnabled => _bool(RemoteDefaults.ffEmailLinkSignin);
   bool get manageSubscriptionEnabled =>

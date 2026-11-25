@@ -186,7 +186,8 @@ abstract interface class LiveSession {
 - ML Kit pivots through English for non-English pairs (quality note shown in language picker).
 
 ### 6.2 Standard (P1)
-`mic → VAD → segment → ASR(on-device) → GeminiTextTranslator (Firebase AI Logic) → UI (+ TTS)`
+`mic → VAD → segment (WAV) → GeminiSpeechTranslator (Firebase AI Logic, hears + translates in one call, JSON) → UI (+ TTS)`
+- Since 2026-11-25 (owner: on-device Whisper base was too inaccurate): each segment's audio goes to Remote Config `model_speech_translate` (default `gemini-2.5-flash`), which returns the spoken language, the transcript and the translation. `ff_cloud_speech` switches it off. When it is off or the call fails, the older path below runs: `ASR(on-device) → GeminiTextTranslator`. Live partials on screen still come from on-device Whisper.
 - Request = system instruction (translator role, output only the translation, keep names/numbers, register), last 3 utterances as context, glossary terms (P2), source text.
 - Model from Remote Config `model_text_translate` (default `gemini-2.5-flash-lite`).
 - Timeout 6 s → retry once → fall back to Offline for that utterance if pair supported (mark utterance `engine=offline_fallback`).
@@ -322,6 +323,7 @@ UI: usage sheet shows per-engine bars "This 5-hour window: 12/30 min · resets 1
 |-----|------|---------|
 | `model_text_translate` | string | `gemini-2.5-flash-lite` |
 | `model_text_review` | string | `gemini-2.5-flash-lite` |
+| `model_speech_translate` | string | `gemini-2.5-flash` (Standard hears and translates each sentence, §6.2) |
 | `model_live_translate` | string | `gemini-3.5-live-translate-preview` |
 | `model_live_fallback` | string | `gemini-3.1-flash-live-preview` (re-evaluate, OQ-5) |
 | `capability_matrix` | json | asset default |
@@ -334,13 +336,14 @@ UI: usage sheet shows per-engine bars "This 5-hour window: 12/30 min · resets 1
 | `min_supported_build` | int | 1 (force-update gate) |
 | `ff_email_link_signin` | bool | true |
 | `ff_manage_subscription` | bool | false (on with paywall) |
+| `ff_cloud_speech` | bool | true (Standard sends sentence audio to Gemini; off = on-device ASR + text translation) |
 
 ## 12. Security & privacy
 
 - App Check enforced for Firebase AI Logic (required since 2 Nov 2026): Debug provider in dev, Play Integrity in prod.
 - Account deletion requires recent authentication (re-auth with the same provider) and App Check; `deleteAccount` is idempotent.
 - No API keys in prod. Dev key restricted (Android app restriction + Generative Language API only) and only in dev flavor.
-- Audio: memory only (ring buffer ≤ 30 s). Transcripts: local DB; "Delete all data" wipes DB + prefs + cloud copies.
+- Audio: memory only (ring buffer ≤ 30 s); never stored. Standard sends each sentence's audio to Gemini and Live streams it; Offline keeps it on the phone. Transcripts: local DB; "Delete all data" wipes DB + prefs + cloud copies.
 - Listening indicator: persistent notification + in-app pulsing mic chip whenever capture is on.
 - First-use consent sheet for Meeting/Listen: "Tell people you're translating the conversation."
 - Analytics events carry no text: `session_start{mode,engine,pair}`, `session_end{duration,live_sec,standard_sec,fallbacks}`, `engine_switch{from,to,reason}`, `latency_bucket`, `phrase_saved{source}`.

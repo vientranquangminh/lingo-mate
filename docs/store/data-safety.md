@@ -28,10 +28,12 @@ such as Google processes it for us. Data that only stays on the phone is not dec
 | Device or other IDs | Yes | No | No | Optional (with analytics and crash reports) | Analytics, App functionality | Firebase installation ID / app instance ID; App Check attestation also uses a device token |
 
 Not collected: name, email, phone number, location, contacts, photos or videos, files,
-calendar, health, financial info, web browsing, messages, and **audio**. Microphone audio is
-processed only in memory on the phone and never leaves it in this build. When Live ships in
-production (T-2.4) add *Audio → Voice or sound recordings* (collected, processed
-ephemerally, optional, App functionality).
+calendar, health, financial info, web browsing and messages.
+
+**Audio → Voice or sound recordings: declare it** (collected, processed ephemerally,
+optional, App functionality). The Standard engine sends each sentence's audio to Gemini to
+recognise and translate it, and Live streams audio to Gemini Live. Nothing is stored; the
+Offline engine keeps audio on the phone.
 
 ## Notes for the form
 

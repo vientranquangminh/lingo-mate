@@ -37,6 +37,34 @@ abstract interface class SpeechRecognizerEngine {
   });
 }
 
+/// What was said in a sentence, the language it was said in and its translation.
+class SpeechTranslation extends Equatable {
+  const SpeechTranslation({
+    required this.lang,
+    required this.original,
+    required this.translation,
+  });
+
+  final String lang;
+  final String original;
+  final String translation;
+
+  @override
+  List<Object?> get props => [lang, original, translation];
+}
+
+/// Hears a sentence and translates it in one step (the Standard engine's cloud speech path).
+abstract interface class SpeechTranslatorEngine {
+  /// Transcribes [segment], spoken in one of [from], and translates it into [to]; null when nothing intelligible was said.
+  Future<SpeechTranslation?> translate({
+    required AudioSegment segment,
+    required List<String> from,
+    required String to,
+    List<String> context,
+    Map<String, String> glossary,
+  });
+}
+
 /// A text translation request with recent context.
 class TranslateRequest extends Equatable {
   const TranslateRequest({

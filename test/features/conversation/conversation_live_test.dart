@@ -99,7 +99,7 @@ void main() {
     sessions[0]
       ..emit(const LiveInputTranscript('Xin chào'))
       ..emit(const LiveOutputTranscript('Hello'))
-      ..emit(LiveOutputAudio(Uint8List(4800)))
+      ..emit(LiveOutputAudio(Uint8List(240000)))
       ..emit(const LiveTurnComplete());
     sessions[1].emit(const LiveTurnComplete());
     await pumpEventQueue();
@@ -109,7 +109,7 @@ void main() {
     expect(turn.original, 'Xin chào');
     expect(turn.translation, 'Hello');
     expect(turn.status, TurnStatus.translated);
-    expect(player.written, [4800]);
+    expect(player.written, [240000]);
     expect(c.read(conversationProvider(pair)).speaking, isTrue);
 
     sessions[1]

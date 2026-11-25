@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
+import 'package:lingo_mate/core/engines/translate/gemini_speech_translator.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/features/conversation/data/model/conversation_models.dart';
@@ -73,6 +74,27 @@ void main() {
       expect(turn.engine, EngineKind.standard);
       expect(turn.status, TurnStatus.translated);
       expect(fakes.tts.spoken, [('[en] Xin chào', 'en')]);
+    },
+  );
+
+  test(
+    'on Standard, Gemini hears the turn and the translation is spoken',
+    () async {
+      fakes.speech = GeminiSpeechTranslator(
+        ({required system, required wav, required user}) async =>
+            '{"lang": "vi", "original": "Xin chào", "translation": "Hello"}',
+      );
+      final c = await build();
+
+      await notifier(c).toggleMic(Speaker.a);
+      await speak();
+
+      final turn = c.read(conversationProvider(pair)).lastBy(Speaker.a)!;
+      expect(turn.original, 'Xin chào');
+      expect(turn.translation, 'Hello');
+      expect(turn.status, TurnStatus.translated);
+      expect(fakes.recognizer.hints, isEmpty);
+      expect(fakes.tts.spoken, [('Hello', 'en')]);
     },
   );
 

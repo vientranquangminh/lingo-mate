@@ -16,6 +16,7 @@ import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/live/live_captioner.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
+import '../../../../core/engines/translate/cloud_hearing.dart';
 import '../../../../core/engines/translate/gemini_text_translator.dart';
 import '../../../../core/engines/tts/speech_synthesizer.dart';
 import '../../../../core/sessions/session_repository.dart';
@@ -486,9 +487,27 @@ class ConversationNotifier extends Notifier<ConversationState> {
     state = state.copyWith(processing: true);
     final from = state.languageOf(speaker);
     try {
-      await recognizer.ensureReady(from);
-      final result = await recognizer.transcribe(segment, hintLang: from);
-      final text = result.text.trim();
+      final to = state.languageOf(speaker.other);
+      final (:handled, :heard) = await hearOnCloud(
+        ref,
+        engine: state.engine,
+        segment: segment,
+        from: [from],
+        to: to,
+        context: [for (final t in state.turns) t.original].reversed
+            .take(contextTurns)
+            .toList()
+            .reversed
+            .toList(),
+      );
+      final String text;
+      if (handled) {
+        text = heard?.original ?? '';
+      } else {
+        await recognizer.ensureReady(from);
+        final result = await recognizer.transcribe(segment, hintLang: from);
+        text = result.text.trim();
+      }
       if (text.isEmpty || !ref.mounted) {
         return;
       }
@@ -496,13 +515,18 @@ class ConversationNotifier extends Notifier<ConversationState> {
         id: _nextId++,
         speaker: speaker,
         from: from,
-        to: state.languageOf(speaker.other),
+        to: to,
         original: text,
+        translation: heard?.translation,
+        engine: heard == null ? null : EngineKind.standard,
+        status: heard == null ? TurnStatus.translating : TurnStatus.translated,
       );
       state = state.copyWith(turns: [...state.turns, turn], draft: () => null);
       final endMs = _clock();
       _ensureSession();
-      await _translate(turn);
+      if (heard == null) {
+        await _translate(turn);
+      }
       _record(turn.id, endMs - segment.durationMs, endMs);
       final translation = state.turns
           .where((t) => t.id == turn.id)
