@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/core/phrases/phrase_repository.dart';
+import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/platform/system_settings.dart';
 import 'package:lingo_mate/core/settings/app_preferences.dart';
 import 'package:lingo_mate/features/onboarding/presentation/view/welcome_page.dart';
@@ -49,6 +50,9 @@ void main() {
         ),
         ...fakes.overrides(),
         systemSettingsProvider.overrideWithValue(system),
+        privacyPolicyUrlProvider.overrideWithValue(
+          'https://example.test/privacy',
+        ),
       ],
     );
     addTearDown(container.dispose);
@@ -139,6 +143,17 @@ void main() {
     await tester.binding.handlePopRoute();
     await settle(tester);
     expect(system.screenOn, isFalse);
+  });
+
+  testWidgets('Privacy & data opens the privacy policy', (tester) async {
+    await pumpApp(tester);
+    await openMe(tester);
+    await tester.tap(find.text('Privacy & data'));
+    await settle(tester);
+
+    await tapText(tester, 'Privacy policy');
+
+    expect(system.opened, ['https://example.test/privacy']);
   });
 
   testWidgets('privacy switches turn analytics and crash reports off', (

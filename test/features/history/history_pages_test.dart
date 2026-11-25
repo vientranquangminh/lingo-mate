@@ -35,6 +35,14 @@ class _FakeSystemSettings implements SystemSettings {
     return true;
   }
 
+  final opened = <String>[];
+
+  @override
+  Future<bool> openUrl(String url) async {
+    opened.add(url);
+    return true;
+  }
+
   @override
   Future<bool> keepScreenOn(bool on) async => true;
 }

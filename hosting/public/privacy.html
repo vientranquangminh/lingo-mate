@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lingo Mate privacy policy</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <nav><a href="/privacy-vi">Tiếng Việt</a></nav>
+  <h1>Lingo Mate privacy policy</h1>
+  <p class="meta">Effective 1 December 2026</p>
+
+  <p>Lingo Mate ("the app", "we") translates speech for face-to-face conversations, talks and online meetings. This policy explains what the app processes, where, for how long, and the choices you have. The short version: audio stays in your phone's memory and is never saved; your transcripts, phrasebook and settings stay on your phone; text is sent to Google only when you use an online engine or an online learning feature.</p>
+
+  <h2>1. What the app processes and why</h2>
+  <table>
+    <tr><th>Data</th><th>Where it goes</th><th>Why</th></tr>
+    <tr><td>Microphone audio</td><td>Kept in memory on your phone (at most the last 30 seconds) and turned into text on your phone. It is never written to storage or uploaded. A notification and an on-screen indicator show whenever the microphone is on.</td><td>To recognise what is said.</td></tr>
+    <tr><td>Recognised text (what was said)</td><td>With the <strong>Offline</strong> engine it stays on your phone (Google ML Kit translates on the device). With the <strong>Standard</strong> engine the sentence, up to three previous sentences for context and matching glossary terms are sent to Google Gemini through Firebase AI Logic and the translation comes back.</td><td>To translate.</td></tr>
+    <tr><td>Transcripts, saved phrases, glossaries, review schedule, settings</td><td>Stored only in the app's private storage on your phone.</td><td>History, phrasebook, review and preferences.</td></tr>
+    <tr><td>Session lines you choose to send</td><td>When you tap <em>Summarize</em>, <em>How would a native say it?</em> or <em>Suggest reply</em>, the lines of that session (or the last few lines) are sent to Google Gemini. The answer (for example a summary) is stored on your phone.</td><td>Learning and meeting helpers you ask for.</td></tr>
+    <tr><td>Usage events and crash reports</td><td>Google Analytics for Firebase and Firebase Crashlytics receive events such as "session started" or "phrase saved", app version, device model, OS version and a random app-instance identifier. They never contain what was said, transcripts or audio. You can turn both off in <em>Me → Privacy &amp; data</em>.</td><td>To understand which features are used and fix crashes.</td></tr>
+    <tr><td>App integrity check and remote settings</td><td>Firebase App Check (Google Play Integrity) and Firebase Remote Config exchange device attestation tokens and configuration with Google.</td><td>To protect the online engines from abuse and to update model names and feature switches without an app update.</td></tr>
+    <tr><td>Offline language packs</td><td>Translation models are downloaded from Google (ML Kit); speech models from our download server. Only the usual network information (such as your IP address) is seen by those servers.</td><td>To translate and recognise speech offline.</td></tr>
+  </table>
+
+  <h2>2. Google services</h2>
+  <p>Online translation and learning features use the Gemini API through Firebase AI Logic. Google processes this text under the <a href="https://policies.google.com/privacy">Google Privacy Policy</a> and the <a href="https://ai.google.dev/gemini-api/terms">Gemini API terms</a>. While the app uses Gemini's free tier, Google may use the text it receives to improve its products, and people at Google may review it. Do not use the Standard engine or the online helpers for confidential conversations; switch to <strong>Offline</strong> in the engine menu instead.</p>
+
+  <h2>3. What we do not do</h2>
+  <ul>
+    <li>We do not record or store audio.</li>
+    <li>We do not sell your data or share it with advertisers. The app shows no ads.</li>
+    <li>The app needs no account in this version. Sign-in, if added later, will be optional and this policy will be updated first.</li>
+    <li>We cannot capture the audio of phone or video calls; Meeting mode only hears what your microphone hears.</li>
+  </ul>
+
+  <h2>4. Permissions</h2>
+  <ul>
+    <li><strong>Microphone</strong>: to hear speech while you use Conversation, Listen or Meeting.</li>
+    <li><strong>Notifications</strong>: the persistent notification while captions run in the background, and the review reminder if you turn it on.</li>
+    <li><strong>Display over other apps</strong> (optional): floating captions in Meeting mode.</li>
+    <li><strong>Run at start-up</strong>: to set the review reminder again after the phone restarts.</li>
+    <li><strong>Internet</strong>: online engines, language pack downloads and the services above.</li>
+  </ul>
+
+  <h2>5. Keeping and deleting data</h2>
+  <ul>
+    <li>Data on your phone stays until you delete it. <em>Me → Privacy &amp; data → Delete all data</em> erases transcripts, phrases, glossaries, review cards and settings (and, if you choose, language packs). Uninstalling the app also removes it.</li>
+    <li>Text sent to Gemini is handled under Google's terms described above; we do not keep a copy on any server.</li>
+    <li>Analytics and crash data are kept by Google for the retention period set for our Firebase project (no longer than 14 months) and are not linked to your name or contact details.</li>
+  </ul>
+
+  <h2>6. Telling others</h2>
+  <p>Translation works by listening. Let the people around you know when you translate a conversation, talk or meeting, and follow the recording and privacy rules where you are.</p>
+
+  <h2>7. Children</h2>
+  <p>The app is not directed at children under 13 and we do not knowingly collect their data.</p>
+
+  <h2>8. Security</h2>
+  <p>Connections to Google and our download server use TLS. Data on your phone sits in the app's private storage, protected by Android.</p>
+
+  <h2>9. Changes</h2>
+  <p>We will update this page, and its effective date, before any change in what the app collects. Important changes will also be shown in the app.</p>
+
+  <h2>10. Contact</h2>
+  <p>Questions or requests: <a href="mailto:vienquangminh14@gmail.com">vienquangminh14@gmail.com</a>.</p>
+</main>
+</body>
+</html>

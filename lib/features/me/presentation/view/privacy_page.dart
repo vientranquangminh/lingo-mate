@@ -10,6 +10,8 @@ import '../../../../common/widgets/app_platform_dialog.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../common/widgets/settings_row.dart';
 import '../../../../common/widgets/settings_toggle_rows.dart';
+import '../../../../core/engines/selection/engine_providers.dart';
+import '../../../../core/platform/system_settings.dart';
 import '../../../../core/settings/app_preferences.dart';
 import '../../../language_packs/data/notifier/language_packs_notifier.dart';
 import '../../data/repository/data_eraser.dart';
@@ -97,6 +99,13 @@ class PrivacyPage extends ConsumerWidget {
             label: l10n.privacyWifiOnly,
             value: wifiOnly,
             onChanged: ref.read(languagePacksProvider.notifier).setWifiOnly,
+          ),
+          SettingsRow(
+            icon: AppIcons.external,
+            label: l10n.privacyPolicy,
+            onTap: () => ref
+                .read(systemSettingsProvider)
+                .openUrl(ref.read(privacyPolicyUrlProvider)),
           ),
           SizedBox(height: AppParams.spacing16.h),
           Divider(height: 1, color: scheme.outlineVariant),

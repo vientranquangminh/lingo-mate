@@ -9,7 +9,7 @@ import android.speech.tts.TextToSpeech
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 
-/** Opens system settings screens and the share sheet, and keeps the screen on, on the `lingomate/system_settings` channel. */
+/** Opens system settings screens, web links and the share sheet, and keeps the screen on, on the `lingomate/system_settings` channel. */
 class SystemSettingsChannel(
     messenger: BinaryMessenger,
     private val context: Context,
@@ -37,6 +37,9 @@ class SystemSettingsChannel(
                     call.argument<String>("subject")?.let { send.putExtra(Intent.EXTRA_SUBJECT, it) }
                     result.success(open(Intent.createChooser(send, null)))
                 }
+                "openUrl" -> result.success(
+                    open(Intent(Intent.ACTION_VIEW, Uri.parse(call.argument<String>("url") ?: ""))),
+                )
                 "keepScreenOn" -> {
                     keepScreenOn(call.argument<Boolean>("on") == true)
                     result.success(true)

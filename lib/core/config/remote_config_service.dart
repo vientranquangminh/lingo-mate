@@ -56,6 +56,7 @@ class RemoteConfigService {
 
   String get modelTextTranslate => _string(RemoteDefaults.modelTextTranslate);
   String get modelTextReview => _string(RemoteDefaults.modelTextReview);
+  String get privacyPolicyUrl => _string(RemoteDefaults.privacyPolicyUrl);
   String get modelLiveTranslate => _string(RemoteDefaults.modelLiveTranslate);
   String get modelLiveFallback => _string(RemoteDefaults.modelLiveFallback);
   int get liveBlockSec => _int(RemoteDefaults.liveBlockSec);
