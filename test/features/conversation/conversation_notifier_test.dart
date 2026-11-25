@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
@@ -17,6 +19,7 @@ void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues({});
     fakes = ConversationFakes();
+    addTearDown(fakes.db.close);
   });
 
   /// Builds a container that keeps the conversation alive.
@@ -353,5 +356,91 @@ void main() {
       expect(c.read(conversationProvider(pair)).turns, hasLength(1));
       fakes.tts.finish();
     });
+  });
+
+  group('saving (AC-02.10)', () {
+    test('leaving saves the session with its lines and engines', () async {
+      fakes.recognizer.texts.addAll(['Xin chào', 'Hello']);
+      final c = ProviderContainer(overrides: fakes.overrides());
+      addTearDown(c.dispose);
+      final sub = c.listen(conversationProvider(pair), (_, _) {});
+      await pumpEventQueue();
+      await notifier(c).toggleMic(Speaker.a);
+      await speak();
+      await notifier(c).toggleMic(Speaker.b);
+      await speak();
+
+      sub.close();
+      await pumpEventQueue();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      final sessions = await fakes.sessions.watchSessions().first;
+      expect(sessions, hasLength(1));
+      expect(sessions.single.session.mode, 'conversation');
+      expect(sessions.single.session.title, '[en] Xin chào');
+      final detail = (await fakes.sessions.load(sessions.single.session.id))!;
+      expect(detail.utterances.map((u) => u.speaker), ['a', 'b']);
+      expect(detail.utterances.map((u) => u.targetText), [
+        '[en] Xin chào',
+        '[vi] Hello',
+      ]);
+      expect(detail.utterances.first.engine, 'standard');
+    });
+
+    test('a line that could not be translated is kept with its text', () async {
+      fakes.recognizer.texts.add('Xin chào');
+      fakes.standard.fail = true;
+      fakes.offline.available = false;
+      final c = ProviderContainer(overrides: fakes.overrides());
+      addTearDown(c.dispose);
+      final sub = c.listen(conversationProvider(pair), (_, _) {});
+      await pumpEventQueue();
+      await notifier(c).toggleMic(Speaker.a);
+      await speak();
+
+      sub.close();
+      await pumpEventQueue();
+      await Future<void>.delayed(const Duration(milliseconds: 50));
+
+      final hits = await fakes.sessions.search('xin chao');
+      expect(hits.single.utterance.targetText, '');
+      expect(hits.single.utterance.engine, 'none');
+    });
+
+    test('a session where nobody spoke is not saved', () async {
+      final c = ProviderContainer(overrides: fakes.overrides());
+      addTearDown(c.dispose);
+      final sub = c.listen(conversationProvider(pair), (_, _) {});
+      await pumpEventQueue();
+
+      sub.close();
+      await pumpEventQueue();
+
+      expect(await fakes.db.select(fakes.db.sessions).get(), isEmpty);
+    });
+  });
+
+  test('a session writes no audio or other files (AC-07.6)', () async {
+    final created = <String>[];
+    fakes.recognizer.texts.add('Xin chào');
+    await IOOverrides.runZoned(
+      () async {
+        final c = ProviderContainer(overrides: fakes.overrides());
+        final sub = c.listen(conversationProvider(pair), (_, _) {});
+        await pumpEventQueue();
+        await notifier(c).toggleMic(Speaker.a);
+        await speak();
+        sub.close();
+        await pumpEventQueue();
+        c.dispose();
+      },
+      createFile: (path) {
+        created.add(path);
+        throw FileSystemException('no files in tests', path);
+      },
+    );
+
+    expect(created, isEmpty);
+    expect(await fakes.sessions.search('xin chao'), hasLength(1));
   });
 }

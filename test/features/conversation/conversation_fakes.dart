@@ -1,16 +1,19 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:lingo_mate/core/audio/audio_capture.dart';
 import 'package:lingo_mate/core/audio/audio_frame.dart';
 import 'package:lingo_mate/core/audio/voice_activity_detector.dart';
+import 'package:lingo_mate/core/database/app_database.dart';
 import 'package:lingo_mate/core/engines/engine_instances.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/core/engines/tts/speech_synthesizer.dart';
+import 'package:lingo_mate/core/sessions/session_repository.dart';
 import 'package:lingo_mate/features/conversation/data/notifier/conversation_notifier.dart';
 
 /// Capture that streams whatever the test pushes.
@@ -158,6 +161,7 @@ class ConversationFakes {
   final tts = FakeSynthesizer();
   bool hasRecognizer = true;
   int nowMs = 0;
+  final db = AppDatabase(NativeDatabase.memory());
 
   /// Overrides every device-bound provider used by Conversation.
   List<Override> overrides() => [
@@ -177,5 +181,9 @@ class ConversationFakes {
       (ref, request) async => ref.watch(fakeSelectionProvider),
     ),
     onlineProvider.overrideWith((ref) => Stream.value(true)),
+    appDatabaseProvider.overrideWithValue(db),
   ];
+
+  /// The repository over the test database.
+  SessionRepository get sessions => SessionRepository(db);
 }

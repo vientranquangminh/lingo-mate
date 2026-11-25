@@ -4,6 +4,8 @@ abstract class AppRouteName {
   static const languagePacks = 'language-packs';
   static const conversation = 'conversation';
   static const showMode = 'show';
+  static const history = 'history';
+  static const transcript = 'transcript';
 }
 
 abstract class AppRoutePath {
@@ -12,4 +14,6 @@ abstract class AppRoutePath {
   static const languagePacks = '/language-packs';
   static const conversation = '/conversation';
   static const showMode = '/show';
+  static const history = '/history';
+  static const transcript = ':id';
 }

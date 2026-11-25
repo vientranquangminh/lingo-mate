@@ -291,5 +291,54 @@
   "bubbleActions": "Actions for this line",
   "showModeTitle": "Show mode",
   "showModeRotate": "Turn the text around",
-  "showModeClose": "Close"
+  "showModeClose": "Close",
+  "historyTitle": "History",
+  "historySearchHint": "Search transcripts",
+  "historyEmpty": "No sessions yet. Your conversations are saved here, on this phone only.",
+  "historyNoResults": "No lines match “{query}”.",
+  "@historyNoResults": {
+    "placeholders": {
+      "query": {
+        "type": "String"
+      }
+    }
+  },
+  "historyToday": "Today",
+  "historyYesterday": "Yesterday",
+  "historyUntitled": "Untitled session",
+  "historyMinutes": "{minutes} min",
+  "@historyMinutes": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "historyUnderAMinute": "< 1 min",
+  "historyClearSearch": "Clear search",
+  "modeConversation": "Conversation",
+  "modeListen": "Listen",
+  "modeMeeting": "Meeting",
+  "transcriptShare": "Share",
+  "transcriptDelete": "Delete",
+  "transcriptRename": "Rename",
+  "transcriptRenameTitle": "Rename session",
+  "transcriptDeleteTitle": "Delete this session?",
+  "transcriptDeleteBody": "The transcript will be removed from this phone. This can't be undone.",
+  "transcriptEngineMinutes": "{engine} · {minutes}",
+  "@transcriptEngineMinutes": {
+    "placeholders": {
+      "engine": {
+        "type": "String"
+      },
+      "minutes": {
+        "type": "String"
+      }
+    }
+  },
+  "transcriptFallback": "Offline (fallback)",
+  "transcriptNotTranslated": "Not translated",
+  "transcriptMissing": "This session no longer exists.",
+  "commonSave": "Save",
+  "devtoolsOpenHistory": "Open history"
 }

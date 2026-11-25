@@ -7,6 +7,8 @@ import '../features/authentication/presentation/view/login_page.dart';
 import '../core/engines/selection/engine_selector.dart';
 import '../features/conversation/presentation/view/conversation_page.dart';
 import '../features/devtools/presentation/view/devtools_page.dart';
+import '../features/history/presentation/view/history_page.dart';
+import '../features/history/presentation/view/transcript_page.dart';
 import '../features/language_packs/presentation/view/language_packs_page.dart';
 import '../features/show_mode/presentation/view/show_mode_page.dart';
 import 'route_const.dart';
@@ -61,6 +63,21 @@ final goRouterProvider = Provider((ref) {
             ),
           );
         },
+      ),
+      GoRoute(
+        name: AppRouteName.history,
+        path: AppRoutePath.history,
+        pageBuilder: (context, state) =>
+            const CupertinoPage(child: HistoryPage()),
+        routes: [
+          GoRoute(
+            name: AppRouteName.transcript,
+            path: AppRoutePath.transcript,
+            pageBuilder: (context, state) => CupertinoPage(
+              child: TranscriptPage(sessionId: state.pathParameters['id']!),
+            ),
+          ),
+        ],
       ),
       if (Env.devtoolsEnabled)
         GoRoute(

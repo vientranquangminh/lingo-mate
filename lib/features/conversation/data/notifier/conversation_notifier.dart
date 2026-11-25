@@ -12,6 +12,7 @@ import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../../../../core/engines/translate/gemini_text_translator.dart';
 import '../../../../core/engines/tts/speech_synthesizer.dart';
+import '../../../../core/sessions/session_repository.dart';
 import '../model/conversation_models.dart';
 import '../state/conversation_state.dart';
 
@@ -37,6 +38,11 @@ class ConversationNotifier extends Notifier<ConversationState> {
 
   late final EchoGate _gate;
   late final SpeechSynthesizerEngine _tts;
+  late final SessionRepository _sessions;
+  late final int Function() _clock;
+  Future<String>? _sessionId;
+  Future<void> _writes = Future.value();
+  int _sessionStartMs = 0;
   AudioPipeline? _pipeline;
   StreamSubscription<AudioSegment>? _segments;
   Future<void> _queue = Future.value();
@@ -47,7 +53,9 @@ class ConversationNotifier extends Notifier<ConversationState> {
 
   @override
   ConversationState build() {
-    _gate = EchoGate(nowMs: ref.read(conversationClockProvider));
+    _clock = ref.read(conversationClockProvider);
+    _gate = EchoGate(nowMs: _clock);
+    _sessions = ref.read(sessionRepositoryProvider);
     _tts = ref.read(speechSynthesizerProvider);
     ref.onDispose(_dispose);
     ref.listen(
@@ -226,7 +234,18 @@ class ConversationNotifier extends Notifier<ConversationState> {
         original: text,
       );
       state = state.copyWith(turns: [...state.turns, turn]);
+      final endMs = _clock();
+      _ensureSession();
       await _translate(turn);
+      _record(turn.id, endMs - segment.durationMs, endMs);
+      final translation = state.turns
+          .where((t) => t.id == turn.id)
+          .firstOrNull
+          ?.translation;
+      if (translation != null && state.speakOn) {
+        state = state.copyWith(processing: false);
+        await _speak(translation, turn.to);
+      }
     } catch (_) {
       return;
     } finally {
@@ -284,9 +303,6 @@ class ConversationNotifier extends Notifier<ConversationState> {
         status: TurnStatus.translated,
       ),
     );
-    if (state.speakOn) {
-      await _speak(translation.text, turn.to);
-    }
   }
 
   /// Records a Standard failure; a region refusal blocks cloud engines for 24 h (AC-05.5).
@@ -345,6 +361,42 @@ class ConversationNotifier extends Notifier<ConversationState> {
     }
   }
 
+  /// Starts the saved session on the first utterance (F-07).
+  void _ensureSession() {
+    if (_sessionId != null) {
+      return;
+    }
+    _sessionStartMs = _clock();
+    _sessionId = _sessions.start(
+      mode: SessionMode.conversation,
+      engine: state.engine,
+      pair: pair,
+    );
+  }
+
+  /// Queues the turn with [id] for saving, translated or not, so captured text is kept (AC-02.8).
+  void _record(int id, int startMs, int endMs) {
+    final turn = state.turns.where((t) => t.id == id).firstOrNull;
+    final session = _sessionId;
+    if (turn == null || session == null) {
+      return;
+    }
+    final utterance = NewUtterance(
+      speaker: turn.speaker.name,
+      sourceLang: turn.from,
+      sourceText: turn.original,
+      targetLang: turn.to,
+      targetText: turn.translation ?? '',
+      startMs: (startMs - _sessionStartMs).clamp(0, 1 << 31),
+      endMs: (endMs - _sessionStartMs).clamp(0, 1 << 31),
+      engine: UtteranceEngine.of(turn.engine, fallback: turn.fallback),
+      latencyMs: turn.status == TurnStatus.translated ? _clock() - endMs : null,
+    );
+    _writes = _writes.then(
+      (_) async => _sessions.addUtterance(await session, utterance),
+    );
+  }
+
   /// Replaces the turn with [id] by [change] applied.
   void _updateTurn(int id, ConversationTurn Function(ConversationTurn) change) {
     state = state.copyWith(
@@ -352,10 +404,18 @@ class ConversationNotifier extends Notifier<ConversationState> {
     );
   }
 
-  /// Releases the mic and stops speech.
+  /// Releases the mic, stops speech and saves the session with its duration and engine summary (AC-02.10).
   void _dispose() {
     unawaited(_segments?.cancel());
     unawaited(_pipeline?.dispose());
     unawaited(_tts.stop().catchError((Object _) {}));
+    final session = _sessionId;
+    if (session != null) {
+      unawaited(
+        _writes
+            .then((_) async => _sessions.finish(await session))
+            .catchError((Object _) {}),
+      );
+    }
   }
 }

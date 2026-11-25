@@ -9,7 +9,7 @@ import android.speech.tts.TextToSpeech
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 
-/** Opens system settings screens on the `lingomate/system_settings` channel. */
+/** Opens system settings screens and the share sheet on the `lingomate/system_settings` channel. */
 class SystemSettingsChannel(messenger: BinaryMessenger, private val context: Context) {
     private val channel = MethodChannel(messenger, NAME)
 
@@ -26,6 +26,13 @@ class SystemSettingsChannel(messenger: BinaryMessenger, private val context: Con
                             .setData(Uri.fromParts("package", context.packageName, null)),
                     ),
                 )
+                "shareText" -> {
+                    val send = Intent(Intent.ACTION_SEND)
+                        .setType("text/plain")
+                        .putExtra(Intent.EXTRA_TEXT, call.argument<String>("text") ?: "")
+                    call.argument<String>("subject")?.let { send.putExtra(Intent.EXTRA_SUBJECT, it) }
+                    result.success(open(Intent.createChooser(send, null)))
+                }
                 else -> result.notImplemented()
             }
         }
