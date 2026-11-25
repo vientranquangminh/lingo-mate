@@ -42,6 +42,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
   late final int Function() _clock;
   Future<String>? _sessionId;
   Future<void> _writes = Future.value();
+  final _utteranceIds = <int, Future<String?>>{};
   int _sessionStartMs = 0;
   AudioPipeline? _pipeline;
   StreamSubscription<AudioSegment>? _segments;
@@ -385,10 +386,20 @@ class ConversationNotifier extends Notifier<ConversationState> {
       engine: UtteranceEngine.of(turn.engine, fallback: turn.fallback),
       latencyMs: turn.status == TurnStatus.translated ? _clock() - endMs : null,
     );
-    _writes = _writes.then(
-      (_) async => _sessions.addUtterance(await session, utterance),
-    );
+    final saved = Completer<String?>();
+    _utteranceIds[id] = saved.future;
+    _writes = _writes.then((_) async {
+      try {
+        saved.complete(await _sessions.addUtterance(await session, utterance));
+      } catch (_) {
+        saved.complete(null);
+      }
+    });
   }
+
+  /// Returns the stored utterance id of turn [turnId] once it is written, so a saved phrase links to its session (AC-08.1).
+  Future<String?> utteranceIdFor(int turnId) =>
+      _utteranceIds[turnId] ?? Future.value();
 
   /// Replaces the turn with [id] by [change] applied.
   void _updateTurn(int id, ConversationTurn Function(ConversationTurn) change) {

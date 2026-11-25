@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -6,13 +7,16 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/app_action_sheet.dart';
 import '../../../../common/widgets/app_circle_icon_button.dart';
 import '../../../../common/widgets/app_circular_progress_indicator.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_dialog.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../common/widgets/app_text_input_dialog.dart';
+import '../../../../common/widgets/app_toast.dart';
 import '../../../../common/widgets/engine_badge.dart';
+import '../../../../common/widgets/save_phrase_action.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/platform/system_settings.dart';
@@ -212,7 +216,7 @@ class _Transcript extends ConsumerWidget {
 }
 
 /// One utterance: time, translation, original, and an engine badge when it differs from the main engine (AC-07.2).
-class _Line extends StatelessWidget {
+class _Line extends ConsumerWidget {
   const _Line({
     required this.utterance,
     required this.startedAt,
@@ -223,8 +227,54 @@ class _Line extends StatelessWidget {
   final DateTime startedAt;
   final EngineKind? mainEngine;
 
+  /// Offers Save to phrasebook and Copy for this line (F-07, AC-08.1).
+  void _actions(BuildContext context, WidgetRef ref) {
+    final l10n = context.localization;
+    final translated = utterance.targetText.isNotEmpty;
+    showAppActionSheet(
+      context: context,
+      title: l10n.bubbleActions,
+      cancel: l10n.commonCancel,
+      actions: [
+        if (translated)
+          AppSheetAction(
+            icon: AppIcons.bookmark,
+            label: l10n.phraseSave,
+            onSelected: () async {
+              await saveToPhrasebook(
+                context,
+                ref,
+                sourceLang: utterance.sourceLang,
+                sourceText: utterance.sourceText,
+                targetLang: utterance.targetLang,
+                targetText: utterance.targetText,
+                fromUtteranceId: utterance.id,
+              );
+              ref.invalidate(transcriptProvider(utterance.sessionId));
+            },
+          ),
+        AppSheetAction(
+          icon: AppIcons.copy,
+          label: l10n.bubbleCopy,
+          onSelected: () async {
+            await Clipboard.setData(
+              ClipboardData(
+                text: translated
+                    ? '${utterance.sourceText}\n${utterance.targetText}'
+                    : utterance.sourceText,
+              ),
+            );
+            if (context.mounted) {
+              showAppToast(context, l10n.bubbleCopied);
+            }
+          },
+        ),
+      ],
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.localization;
     final scheme = Theme.of(context).colorScheme;
     final locale = Localizations.localeOf(context).toLanguageTag();
@@ -242,51 +292,69 @@ class _Line extends StatelessWidget {
       _ => null,
     };
     final translated = utterance.targetText.isNotEmpty;
-    return Container(
-      color: partner ? scheme.surfaceContainerHigh : null,
-      padding: EdgeInsets.symmetric(
-        horizontal: AppParams.spacing20.w,
-        vertical: AppParams.spacing12.h,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 52.w,
-            child: Text(
-              time,
-              style: context.textTheme.labelMedium?.copyWith(
-                color: scheme.onSurfaceVariant,
+    final saved = utterance.isSaved;
+    return InkWell(
+      onLongPress: () => _actions(context, ref),
+      child: Container(
+        color: partner ? scheme.surfaceContainerHigh : null,
+        padding: EdgeInsets.symmetric(
+          horizontal: AppParams.spacing20.w,
+          vertical: AppParams.spacing12.h,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 52.w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    time,
+                    style: context.textTheme.labelMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
+                  ),
+                  if (saved) ...[
+                    SizedBox(height: AppParams.spacing4.h),
+                    AppIcon(
+                      AppIcons.bookmarkFilled,
+                      size: 16,
+                      color: scheme.primary,
+                      semanticLabel: l10n.phraseSaved,
+                    ),
+                  ],
+                ],
               ),
             ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  translated ? utterance.targetText : utterance.sourceText,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    color: scheme.onSurface,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    translated ? utterance.targetText : utterance.sourceText,
+                    style: context.textTheme.titleMedium?.copyWith(
+                      color: scheme.onSurface,
+                    ),
                   ),
-                ),
-                SizedBox(height: AppParams.spacing4.h),
-                Text(
-                  translated
-                      ? utterance.sourceText
-                      : l10n.transcriptNotTranslated,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
+                  SizedBox(height: AppParams.spacing4.h),
+                  Text(
+                    translated
+                        ? utterance.sourceText
+                        : l10n.transcriptNotTranslated,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: scheme.onSurfaceVariant,
+                    ),
                   ),
-                ),
-                if (badge != null && engine.kind != null) ...[
-                  SizedBox(height: AppParams.spacing8.h),
-                  EngineBadge(engine: engine.kind!, label: badge),
+                  if (badge != null && engine.kind != null) ...[
+                    SizedBox(height: AppParams.spacing8.h),
+                    EngineBadge(engine: engine.kind!, label: badge),
+                  ],
                 ],
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

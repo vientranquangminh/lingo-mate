@@ -445,5 +445,73 @@
   "meOfflinePacks": "Offline packs",
   "meRunSetupAgain": "Run setup again",
   "meDevtools": "Devtools",
-  "meMyLanguages": "My languages"
+  "meMyLanguages": "My languages",
+  "phrasesQuick": "Quick",
+  "phrasesMine": "Mine",
+  "phrasesSearchHint": "Search {count, plural, =1{1 phrase} other{{count} phrases}}",
+  "@phrasesSearchHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "phrasesFilterAll": "All",
+  "phrasesFilterFavorites": "Favorites",
+  "phrasesEmpty": "No phrases yet. Long-press any line in a conversation or transcript to save it here, or add one with +.",
+  "phrasesNoMatch": "No phrases match.",
+  "phrasesAdd": "Add phrase",
+  "phrasesPlay": "Play {language}",
+  "@phrasesPlay": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "phrasesQuickComingSoon": "Quick phrases by situation are coming next.",
+  "phraseSaved": "Saved to phrasebook",
+  "phraseDuplicate": "Already in phrasebook",
+  "phraseSave": "Save to phrasebook",
+  "phraseDeleted": "Phrase deleted",
+  "commonUndo": "Undo",
+  "phraseDetailTitle": "Phrase",
+  "phraseNote": "Note",
+  "phraseAddNote": "Add a note",
+  "phraseTags": "Tags",
+  "phraseAddTag": "Add tag",
+  "phraseTagName": "Tag name",
+  "phraseRemoveTag": "Remove tag {tag}",
+  "@phraseRemoveTag": {
+    "placeholders": {
+      "tag": {
+        "type": "String"
+      }
+    }
+  },
+  "phraseFrom": "From: {title} · {time}",
+  "@phraseFrom": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "phraseFavorite": "Favorite",
+  "phraseUnfavorite": "Remove from favorites",
+  "phraseShowLarge": "Show large",
+  "phraseDelete": "Delete",
+  "phraseEditTranslation": "Edit translation",
+  "addPhraseTitle": "Add phrase",
+  "addPhraseFrom": "From",
+  "addPhraseTo": "To",
+  "addPhraseSource": "Type a sentence",
+  "addPhraseTranslate": "Translate",
+  "addPhraseTranslation": "Translation",
+  "addPhraseSave": "Save",
+  "addPhraseNoEngine": "No translation engine is available. Type the translation yourself.",
+  "addPhraseFailed": "Couldn't translate. Type the translation yourself."
 }

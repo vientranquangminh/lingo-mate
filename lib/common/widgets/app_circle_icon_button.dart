@@ -30,6 +30,7 @@ class AppCircleIconButton extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final tint = color ?? scheme.onSurface;
     return Semantics(
+      container: true,
       button: true,
       toggled: selected,
       label: semanticLabel,

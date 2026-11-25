@@ -15,6 +15,8 @@ import '../features/language_packs/presentation/view/language_packs_page.dart';
 import '../features/me/presentation/view/me_page.dart';
 import '../features/onboarding/presentation/view/setup_page.dart';
 import '../features/onboarding/presentation/view/welcome_page.dart';
+import '../features/phrasebook/presentation/view/add_phrase_page.dart';
+import '../features/phrasebook/presentation/view/phrase_detail_page.dart';
 import '../features/phrasebook/presentation/view/phrases_page.dart';
 import '../features/show_mode/presentation/view/show_mode_page.dart';
 import 'route_const.dart';
@@ -95,6 +97,25 @@ final goRouterProvider = Provider((ref) {
                 path: AppRoutePath.phrases,
                 pageBuilder: (context, state) =>
                     const NoTransitionPage(child: PhrasesPage()),
+                routes: [
+                  GoRoute(
+                    name: AppRouteName.addPhrase,
+                    path: AppRoutePath.addPhrase,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) =>
+                        const CupertinoPage(child: AddPhrasePage()),
+                  ),
+                  GoRoute(
+                    name: AppRouteName.phrase,
+                    path: AppRoutePath.phrase,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) => CupertinoPage(
+                      child: PhraseDetailPage(
+                        phraseId: state.pathParameters['id']!,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

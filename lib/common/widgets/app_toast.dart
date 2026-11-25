@@ -1,65 +1,103 @@
 import 'dart:async';
 
 import 'package:flutter/semantics.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../extensions/build_context_ext.dart';
 import '../resources/app_params.dart';
+import 'app_platform_text_button.dart';
 
-/// Shows a short message at the bottom of the screen for 3 s (doc 08 Toast).
-void showAppToast(BuildContext context, String message) {
+/// Shows a short message at the bottom of the screen (doc 08 Toast): 3 s, or [AppParams.undoDuration] with an action such as Undo.
+void showAppToast(
+  BuildContext context,
+  String message, {
+  String? actionLabel,
+  VoidCallback? onAction,
+}) {
   final overlay = Overlay.maybeOf(context, rootOverlay: true);
   if (overlay == null) {
     return;
   }
   late final OverlayEntry entry;
-  entry = OverlayEntry(builder: (context) => _Toast(message: message));
+  Timer? timer;
+  void close() {
+    timer?.cancel();
+    if (entry.mounted) {
+      entry.remove();
+    }
+  }
+
+  entry = OverlayEntry(
+    builder: (context) => _Toast(
+      message: message,
+      actionLabel: actionLabel,
+      onAction: onAction == null
+          ? null
+          : () {
+              close();
+              onAction();
+            },
+    ),
+  );
   overlay.insert(entry);
   SemanticsService.sendAnnouncement(
     View.of(context),
     message,
     Directionality.of(context),
   );
-  Timer(AppParams.toastDuration, () {
-    if (entry.mounted) {
-      entry.remove();
-    }
-  });
+  timer = Timer(
+    onAction == null ? AppParams.toastDuration : AppParams.undoDuration,
+    close,
+  );
 }
 
 /// The toast pill.
 class _Toast extends StatelessWidget {
-  const _Toast({required this.message});
+  const _Toast({required this.message, this.actionLabel, this.onAction});
 
   final String message;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final action = actionLabel;
+    final text = Text(
+      message,
+      textAlign: action == null ? TextAlign.center : TextAlign.start,
+      style: context.textTheme.bodyMedium?.copyWith(
+        color: scheme.onInverseSurface,
+      ),
+    );
     return Positioned(
       left: AppParams.spacing24.w,
       right: AppParams.spacing24.w,
       bottom: MediaQuery.paddingOf(context).bottom + AppParams.spacing32.h,
-      child: IgnorePointer(
-        child: Center(
-          child: Material(
-            color: scheme.inverseSurface,
-            borderRadius: BorderRadius.circular(AppParams.radiusChip.r),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppParams.spacing20.w,
-                vertical: AppParams.spacing12.h,
-              ),
-              child: Text(
-                message,
-                textAlign: TextAlign.center,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: scheme.onInverseSurface,
-                ),
-              ),
+      child: Center(
+        child: Material(
+          color: scheme.inverseSurface,
+          borderRadius: BorderRadius.circular(AppParams.radiusChip.r),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppParams.spacing20.w,
+              vertical: action == null ? AppParams.spacing12.h : 0,
             ),
+            child: action == null || onAction == null
+                ? IgnorePointer(child: text)
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(child: text),
+                      SizedBox(width: AppParams.spacing8.w),
+                      AppPlatformTextButton(
+                        onPressed: onAction,
+                        text: action,
+                        color: scheme.inversePrimary,
+                      ),
+                    ],
+                  ),
           ),
         ),
       ),
