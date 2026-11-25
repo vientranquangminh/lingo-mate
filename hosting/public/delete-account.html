@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delete your Lingo Mate account</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <h1>Delete your Lingo Mate account</h1>
+  <p class="meta">Xoá tài khoản Lingo Mate</p>
+
+  <p>You can delete your account in the app: <strong>Me → your account → Delete account</strong>. If you no longer have the app, send a request below. We delete the account within 30 days and reply to the address you used.</p>
+  <p>Bạn có thể xoá tài khoản ngay trong ứng dụng: <strong>Tôi → tài khoản → Xoá tài khoản</strong>. Nếu không còn ứng dụng, hãy gửi yêu cầu bên dưới. Chúng tôi xoá tài khoản trong vòng 30 ngày và trả lời tới địa chỉ bạn đã dùng.</p>
+
+  <h2>What is deleted / Dữ liệu bị xoá</h2>
+  <ul>
+    <li>Your account and sign-in / Tài khoản và thông tin đăng nhập</li>
+    <li>Synced phrases, review cards, glossaries and profile / Cụm từ, thẻ ôn tập, bảng thuật ngữ và hồ sơ đã đồng bộ</li>
+    <li>Usage, Live and purchase records / Bản ghi sử dụng, Live và giao dịch</li>
+  </ul>
+  <p>Data that stayed on your phone is removed when you uninstall the app. A Google Play subscription is not cancelled by deleting the account: cancel it in <a href="https://play.google.com/store/account/subscriptions">Google Play</a>.</p>
+
+  <h2>Request deletion / Gửi yêu cầu</h2>
+  <form id="request">
+    <p><label>Email address used in the app / Email đã dùng trong ứng dụng<br>
+      <input id="email" type="email" required style="width:100%;max-width:420px;padding:8px;font:inherit"></label></p>
+    <p><button type="submit" style="padding:10px 16px;font:inherit">Send request / Gửi yêu cầu</button></p>
+  </form>
+  <p class="meta">This opens your email app with the request filled in. / Trang sẽ mở ứng dụng email với nội dung soạn sẵn.</p>
+</main>
+<script>
+  document.getElementById('request').addEventListener('submit', function (event) {
+    event.preventDefault();
+    var email = document.getElementById('email').value.trim();
+    var body = 'Please delete the Lingo Mate account signed in with: ' + email;
+    window.location.href = 'mailto:vienquangminh14@gmail.com'
+      + '?subject=' + encodeURIComponent('Delete my Lingo Mate account')
+      + '&body=' + encodeURIComponent(body);
+  });
+</script>
+</body>
+</html>

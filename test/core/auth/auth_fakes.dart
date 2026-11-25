@@ -93,4 +93,26 @@ class FakeAuthService implements AuthService {
     signOuts++;
     setUser(const AppUser(uid: 'anon2', provider: AuthProviderKind.anonymous));
   }
+
+  SignInResult reauthResult = const SignInResult(SignInOutcome.signedIn);
+  AccountDeletion deletion = AccountDeletion.deleted;
+  int reauths = 0;
+  int deletions = 0;
+
+  @override
+  Future<SignInResult> reauthenticateWithGoogle() async {
+    reauths++;
+    return reauthResult;
+  }
+
+  @override
+  Future<AccountDeletion> deleteAccount() async {
+    deletions++;
+    if (deletion == AccountDeletion.deleted) {
+      setUser(
+        const AppUser(uid: 'anon3', provider: AuthProviderKind.anonymous),
+      );
+    }
+    return deletion;
+  }
 }

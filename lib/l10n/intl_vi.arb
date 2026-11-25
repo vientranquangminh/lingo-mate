@@ -468,5 +468,19 @@
   "syncMergeTitle": "Thêm cụm từ trên điện thoại này vào tài khoản?",
   "syncMergeBody": "Điện thoại này có {count} cụm từ đã lưu. Gộp sẽ giữ chúng và thêm vào tài khoản, bỏ qua câu trùng. Không gộp sẽ xoá chúng khỏi điện thoại này.",
   "syncMerge": "Gộp",
-  "syncDontMerge": "Không gộp"
+  "syncDontMerge": "Không gộp",
+  "deleteAccountTitle": "Xoá tài khoản",
+  "deleteAccountIntro": "Xoá tài khoản sẽ xoá vĩnh viễn:",
+  "deleteAccountItemAccount": "Tài khoản Lingo Mate và thông tin đăng nhập",
+  "deleteAccountItemCloud": "Cụm từ, thẻ ôn tập, bảng thuật ngữ và hồ sơ đã đồng bộ",
+  "deleteAccountItemUsage": "Bản ghi sử dụng, Live và giao dịch của tài khoản",
+  "deleteAccountItemPhone": "Mọi dữ liệu ứng dụng lưu trên điện thoại này",
+  "deleteAccountPlayNote": "Xoá tài khoản không huỷ gói đăng ký Google Play. Hãy huỷ trong Google Play để ngừng thanh toán.",
+  "deleteAccountOpenPlay": "Mở gói đăng ký Google Play",
+  "deleteAccountButton": "Xoá tài khoản",
+  "deleteAccountConfirmTitle": "Xoá tài khoản của bạn?",
+  "deleteAccountConfirmBody": "Không thể hoàn tác. Bạn có thể cần đăng nhập lại trước.",
+  "deleteAccountFailed": "Chưa xoá được tài khoản. Kiểm tra kết nối rồi thử lại.",
+  "deleteAccountEmailAgain": "Để an toàn, hãy xác nhận đó là bạn: mở liên kết đã gửi tới {email}, rồi chạm Xoá tài khoản lần nữa.",
+  "deleteAccountDone": "Đã xoá tài khoản"
 }

@@ -7,6 +7,7 @@ import '../core/engines/selection/engine_selector.dart';
 import '../core/settings/user_settings.dart';
 import '../env.dart';
 import '../features/account/presentation/view/account_page.dart';
+import '../features/account/presentation/view/delete_account_page.dart';
 import '../features/account/presentation/view/email_link_page.dart';
 import '../features/account/presentation/view/email_sign_in_page.dart';
 import '../features/account/presentation/view/sign_in_page.dart';
@@ -217,6 +218,15 @@ final goRouterProvider = Provider((ref) {
                     parentNavigatorKey: rootNavigatorKey,
                     pageBuilder: (context, state) =>
                         const CupertinoPage(child: AccountPage()),
+                    routes: [
+                      GoRoute(
+                        name: AppRouteName.deleteAccount,
+                        path: AppRoutePath.deleteAccount,
+                        parentNavigatorKey: rootNavigatorKey,
+                        pageBuilder: (context, state) =>
+                            const CupertinoPage(child: DeleteAccountPage()),
+                      ),
+                    ],
                   ),
                   GoRoute(
                     name: AppRouteName.glossary,

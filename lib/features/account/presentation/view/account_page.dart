@@ -16,6 +16,7 @@ import '../../../../common/widgets/user_avatar.dart';
 import '../../../../core/auth/auth_models.dart';
 import '../../../../core/auth/auth_providers.dart';
 import '../../../../core/sessions/session_repository.dart';
+import '../../../../navigation/route_const.dart';
 import '../widget/provider_label.dart';
 
 /// Account details from the Me account card: name (editable), email, provider and Sign out (S-17, AC-13.11).
@@ -67,8 +68,13 @@ class AccountPage extends ConsumerWidget {
                 SettingsRow(
                   icon: AppIcons.logout,
                   label: l10n.accountSignOut,
-                  destructive: true,
                   onTap: () => _signOut(context, ref),
+                ),
+                SettingsRow(
+                  icon: AppIcons.deleteAccount,
+                  label: l10n.deleteAccountTitle,
+                  destructive: true,
+                  onTap: () => context.pushNamed(AppRouteName.deleteAccount),
                 ),
               ],
             ),
