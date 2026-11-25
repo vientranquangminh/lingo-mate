@@ -763,5 +763,6 @@
   "glossaryDeleteSet": "Delete set",
   "glossaryDeleteSetTitle": "Delete this set?",
   "glossaryDeleteSetBody": "Its terms are deleted too. This can't be undone.",
-  "glossaryDeleteTerm": "Delete term"
+  "glossaryDeleteTerm": "Delete term",
+  "privacyPolicy": "Privacy policy"
 }

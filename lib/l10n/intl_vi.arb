@@ -414,5 +414,6 @@
   "glossaryDeleteSet": "Xoá bộ",
   "glossaryDeleteSetTitle": "Xoá bộ này?",
   "glossaryDeleteSetBody": "Các thuật ngữ trong bộ cũng bị xoá. Không thể hoàn tác.",
-  "glossaryDeleteTerm": "Xoá thuật ngữ"
+  "glossaryDeleteTerm": "Xoá thuật ngữ",
+  "privacyPolicy": "Chính sách quyền riêng tư"
 }

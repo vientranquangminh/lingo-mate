@@ -35,6 +35,11 @@ final capabilityMatrixProvider = FutureProvider<CapabilityMatrix>(
   ).load(),
 );
 
+/// Address of the privacy policy page (`privacy_policy_url`).
+final privacyPolicyUrlProvider = Provider<String>(
+  (ref) => ref.watch(engineRemoteConfigProvider).privacyPolicyUrl,
+);
+
 /// Whether Live may be offered: dev flavor with `ff_live_enabled` on; never in other flavors in P1 (AC-05.6).
 final liveAvailableProvider = Provider<bool>(
   (ref) =>

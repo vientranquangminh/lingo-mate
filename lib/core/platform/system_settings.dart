@@ -14,6 +14,9 @@ abstract interface class SystemSettings {
 
   /// Keeps the screen awake while [on], for live sessions.
   Future<bool> keepScreenOn(bool on);
+
+  /// Opens [url] in the browser; returns false when nothing opened it.
+  Future<bool> openUrl(String url);
 }
 
 /// [SystemSettings] over the `lingomate/system_settings` channel.
@@ -34,6 +37,9 @@ class ChannelSystemSettings implements SystemSettings {
 
   @override
   Future<bool> keepScreenOn(bool on) => _invoke('keepScreenOn', {'on': on});
+
+  @override
+  Future<bool> openUrl(String url) => _invoke('openUrl', {'url': url});
 
   /// Calls [method] with [arguments]; returns false when the platform has no handler.
   Future<bool> _invoke(String method, [Map<String, Object?>? arguments]) async {

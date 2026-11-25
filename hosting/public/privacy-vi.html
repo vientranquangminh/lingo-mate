@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chính sách quyền riêng tư của Lingo Mate</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+  <nav><a href="/privacy">English</a></nav>
+  <h1>Chính sách quyền riêng tư của Lingo Mate</h1>
+  <p class="meta">Có hiệu lực từ ngày 1 tháng 12 năm 2026</p>
+
+  <p>Lingo Mate ("ứng dụng", "chúng tôi") dịch lời nói trong trò chuyện trực tiếp, bài giảng và cuộc họp trực tuyến. Chính sách này giải thích ứng dụng xử lý dữ liệu gì, ở đâu, trong bao lâu và bạn có những lựa chọn nào. Tóm tắt: âm thanh chỉ nằm trong bộ nhớ tạm của điện thoại và không bao giờ được lưu; bản ghi, sổ cụm từ và cài đặt nằm trên điện thoại của bạn; văn bản chỉ được gửi tới Google khi bạn dùng công cụ dịch trực tuyến hoặc một tính năng học trực tuyến.</p>
+
+  <h2>1. Ứng dụng xử lý dữ liệu gì và vì sao</h2>
+  <table>
+    <tr><th>Dữ liệu</th><th>Đi đâu</th><th>Để làm gì</th></tr>
+    <tr><td>Âm thanh từ micro</td><td>Chỉ giữ trong bộ nhớ tạm của điện thoại (tối đa 30 giây gần nhất) và được chuyển thành chữ ngay trên điện thoại. Không bao giờ ghi vào bộ nhớ hay tải lên. Khi micro bật, luôn có thông báo và biểu tượng trên màn hình.</td><td>Nhận dạng lời nói.</td></tr>
+    <tr><td>Văn bản nhận dạng (lời đã nói)</td><td>Với công cụ <strong>Ngoại tuyến</strong>, văn bản ở lại trên điện thoại (Google ML Kit dịch ngay trên máy). Với công cụ <strong>Tiêu chuẩn</strong>, câu nói, tối đa ba câu trước đó làm ngữ cảnh và các thuật ngữ khớp trong bảng thuật ngữ được gửi tới Google Gemini qua Firebase AI Logic để nhận bản dịch.</td><td>Dịch.</td></tr>
+    <tr><td>Bản ghi, cụm từ đã lưu, bảng thuật ngữ, lịch ôn tập, cài đặt</td><td>Chỉ lưu trong vùng lưu trữ riêng của ứng dụng trên điện thoại.</td><td>Lịch sử, sổ cụm từ, ôn tập và tuỳ chọn.</td></tr>
+    <tr><td>Các câu trong phiên mà bạn chọn gửi</td><td>Khi bạn chạm <em>Tóm tắt</em>, <em>Người bản xứ sẽ nói thế nào?</em> hoặc <em>Gợi ý trả lời</em>, các câu của phiên đó (hoặc vài câu gần nhất) được gửi tới Google Gemini. Kết quả (ví dụ bản tóm tắt) được lưu trên điện thoại.</td><td>Các trợ giúp học tập và họp mà bạn yêu cầu.</td></tr>
+    <tr><td>Sự kiện sử dụng và báo cáo sự cố</td><td>Google Analytics for Firebase và Firebase Crashlytics nhận các sự kiện như "bắt đầu phiên" hay "đã lưu cụm từ", phiên bản ứng dụng, mẫu máy, phiên bản hệ điều hành và một mã định danh ngẫu nhiên của bản cài đặt. Chúng không bao giờ chứa lời nói, bản ghi hay âm thanh. Bạn có thể tắt cả hai trong <em>Tôi → Quyền riêng tư &amp; dữ liệu</em>.</td><td>Hiểu tính năng nào được dùng và sửa lỗi.</td></tr>
+    <tr><td>Kiểm tra tính toàn vẹn và cấu hình từ xa</td><td>Firebase App Check (Google Play Integrity) và Firebase Remote Config trao đổi mã xác thực thiết bị và cấu hình với Google.</td><td>Bảo vệ công cụ trực tuyến khỏi lạm dụng; cập nhật tên mô hình và công tắc tính năng mà không cần cập nhật ứng dụng.</td></tr>
+    <tr><td>Gói ngôn ngữ ngoại tuyến</td><td>Mô hình dịch tải từ Google (ML Kit); mô hình nhận dạng giọng nói tải từ máy chủ tải xuống của chúng tôi. Các máy chủ đó chỉ thấy thông tin mạng thông thường (như địa chỉ IP).</td><td>Dịch và nhận dạng giọng nói khi không có mạng.</td></tr>
+  </table>
+
+  <h2>2. Dịch vụ của Google</h2>
+  <p>Dịch trực tuyến và các tính năng học dùng Gemini API qua Firebase AI Logic. Google xử lý văn bản này theo <a href="https://policies.google.com/privacy?hl=vi">Chính sách quyền riêng tư của Google</a> và <a href="https://ai.google.dev/gemini-api/terms">điều khoản Gemini API</a>. Khi ứng dụng dùng gói miễn phí của Gemini, Google có thể dùng văn bản nhận được để cải thiện sản phẩm và nhân viên Google có thể xem xét nó. Đừng dùng công cụ Tiêu chuẩn hay các trợ giúp trực tuyến cho cuộc trò chuyện bí mật; hãy chuyển sang <strong>Ngoại tuyến</strong> trong menu công cụ dịch.</p>
+
+  <h2>3. Những điều chúng tôi không làm</h2>
+  <ul>
+    <li>Không ghi âm hay lưu âm thanh.</li>
+    <li>Không bán dữ liệu của bạn hay chia sẻ cho nhà quảng cáo. Ứng dụng không có quảng cáo.</li>
+    <li>Phiên bản này không cần tài khoản. Nếu sau này có đăng nhập, việc đó sẽ là tuỳ chọn và chính sách này sẽ được cập nhật trước.</li>
+    <li>Ứng dụng không thể thu âm thanh của cuộc gọi điện thoại hay gọi video; chế độ Họp chỉ nghe những gì micro nghe thấy.</li>
+  </ul>
+
+  <h2>4. Quyền truy cập</h2>
+  <ul>
+    <li><strong>Micro</strong>: nghe lời nói khi bạn dùng Trò chuyện, Nghe hoặc Họp.</li>
+    <li><strong>Thông báo</strong>: thông báo thường trực khi phụ đề chạy nền, và lời nhắc ôn tập nếu bạn bật.</li>
+    <li><strong>Hiển thị trên ứng dụng khác</strong> (không bắt buộc): phụ đề nổi trong chế độ Họp.</li>
+    <li><strong>Chạy khi khởi động</strong>: đặt lại lời nhắc ôn tập sau khi điện thoại khởi động lại.</li>
+    <li><strong>Internet</strong>: công cụ trực tuyến, tải gói ngôn ngữ và các dịch vụ nêu trên.</li>
+  </ul>
+
+  <h2>5. Lưu giữ và xoá dữ liệu</h2>
+  <ul>
+    <li>Dữ liệu trên điện thoại được giữ đến khi bạn xoá. <em>Tôi → Quyền riêng tư &amp; dữ liệu → Xoá toàn bộ dữ liệu</em> xoá bản ghi, cụm từ, bảng thuật ngữ, thẻ ôn tập và cài đặt (và gói ngôn ngữ nếu bạn chọn). Gỡ cài đặt ứng dụng cũng xoá chúng.</li>
+    <li>Văn bản gửi tới Gemini được xử lý theo điều khoản của Google nêu trên; chúng tôi không giữ bản sao trên máy chủ nào.</li>
+    <li>Dữ liệu phân tích và sự cố được Google giữ theo thời hạn đặt cho dự án Firebase của chúng tôi (không quá 14 tháng) và không gắn với tên hay thông tin liên lạc của bạn.</li>
+  </ul>
+
+  <h2>6. Báo cho người khác</h2>
+  <p>Việc dịch hoạt động bằng cách lắng nghe. Hãy cho những người xung quanh biết khi bạn dịch một cuộc trò chuyện, bài giảng hay cuộc họp, và tuân thủ quy định về ghi âm và quyền riêng tư nơi bạn ở.</p>
+
+  <h2>7. Trẻ em</h2>
+  <p>Ứng dụng không dành cho trẻ em dưới 13 tuổi và chúng tôi không cố ý thu thập dữ liệu của trẻ em.</p>
+
+  <h2>8. Bảo mật</h2>
+  <p>Kết nối tới Google và máy chủ tải xuống của chúng tôi dùng TLS. Dữ liệu trên điện thoại nằm trong vùng lưu trữ riêng của ứng dụng, được Android bảo vệ.</p>
+
+  <h2>9. Thay đổi</h2>
+  <p>Chúng tôi sẽ cập nhật trang này và ngày có hiệu lực trước mọi thay đổi về dữ liệu ứng dụng thu thập. Thay đổi quan trọng cũng sẽ được thông báo trong ứng dụng.</p>
+
+  <h2>10. Liên hệ</h2>
+  <p>Câu hỏi hoặc yêu cầu: <a href="mailto:CONTACT_EMAIL">CONTACT_EMAIL</a>.</p>
+</main>
+</body>
+</html>

@@ -90,6 +90,7 @@ class FakeTranslator implements TextTranslatorEngine {
   bool fail = false;
   bool available = true;
   final requests = <TranslateRequest>[];
+  final scripted = <String, String>{};
 
   @override
   String get id => kind.name;
@@ -103,7 +104,10 @@ class FakeTranslator implements TextTranslatorEngine {
     if (fail) {
       throw StateError('down');
     }
-    return Translation(text: '[${request.to}] ${request.text}', engine: kind);
+    return Translation(
+      text: scripted[request.text] ?? '[${request.to}] ${request.text}',
+      engine: kind,
+    );
   }
 }
 
