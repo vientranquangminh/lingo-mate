@@ -1,10 +1,25 @@
-# CI/CD: dev builds to Firebase App Distribution
+# CI/CD: test builds to Firebase App Distribution
 
-`.github/workflows/distribute-dev.yml` runs on every push to `main` (and by hand from
-Actions → Build & Distribute Android (dev) → Run workflow). It analyzes, tests, builds the
-`dev` flavor as a signed release APK (`com.lingomate.app.dev`, build number = run number)
-and sends it to the tester groups of Firebase project `lingo-mate-4f38d` with the commit
-message as release notes. The Firebase app id is read from `firebase.json`.
+`.github/workflows/distribute-staging.yml` runs on every push to the `staging` branch (and by
+hand from Actions → Build & Distribute Android (staging) → Run workflow). It analyzes,
+tests, builds the `dev` flavor as a signed release APK (`com.lingomate.app.dev`, build
+number = run number) and sends it to the tester groups of Firebase project
+`lingo-mate-4f38d` with the commit as release notes. The Firebase app id is read from
+`firebase.json`. The `dev` flavor is used because it is the only one connected to
+Firebase so far; the `staging` flavor gets its own Firebase app with T-2.1.
+
+To send a build to testers, bring `staging` up to the commit you want and push it:
+
+```bash
+git fetch origin
+```
+
+```bash
+git push origin origin/main:staging
+```
+
+Testers get an email from App Distribution (first time: accept the invite and install the
+App Tester app or open the link), then install the new build from there.
 
 Until any of the secrets below exist, the workflow skips the build and reports a notice instead of failing, so merges send no failure emails. Once some are set, it fails within seconds if the rest are missing.
 
