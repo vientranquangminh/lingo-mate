@@ -52,6 +52,7 @@ final _screens = <_Screen Function()>[
   () => const _Screen('translation_voice', '/me/translation'),
   () => const _Screen('privacy', '/me/privacy'),
   () => const _Screen('language_packs', '/language-packs'),
+  () => const _Screen('review', '/phrases/review'),
   () => const _Screen(
     'show_mode',
     '/show',

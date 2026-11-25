@@ -648,5 +648,75 @@
       }
     }
   },
-  "homeMeetingRunning": "Meeting captions are running"
+  "homeMeetingRunning": "Meeting captions are running",
+  "reviewTitle": "Review",
+  "reviewBannerCards": "{count, plural, =1{card to review today} other{cards to review today}}",
+  "@reviewBannerCards": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewStreak": "{count, plural, =1{1-day streak} other{{count}-day streak}}",
+  "@reviewStreak": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewProgress": "{done} of {total}",
+  "@reviewProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewTapToReveal": "Tap to show the answer",
+  "reviewShowAnswer": "Show answer",
+  "reviewAgain": "Again",
+  "reviewHard": "Hard",
+  "reviewGood": "Good",
+  "reviewEasy": "Easy",
+  "reviewIntervalDays": "{days, plural, =1{1 day} other{{days} days}}",
+  "@reviewIntervalDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDoneTitle": "All done for today",
+  "reviewDoneBody": "{count, plural, =1{You reviewed 1 card.} other{You reviewed {count} cards.}}",
+  "@reviewDoneBody": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewEmptyTitle": "Nothing to review",
+  "reviewEmptyBody": "Phrases you save to your phrasebook show up here to practise, both ways.",
+  "reviewReminder": "Daily reminder",
+  "reviewReminderDescription": "Only on days with cards to review",
+  "reviewReminderTime": "Reminder time",
+  "reviewReminderSettings": "Reminder settings",
+  "reviewReminderTitle": "Time to review",
+  "reviewReminderBody": "Your phrase cards are ready. A few minutes keeps them fresh.",
+  "reviewGradeButton": "{grade} · {interval}",
+  "@reviewGradeButton": {
+    "placeholders": {
+      "grade": {
+        "type": "String"
+      },
+      "interval": {
+        "type": "String"
+      }
+    }
+  }
 }

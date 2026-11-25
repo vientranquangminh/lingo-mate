@@ -7,7 +7,7 @@ session, then update it in the same pull request as each feature or fix.
 - Acceptance criteria: `project-docs/06-feature-details-acs.md`
 - Code map: `.agents/CONTEXT.md`
 
-Last updated: 2026-11-25. T-1.7 is done (#30); speech model hosting is set up (#31, #32).
+Last updated: 2026-11-25. Phase 2 started at the owner's request: T-2.7 SRS review (#33).
 
 ## How to resume in a new session
 
@@ -62,7 +62,16 @@ Status legend:
 | T-1.12 | Localization (F-11) | ✅ · 📱 | #28. AC-11.6 needs a check in system Settings on an Android 13+ phone |
 | T-1.13 | Internal testing release, bug bash | ⬜ | Needs the owner's devices and testers |
 
-Phase 2 (T-2.x) and Phase 3 (T-3.x) have not started. Do not begin them unless the owner asks.
+## Phase 2: Learning, accounts and store
+
+The owner asked to start Phase 2 with T-2.7, T-2.8 and T-2.9, in that order (2026-11-25). The
+other T-2.x tasks and Phase 3 wait until the owner asks.
+
+| Task | Feature | Status | PR / notes |
+|------|---------|--------|------------|
+| T-2.7 | SRS review and reminders (F-16) | ✅ · 📱 | #33. AC-16.3 timing needs a check on a phone (inexact alarm, doze) |
+| T-2.8 | Post-session review, glossary, suggested replies, summaries (F-17–F-20) | ⬜ | |
+| T-2.9 | Privacy policy, Data safety, store listing (en, vi), screenshots | ⬜ | |
 
 ## P1 acceptance criteria
 
@@ -89,15 +98,25 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | | 11.7 `uiLocale` when signed in | ➖ | P2 |
 | F-12 Devtools | 12.1–12.4 | ✅ | |
 
+## P2 acceptance criteria
+
+| Feature | ACs | Status | Gaps / notes |
+|---------|-----|--------|--------------|
+| F-16 Review | 16.1, 16.2 | ✅ | `test/core/review/sm2_test.dart` (SM-2 reference values), `review_repository_test.dart`, `test/features/review/`; cards live in the local DB, so review needs no network |
+| | 16.3 reminder | ✅ · 📱 | Scheduling is tested (`review_reminder_test.dart`); check that the notification shows at the chosen time on a phone |
+
 ## Next up (in order)
 
-1. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
+1. **T-2.8** Post-session review, glossary, suggested replies and summaries (F-17–F-20).
+2. **T-2.9** Privacy policy, Data safety, store listing and screenshots.
+3. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
 
 ## Waiting on the owner (device and account work)
 
 - Test the voice modes on a phone: the speech model is hosted (GitHub release `models-v1` of the public repo `vientranquangminh/lingomate-models`: `ggml-base.bin`, `ggml-small-q5_1.bin`, `silero_vad.onnx`) and Remote Config `asr_models` points every language at `ggml-base.bin` (2026-11-25). Download a pack in Offline packs, then try Conversation, Listen and Meeting. Switch to `ggml-small-q5_1.bin` if Vietnamese recognition is weak (OQ-3).
 - Run the T-0.4 to T-0.8 measurements on the reference phone and a low-end phone, then write the T-0.10 spike report (answers OQ-3, OQ-4, OQ-5).
 - Add the App Distribution secrets so CI can ship dev builds.
+- Device check for the review reminder (AC-16.3): turn on Phrases → Review → settings → Daily reminder, pick a time a few minutes ahead with a card due, lock the phone and wait.
 - Device checks: the Meeting overlay (drag, tap to expand, Stop, long-press a line, position kept), AC-02.3, AC-02.4, AC-02.5, AC-04.6, AC-04.7, AC-04.9, AC-06.3, AC-09.2 (timing), AC-10.4 (DebugView) and AC-11.6 (system Settings → App languages on Android 13+, both directions).
 - Have native speakers review the partner strings for ja, ko, zh, th, id, es, fr and de in `lib/l10n/partner_strings.dart`.
 - Decide whether analytics and crash consent should start off (they start on, set in #26).
@@ -111,6 +130,7 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 - `showCaptionSettingsSheet` (caption size slider and keep screen on) and `SourceLanguagePill` are shared by Listen and Meeting.
 - Meeting (F-04) keeps one session in `meetingProvider` (not auto-disposed), so captions go on while the user moves around the app; the Home card says when it is running. A new speaker turn is a pause of 3 s or more (no diarization). The overlay shows a Toast when a line is saved. The Live toggle of S-07 waits on Live captions.
 - Partner strings for wave-1 languages that are not UI languages live in `PartnerStrings.bundled`; en and vi come from the ARB files.
+- Review (F-16) follows SM-2: the first answer of a session schedules the card; Again and Hard bring it back at the end of the session until it is graded Good or Easy, and those repeats don't change the schedule. Each phrase has a forward and a reverse card. The reminder is a daily inexact alarm set for the first reminder time on or after the earliest due card, re-synced when the app starts, goes to the background and after a session, so it only fires on days with cards due.
 - `RatedSpeechSynthesizer` applies the voice speed. Tests that override `speechSynthesizerProvider` bypass it.
 
 ## Log
@@ -118,4 +138,4 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | Date | Change |
 |------|--------|
 | 2026-11-24 | Phase 0 foundations and spikes (#2–#11); design system T-1.1 (#12–#15) |
-| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28); listen mode T-1.6 (#29); meeting mode T-1.7 (#30); speech model hosting guide (#31) and GitHub Releases setup (#32) |
+| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28); listen mode T-1.6 (#29); meeting mode T-1.7 (#30); speech model hosting guide (#31) and GitHub Releases setup (#32); Phase 2 starts: SRS review T-2.7 (#33) |

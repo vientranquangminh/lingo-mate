@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
@@ -10,6 +12,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'common/resources/app_config.dart';
 import 'common/resources/app_theme.dart';
 import 'core/analytics/analytics_service.dart';
+import 'core/review/review_reminder.dart';
 import 'core/settings/app_locale_sync.dart';
 import 'core/settings/user_settings.dart';
 import 'env.dart';
@@ -46,7 +49,9 @@ class _MyAppState extends ConsumerState<MyApp> {
   void initState() {
     super.initState();
     final sync = ref.read(appLocaleSyncProvider)..start();
-    _lifecycle = AppLifecycleListener(onResume: sync.pull);
+    final reminder = ref.read(reviewReminderSyncProvider);
+    unawaited(reminder());
+    _lifecycle = AppLifecycleListener(onResume: sync.pull, onPause: reminder);
   }
 
   @override

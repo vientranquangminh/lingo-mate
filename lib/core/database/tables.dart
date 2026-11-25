@@ -112,3 +112,21 @@ class UsageLedger extends Table {
   TextColumn get sessionId => text().nullable()();
   BoolColumn get synced => boolean().withDefault(const Constant(false))();
 }
+
+/// A spaced-repetition card for one direction of a phrase (F-16).
+@TableIndex(name: 'srs_cards_due', columns: {#dueAt})
+class SrsCards extends Table {
+  TextColumn get id => text()();
+  TextColumn get phraseId =>
+      text().references(Phrases, #id, onDelete: KeyAction.cascade)();
+  TextColumn get direction => text()();
+  RealColumn get ease => real().withDefault(const Constant(2.5))();
+  IntColumn get intervalDays => integer().withDefault(const Constant(0))();
+  IntColumn get reps => integer().withDefault(const Constant(0))();
+  IntColumn get lapses => integer().withDefault(const Constant(0))();
+  DateTimeColumn get dueAt => dateTime()();
+  DateTimeColumn get lastReviewedAt => dateTime().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}

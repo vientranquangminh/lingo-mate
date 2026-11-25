@@ -20,6 +20,9 @@ class AppParams {
   static const standardDuration = Duration(milliseconds: 200);
 
   static const buttonHeight = 48.0;
+  static const timePickerHeight = 280.0;
+  static const reviewCardMinHeight = 240.0;
+  static const progressBarHeight = 6.0;
 
   static const spacing4 = 4.0;
   static const spacing8 = 8.0;

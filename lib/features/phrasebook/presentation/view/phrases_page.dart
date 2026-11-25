@@ -10,7 +10,10 @@ import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../common/widgets/app_search_field.dart';
 import '../../../../common/widgets/app_segmented_control.dart';
 import '../../../../common/widgets/app_selectable_chip.dart';
+import '../../../../common/widgets/review_banner.dart';
 import '../../../../core/phrases/phrase_repository.dart';
+import '../../../../core/review/review_repository.dart';
+import '../../../../core/review/review_settings.dart';
 import '../../../../navigation/route_const.dart';
 import '../../data/notifier/phrasebook_providers.dart';
 import '../widget/phrase_row.dart';
@@ -136,9 +139,28 @@ class _Mine extends ConsumerWidget {
         filter.tagId == null &&
         !filter.favoritesOnly &&
         filter.query.trim().isEmpty;
+    final due = ref.watch(reviewDueCountProvider).value ?? 0;
+    final streak = ref.watch(
+      reviewSettingsProvider.select((s) => s.streakOn(DateTime.now())),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (due > 0)
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              AppParams.spacing20.w,
+              0,
+              AppParams.spacing20.w,
+              AppParams.spacing12.h,
+            ),
+            child: ReviewBanner(
+              count: due,
+              label: l10n.reviewBannerCards(due),
+              streak: streak > 0 ? l10n.reviewStreak(streak) : null,
+              onTap: () => context.pushNamed(AppRouteName.review),
+            ),
+          ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: AppParams.spacing20.w),
           child: AppSearchField(

@@ -16,6 +16,7 @@ part 'app_database.g.dart';
     QuickPhraseFavorites,
     LanguagePacks,
     UsageLedger,
+    SrsCards,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -23,7 +24,7 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'lingo_mate'));
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   /// Deletes every row of every table, children first (AC-10.3).
   Future<void> wipe() => transaction(() async {
@@ -52,11 +53,29 @@ class AppDatabase extends _$AppDatabase {
           "INSERT INTO phrases_fts(phrases_fts) VALUES ('rebuild')",
         );
       }
+      if (from < 4) {
+        await m.createTable(srsCards);
+        await m.createIndex(srsCardsDue);
+        await _addMissingCards();
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
     },
   );
+
+  /// Adds forward and reverse cards, due now, for every phrase that has none (F-16).
+  Future<void> _addMissingCards() async {
+    for (final direction in ['forward', 'reverse']) {
+      await customStatement(
+        'INSERT INTO srs_cards (id, phrase_id, direction, due_at) '
+        "SELECT p.id || '-' || ?, p.id, ?, p.created_at FROM phrases p "
+        'WHERE NOT EXISTS (SELECT 1 FROM srs_cards c '
+        'WHERE c.phrase_id = p.id AND c.direction = ?)',
+        [direction, direction, direction],
+      );
+    }
+  }
 
   /// Creates the FTS5 index over utterance texts and the triggers that keep it in sync (AC-07.3).
   Future<void> _createUtteranceSearch() async {

@@ -23,6 +23,7 @@ import '../features/phrasebook/presentation/view/add_phrase_page.dart';
 import '../features/phrasebook/presentation/view/phrase_detail_page.dart';
 import '../features/phrasebook/presentation/view/phrases_page.dart';
 import '../features/phrasebook/presentation/view/situation_page.dart';
+import '../features/review/presentation/view/review_page.dart';
 import '../features/show_mode/presentation/view/show_mode_page.dart';
 import 'route_const.dart';
 
@@ -117,6 +118,13 @@ final goRouterProvider = Provider((ref) {
                         situationKey: state.pathParameters['key']!,
                       ),
                     ),
+                  ),
+                  GoRoute(
+                    name: AppRouteName.review,
+                    path: AppRoutePath.review,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) =>
+                        const CupertinoPage(child: ReviewPage()),
                   ),
                   GoRoute(
                     name: AppRouteName.addPhrase,
