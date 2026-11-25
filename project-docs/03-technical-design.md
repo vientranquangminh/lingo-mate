@@ -170,7 +170,7 @@ abstract interface class LiveSession {
 ## 5. Audio pipeline
 
 1. **Capture**: 16 kHz, mono, PCM16, 20 ms frames. Source `VOICE_RECOGNITION` (Conversation/Listen); `MIC` with noise suppression off for Meeting (laptop speaker is far-field). Enable `NoiseSuppressor`/`AutomaticGainControl` where available; make it a devtools toggle for the spike.
-2. **VAD**: Silero VAD (bundled with the chosen ASR lib) — speech start/end with `silenceMs = 600`, `minSpeechMs = 400`, `maxUtteranceMs = 15000` (force-cut long monologues at the nearest pause > 250 ms).
+2. **VAD**: Silero VAD (bundled with the chosen ASR lib) — speech start/end with `silenceMs = 500` (was 600; lowered with live partials, owner feedback 2026-11-25), `minSpeechMs = 400`, `maxUtteranceMs = 15000` (force-cut long monologues at the nearest pause > 250 ms).
 3. **Segmenter** emits `AudioSegment`s to the active pipeline (Offline/Standard). Live mode streams raw 100 ms chunks instead.
 4. **Echo gating** (critical): when TTS or Live audio is playing through the speaker, the mic will hear it.
    - Default: half-duplex — pause segment emission while `TtsState.speaking` (+150 ms tail).

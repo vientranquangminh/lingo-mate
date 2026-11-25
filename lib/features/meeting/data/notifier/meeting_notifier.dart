@@ -10,6 +10,7 @@ import '../../../../core/audio/audio_pipeline.dart';
 import '../../../../core/audio/echo_gate.dart';
 import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/background/background_capture.dart';
+import '../../../../core/engines/asr/partial_transcriber.dart';
 import '../../../../core/engines/engine_instances.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/engines/live/live_captioner.dart';
@@ -49,6 +50,7 @@ class MeetingNotifier extends Notifier<MeetingState> {
   BackgroundCapture? _background;
   final _subscriptions = <StreamSubscription<Object>>[];
   Future<void> _queue = Future.value();
+  int _pendingSegments = 0;
   Future<String>? _sessionId;
   Future<void> _writes = Future.value();
   int _sessionStartMs = 0;
@@ -256,11 +258,30 @@ class MeetingNotifier extends Notifier<MeetingState> {
     AudioPipeline pipeline,
     SpeechRecognizerEngine recognizer,
   ) {
+    final partialAsr = PartialTranscriber(
+      recognizer,
+      onText: (text) => state = state.copyWith(draft: () => text),
+      isIdle: () => ref.mounted && state.running && _pendingSegments == 0,
+    );
+    if (recognizer.supportsPartials) {
+      _subscriptions.add(
+        pipeline.partials.listen(
+          (snapshot) => unawaited(partialAsr.add(snapshot, state.source)),
+        ),
+      );
+    }
     _subscriptions.add(
-      pipeline.segments.listen(
-        (segment) =>
-            _queue = _queue.then((_) => _onSegment(recognizer, segment)),
-      ),
+      pipeline.segments.listen((segment) {
+        partialAsr.finish();
+        _pendingSegments++;
+        _queue = _queue.then((_) async {
+          try {
+            await _onSegment(recognizer, segment);
+          } finally {
+            _pendingSegments--;
+          }
+        });
+      }),
     );
   }
 
@@ -372,6 +393,9 @@ class MeetingNotifier extends Notifier<MeetingState> {
       await subscription.cancel();
     }
     _subscriptions.clear();
+    if (ref.mounted && state.draft != null) {
+      state = state.copyWith(draft: () => null);
+    }
     final pipeline = _pipeline;
     _pipeline = null;
     await pipeline?.dispose();
@@ -431,7 +455,11 @@ class MeetingNotifier extends Notifier<MeetingState> {
         hintLang: state.source,
       );
       final text = result.text.trim();
-      if (text.isEmpty || !ref.mounted || !state.running) {
+      if (!ref.mounted) {
+        return;
+      }
+      if (text.isEmpty || !state.running) {
+        state = state.copyWith(draft: () => null);
         return;
       }
       final endMs = _clock();
@@ -447,13 +475,15 @@ class MeetingNotifier extends Notifier<MeetingState> {
             last != null &&
             segment.startMs - last >= turnGapMs,
       );
-      state = state.copyWith(lines: [...state.lines, line]);
+      state = state.copyWith(lines: [...state.lines, line], draft: () => null);
       _pushOverlay();
       await _translate(line);
       _pushOverlay();
       _record(line.id, endMs - segment.durationMs, endMs);
     } catch (_) {
-      return;
+      if (ref.mounted) {
+        state = state.copyWith(draft: () => null);
+      }
     }
   }
 

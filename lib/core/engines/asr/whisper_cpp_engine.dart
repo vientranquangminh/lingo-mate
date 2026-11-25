@@ -14,6 +14,9 @@ class WhisperCppEngine implements SpeechRecognizerEngine {
   Future<WhisperEngine>? _engine;
 
   @override
+  bool get supportsPartials => true;
+
+  @override
   String get id => 'whisper-cpp-${model.name}';
 
   @override
@@ -32,6 +35,9 @@ class WhisperCppEngine implements SpeechRecognizerEngine {
             language: hintLang ?? 'auto',
             noTimestamps: true,
             singleSegment: true,
+            tokenTimestamps: false,
+            greedyBestOf: 1,
+            audioContext: audioContextFor(segment.samples.length),
           ),
         )
         .result;
@@ -39,6 +45,16 @@ class WhisperCppEngine implements SpeechRecognizerEngine {
       text: result.text.trim(),
       lang: hintLang ?? result.language,
     );
+  }
+
+  /// Returns the encoder context for [samples] of 16 kHz audio, so short speech skips the padded 30 s window.
+  static int audioContextFor(int samples) {
+    const fullContext = 1500;
+    const fullSamples = 30 * AudioFormat.sampleRate;
+    const margin = 64;
+    const minContext = 256;
+    final needed = (samples * fullContext / fullSamples).ceil() + margin;
+    return needed.clamp(minContext, fullContext);
   }
 
   @override

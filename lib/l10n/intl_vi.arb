@@ -502,5 +502,6 @@
   "conversationLiveOn": "Live: cứ nói tự nhiên bằng một trong hai ngôn ngữ. Bản dịch được đọc ngay khi bạn nói.",
   "engineLiveHint": "Thời gian thực, dịch ngay khi đang nói",
   "engineStandardHint": "Trực tuyến, dịch sau mỗi câu",
-  "engineOfflineHint": "Trên máy, không cần mạng"
+  "engineOfflineHint": "Trên máy, không cần mạng",
+  "draftHearing": "Đang nghe…"
 }

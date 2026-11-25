@@ -6,7 +6,7 @@ import 'audio_frame.dart';
 class SegmenterConfig {
   const SegmenterConfig({
     this.speechThreshold = 0.5,
-    this.silenceMs = 600,
+    this.silenceMs = 500,
     this.minSpeechMs = 400,
     this.maxUtteranceMs = 15000,
     this.minPauseForCutMs = 250,
@@ -69,6 +69,13 @@ class Segmenter {
     }
     return const [];
   }
+
+  /// Whether an utterance is in progress.
+  bool get isActive => _active;
+
+  /// Returns the utterance in progress so far, if it holds enough speech, without ending it.
+  AudioSegment? snapshot() =>
+      _active ? _build(0, _lastSpeechIndex() + 1) : null;
 
   /// Emits the segment in progress, if it holds enough speech, and resets.
   List<AudioSegment> flush() {

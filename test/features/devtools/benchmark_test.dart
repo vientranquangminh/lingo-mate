@@ -40,6 +40,9 @@ class _FakeAsr implements SpeechRecognizerEngine {
   int calls = 0;
 
   @override
+  bool get supportsPartials => false;
+
+  @override
   String get id => 'fake-asr';
 
   @override

@@ -73,6 +73,30 @@ void main() {
     },
   );
 
+  test(
+    'shows the words heard so far, then replaces them with the caption',
+    () async {
+      fakes.recognizer
+        ..supportsPartials = true
+        ..texts.addAll(['こんに', 'こんにちは']);
+      final c = await build();
+      await notifier(c).start();
+
+      fakes.capture.add(pcm(1200, amplitude: 4000));
+      await pumpEventQueue();
+
+      expect(c.read(listenProvider(languages)).draft, 'こんに');
+      expect(c.read(listenProvider(languages)).captions, isEmpty);
+
+      fakes.capture.add(pcm(700));
+      await pumpEventQueue();
+
+      final state = c.read(listenProvider(languages));
+      expect(state.draft, isNull);
+      expect(state.captions.single.original, 'こんにちは');
+    },
+  );
+
   test('a 20 s monologue is cut and captions keep flowing (AC-03.4)', () async {
     fakes.recognizer.texts.addAll(['part one', 'part two']);
     final c = await build();

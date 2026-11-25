@@ -116,4 +116,28 @@ void main() {
     expect(chunks, hasLength(2));
     expect(chunks.first.length, 100 * AudioFormat.samplesPerMs * 2);
   });
+
+  test(
+    'emits the speech so far about once a second while someone speaks',
+    () async {
+      final partials = <AudioSegment>[];
+      final segments = <AudioSegment>[];
+      pipeline.partials.listen(partials.add);
+      pipeline.segments.listen(segments.add);
+      await pipeline.start();
+
+      pipeline.addPcm(pcm(2500, amplitude: 4000));
+      await pumpEventQueue();
+
+      expect(partials, hasLength(2));
+      expect(partials.last.durationMs, greaterThan(partials.first.durationMs));
+      expect(segments, isEmpty);
+
+      pipeline.addPcm(pcm(700));
+      await pumpEventQueue();
+
+      expect(segments, hasLength(1));
+      expect(partials, hasLength(2));
+    },
+  );
 }

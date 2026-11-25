@@ -9,6 +9,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/draft_line.dart';
 import '../../../../common/widgets/app_action_sheet.dart';
 import '../../../../common/widgets/app_banner.dart';
 import '../../../../common/widgets/app_circle_icon_button.dart';
@@ -167,6 +168,11 @@ class _MeetingPageState extends ConsumerState<MeetingPage> {
           _scrollToEnd();
         }
       })
+      ..listen(meetingProvider.select((s) => s.draft), (_, next) {
+        if (next != null) {
+          _scrollToEnd();
+        }
+      })
       ..listen(meetingProvider.select((s) => s.liveStops), (_, _) {
         final denial = ref.read(meetingProvider).liveDenial;
         showAppToast(
@@ -197,7 +203,7 @@ class _MeetingPageState extends ConsumerState<MeetingPage> {
                 ),
               ),
             Expanded(
-              child: state.lines.isEmpty
+              child: state.lines.isEmpty && state.draft == null
                   ? _Empty(state: state, setupDismissed: dismissed)
                   : CaptionScale(
                       child: ListView.builder(
@@ -205,8 +211,12 @@ class _MeetingPageState extends ConsumerState<MeetingPage> {
                         padding: EdgeInsets.symmetric(
                           vertical: AppParams.spacing8.h,
                         ),
-                        itemCount: state.lines.length,
+                        itemCount:
+                            state.lines.length + (state.draft != null ? 1 : 0),
                         itemBuilder: (context, index) {
+                          if (index == state.lines.length) {
+                            return DraftLine(text: state.draft ?? '');
+                          }
                           final line = state.lines[index];
                           final translation = line.translation;
                           return MeetingLineTile(

@@ -25,6 +25,7 @@ class ConversationHalf extends StatelessWidget {
     this.trailing,
     this.banner,
     this.onLongPressIncoming,
+    this.draft,
   });
 
   final PartnerStrings strings;
@@ -40,6 +41,7 @@ class ConversationHalf extends StatelessWidget {
   final Widget? trailing;
   final Widget? banner;
   final ValueChanged<ConversationTurn>? onLongPressIncoming;
+  final String? draft;
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +85,20 @@ class ConversationHalf extends StatelessWidget {
                           ? null
                           : () => onLongPressIncoming!(incoming!),
                       child: CaptionScale(
-                        child: _Incoming(
-                          turn: incoming,
-                          strings: strings,
-                          foreground: foreground,
-                          mutedForeground: mutedForeground,
-                        ),
+                        child: draft != null
+                            ? Text(
+                                draft!,
+                                style: context.textTheme.bodyLarge?.copyWith(
+                                  color: mutedForeground,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              )
+                            : _Incoming(
+                                turn: incoming,
+                                strings: strings,
+                                foreground: foreground,
+                                mutedForeground: mutedForeground,
+                              ),
                       ),
                     ),
                   ],

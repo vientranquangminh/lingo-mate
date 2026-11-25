@@ -81,6 +81,7 @@ class ConversationPage extends ConsumerWidget {
                   child: ConversationHalf(
                     strings: partner,
                     incoming: state.lastBy(Speaker.a),
+                    draft: state.listening == Speaker.a ? state.draft : null,
                     micState: _micState(state, Speaker.b),
                     onMic: () => _toggleMic(context, ref, Speaker.b),
                     background: scheme.inverseSurface,
@@ -100,6 +101,7 @@ class ConversationPage extends ConsumerWidget {
                 child: ConversationHalf(
                   strings: PartnerStrings.fromLocalizations(l10n, pair.a),
                   incoming: state.lastBy(Speaker.b),
+                  draft: state.listening == Speaker.b ? state.draft : null,
                   micState: _micState(state, Speaker.a),
                   onMic: () => _toggleMic(context, ref, Speaker.a),
                   background: scheme.surface,

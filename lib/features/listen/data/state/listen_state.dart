@@ -20,7 +20,10 @@ class ListenState extends Equatable {
     this.switchCount = 0,
     this.liveDenial,
     this.liveStops = 0,
+    this.draft,
   });
+
+  final String? draft;
 
   final String source;
   final String target;
@@ -50,6 +53,7 @@ class ListenState extends Equatable {
     int? switchCount,
     LiveDenial? liveDenial,
     int? liveStops,
+    String? Function()? draft,
   }) {
     return ListenState(
       source: source ?? this.source,
@@ -64,6 +68,7 @@ class ListenState extends Equatable {
       switchCount: switchCount ?? this.switchCount,
       liveDenial: liveDenial ?? this.liveDenial,
       liveStops: liveStops ?? this.liveStops,
+      draft: draft != null ? draft() : this.draft,
     );
   }
 
@@ -81,5 +86,6 @@ class ListenState extends Equatable {
     switchCount,
     liveDenial,
     liveStops,
+    draft,
   ];
 }
