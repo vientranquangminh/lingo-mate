@@ -118,6 +118,10 @@ class _EngineSection extends ConsumerWidget {
               ),
               text: l10n.devtoolsOpenConversation,
             ),
+            AppPlatformOutlinedButton(
+              onPressed: () => context.pushNamed(AppRouteName.history),
+              text: l10n.devtoolsOpenHistory,
+            ),
           ],
         ),
       ],

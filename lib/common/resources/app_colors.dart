@@ -1,5 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../../core/engines/engines.dart';
 import '../../gen/colors.gen.dart';
 
 /// Foreground and background of one engine chip, plus its on-air dot.
@@ -74,6 +75,13 @@ class AppColors extends ThemeExtension<AppColors> {
   final EngineChipColors engineOffline;
   final EngineChipColors engineStandard;
   final EngineChipColors engineLive;
+
+  /// Returns the chip colours of [engine].
+  EngineChipColors engine(EngineKind engine) => switch (engine) {
+    EngineKind.offline => engineOffline,
+    EngineKind.standard => engineStandard,
+    EngineKind.live => engineLive,
+  };
   final Color success;
   final Color warning;
   final Color listening;
