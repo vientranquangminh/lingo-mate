@@ -340,5 +340,110 @@
   "transcriptNotTranslated": "Not translated",
   "transcriptMissing": "This session no longer exists.",
   "commonSave": "Save",
-  "devtoolsOpenHistory": "Open history"
+  "devtoolsOpenHistory": "Open history",
+  "appLanguage": "App language",
+  "appLanguagePhone": "Phone language (default)",
+  "welcomeSampleFromLabel": "English",
+  "welcomeSampleFrom": "Where's the nearest train station?",
+  "welcomeSampleToLabel": "Japanese",
+  "welcomeSampleTo": "一番近い駅はどこですか？",
+  "welcomeTitle": "Talk to anyone.",
+  "welcomeSubtitle": "Even offline. Even in meetings.",
+  "welcomePropLive": "Live captions & voice",
+  "welcomePropOffline": "Works without internet",
+  "welcomePropLearn": "Learn from every chat",
+  "welcomePrivacy": "Your audio is never saved.",
+  "welcomeGetStarted": "Get started",
+  "setupISpeakTitle": "I speak",
+  "setupISpeakHint": "The language you speak most. You can change it later.",
+  "setupTalkWithTitle": "I usually talk with",
+  "setupTalkWithHint": "Pick one or more languages.",
+  "setupSearch": "Search languages",
+  "setupContinue": "Continue",
+  "setupBack": "Back",
+  "setupStep": "Step {current} of {total}",
+  "@setupStep": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "badgeOffline": "Offline",
+  "badgeLive": "Live",
+  "setupPacksTitle": "Use it without internet",
+  "setupPacksHint": "Download offline packs now so translation works on a plane, abroad or in a basement.",
+  "setupPacksWifi": "Wi-Fi recommended: packs are large.",
+  "setupPacksDownload": "Download",
+  "setupPacksLater": "Later",
+  "setupPacksNotOffline": "No offline pack yet",
+  "setupPacksTotal": "Total {size}",
+  "@setupPacksTotal": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "micExplainerTitle": "Lingo Mate needs the microphone",
+  "micExplainerBody": "Lingo Mate needs the microphone to hear the conversation. Audio is processed and then discarded — nothing is recorded.",
+  "micExplainerAllow": "Allow microphone",
+  "micExplainerNotNow": "Not now",
+  "micDeniedTitle": "Microphone is off",
+  "micDeniedBody": "To talk, allow the microphone for Lingo Mate in Settings → Permissions. Audio is never saved.",
+  "micDeniedOpenSettings": "Open settings",
+  "navTranslate": "Translate",
+  "navPhrases": "Phrases",
+  "navHistory": "History",
+  "navMe": "Me",
+  "homeTitle": "Who are you talking to today?",
+  "homeConversationTitle": "Conversation",
+  "homeConversationBody": "Face to face, both ways — with voice",
+  "homeConversationOffline": "Works even without internet",
+  "homeListenTitle": "Listen",
+  "homeListenBody": "Captions for lectures and tours",
+  "homeMeetingTitle": "Meeting",
+  "homeMeetingBody": "Floating captions for Zoom, Meet",
+  "homeComingSoon": "Coming soon",
+  "homeOfflineReady": "Offline ready: {count, plural, =0{no languages} =1{1 language} other{{count} languages}}",
+  "@homeOfflineReady": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "homeOfflineMissing": "{language} not downloaded · {size}",
+  "@homeOfflineMissing": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "homeOfflineAllReady": "Your languages work without internet",
+  "homeOfflineDownload": "Download",
+  "homeContinue": "Continue: {title}",
+  "@homeContinue": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "homeSwapLanguages": "Swap languages",
+  "homePickLanguage": "Choose a language",
+  "phrasesComingSoon": "Your phrasebook and quick phrases will live here.",
+  "meTitle": "Me",
+  "meSettings": "Settings",
+  "meOfflinePacks": "Offline packs",
+  "meRunSetupAgain": "Run setup again",
+  "meDevtools": "Devtools",
+  "meMyLanguages": "My languages"
 }

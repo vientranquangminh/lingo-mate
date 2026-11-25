@@ -27,5 +27,6 @@ class AppParams {
   static const spacing20 = 20.0;
   static const spacing24 = 24.0;
   static const spacing32 = 32.0;
+  static const spacing48 = 48.0;
   static const pillPadding = EdgeInsets.symmetric(horizontal: 14, vertical: 8);
 }

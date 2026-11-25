@@ -13,7 +13,13 @@ import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/core/engines/tts/speech_synthesizer.dart';
+import 'package:lingo_mate/core/platform/mic_permission.dart';
 import 'package:lingo_mate/core/sessions/session_repository.dart';
+import 'package:lingo_mate/core/settings/user_settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../helpers/fake_platform.dart';
+
 import 'package:lingo_mate/features/conversation/data/notifier/conversation_notifier.dart';
 
 /// Capture that streams whatever the test pushes.
@@ -162,6 +168,7 @@ class ConversationFakes {
   bool hasRecognizer = true;
   int nowMs = 0;
   final db = AppDatabase(NativeDatabase.memory());
+  late SharedPreferences prefs;
 
   /// Overrides every device-bound provider used by Conversation.
   List<Override> overrides() => [
@@ -182,6 +189,8 @@ class ConversationFakes {
     ),
     onlineProvider.overrideWith((ref) => Stream.value(true)),
     appDatabaseProvider.overrideWithValue(db),
+    micPermissionProvider.overrideWithValue(FakeMicPermission()),
+    sharedPreferencesProvider.overrideWithValue(prefs),
   ];
 
   /// The repository over the test database.

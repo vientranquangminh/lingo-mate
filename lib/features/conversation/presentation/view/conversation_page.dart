@@ -17,6 +17,7 @@ import '../../../../common/widgets/app_toast.dart';
 import '../../../../common/widgets/engine_chip.dart';
 import '../../../../common/widgets/engine_sheet.dart';
 import '../../../../common/widgets/mic_button.dart';
+import '../../../../common/widgets/mic_permission_gate.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
@@ -73,7 +74,7 @@ class ConversationPage extends ConsumerWidget {
                   languageName: partner.languageName(pair.b),
                   incoming: state.lastBy(Speaker.a),
                   micState: _micState(state, Speaker.b),
-                  onMic: () => notifier.toggleMic(Speaker.b),
+                  onMic: () => _toggleMic(context, ref, Speaker.b),
                   background: scheme.inverseSurface,
                   foreground: scheme.onInverseSurface,
                   mutedForeground: scheme.onInverseSurface.withValues(
@@ -93,7 +94,7 @@ class ConversationPage extends ConsumerWidget {
                 languageName: l10n.languageName(pair.a),
                 incoming: state.lastBy(Speaker.b),
                 micState: _micState(state, Speaker.a),
-                onMic: () => notifier.toggleMic(Speaker.a),
+                onMic: () => _toggleMic(context, ref, Speaker.a),
                 background: scheme.surface,
                 foreground: scheme.onSurface,
                 mutedForeground: scheme.onSurfaceVariant,
@@ -122,6 +123,19 @@ class ConversationPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  /// Toggles [speaker]'s mic, explaining and asking for the microphone first when needed (AC-01.6).
+  Future<void> _toggleMic(
+    BuildContext context,
+    WidgetRef ref,
+    Speaker speaker,
+  ) async {
+    final notifier = ref.read(conversationProvider(pair).notifier);
+    if (ref.read(conversationProvider(pair)).listening == speaker ||
+        await ensureMicAccess(context, ref)) {
+      await notifier.toggleMic(speaker);
+    }
   }
 
   /// Offers Replay, Copy and Show large for a line (AC-02.6).
@@ -244,8 +258,14 @@ class _Divider extends ConsumerWidget {
             ),
             Flexible(
               child: AppPlatformOutlinedButton(
-                onPressed: () =>
-                    ref.read(conversationProvider(pair).notifier).toggleAuto(),
+                onPressed: () async {
+                  final notifier = ref.read(
+                    conversationProvider(pair).notifier,
+                  );
+                  if (state.auto || await ensureMicAccess(context, ref)) {
+                    await notifier.toggleAuto();
+                  }
+                },
                 text: context.localization.conversationAutoDetect,
                 backgroundColor: state.auto ? scheme.primaryContainer : null,
                 foregroundColor: state.auto

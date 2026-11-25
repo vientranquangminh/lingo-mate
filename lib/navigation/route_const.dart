@@ -1,5 +1,9 @@
 abstract class AppRouteName {
-  static const onboarding = 'onboarding';
+  static const welcome = 'welcome';
+  static const setup = 'setup';
+  static const home = 'home';
+  static const phrases = 'phrases';
+  static const me = 'me';
   static const devtools = 'devtools';
   static const languagePacks = 'language-packs';
   static const conversation = 'conversation';
@@ -9,7 +13,11 @@ abstract class AppRouteName {
 }
 
 abstract class AppRoutePath {
-  static const onboarding = '/';
+  static const welcome = '/welcome';
+  static const setup = '/setup';
+  static const home = '/';
+  static const phrases = '/phrases';
+  static const me = '/me';
   static const devtools = '/devtools';
   static const languagePacks = '/language-packs';
   static const conversation = '/conversation';
