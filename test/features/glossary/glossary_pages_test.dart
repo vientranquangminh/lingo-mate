@@ -63,6 +63,13 @@ void main() {
     await pumpApp(tester);
     await tester.tap(find.text('Me').last);
     await settle(tester);
+    await tester.scrollUntilVisible(
+      find.text('Glossary'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -200));
+    await settle(tester);
     await tester.tap(find.text('Glossary'));
     await settle(tester);
 
@@ -111,6 +118,13 @@ void main() {
     });
     await pumpApp(tester);
     await tester.tap(find.text('Me').last);
+    await settle(tester);
+    await tester.scrollUntilVisible(
+      find.text('Glossary'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
+    await tester.drag(find.byType(Scrollable).last, const Offset(0, -200));
     await settle(tester);
     await tester.tap(find.text('Glossary'));
     await settle(tester);

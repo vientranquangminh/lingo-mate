@@ -14,9 +14,12 @@ import 'common/resources/app_config.dart';
 import 'common/resources/app_theme.dart';
 import 'common/widgets/account_merge_prompt.dart';
 import 'common/widgets/app_toast.dart';
+import 'common/widgets/usage_sheet.dart';
 import 'core/analytics/analytics_service.dart';
 import 'core/auth/auth_models.dart';
 import 'core/auth/auth_providers.dart';
+import 'core/quota/quota_engine.dart';
+import 'core/quota/quota_providers.dart';
 import 'core/review/review_reminder.dart';
 import 'core/settings/app_locale_sync.dart';
 import 'core/sync/sync_controller.dart';
@@ -58,9 +61,43 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     final sync = ref.read(appLocaleSyncProvider)..start();
     _startAccount();
+    ref.listenManual(standardQuotaProvider, (previous, next) {
+      final status = next.value;
+      if (status != null) {
+        _warnUsage(previous?.value, status);
+      }
+    });
     final reminder = ref.read(reviewReminderSyncProvider);
     unawaited(reminder());
     _lifecycle = AppLifecycleListener(onResume: sync.pull, onPause: reminder);
+  }
+
+  /// Warns once when Standard use passes 80% of a window and when it runs out (AC-14.6).
+  void _warnUsage(QuotaStatus? before, QuotaStatus now) {
+    final overlay = rootNavigatorKey.currentState?.overlay;
+    final context = overlay?.context;
+    if (before == null || context == null || !context.mounted) {
+      return;
+    }
+    final l10n = context.localization;
+    final resetAt = now.resetAt;
+    if (!before.exhausted && now.exhausted && resetAt != null) {
+      showAppToast(
+        context,
+        l10n.usageReached(TimeOfDay.fromDateTime(resetAt).format(context)),
+        actionLabel: l10n.usageSee,
+        onAction: () => showUsageSheet(context),
+        overlay: overlay,
+      );
+    } else if (before.fraction < 0.8 && now.fraction >= 0.8 && !now.exhausted) {
+      showAppToast(
+        context,
+        l10n.usageWarning,
+        actionLabel: l10n.usageSee,
+        onAction: () => showUsageSheet(context),
+        overlay: overlay,
+      );
+    }
   }
 
   /// Signs in anonymously and listens for email sign-in links (AC-13.1, AC-13.5).
@@ -80,13 +117,18 @@ class _MyAppState extends ConsumerState<MyApp> {
     final (outcome, result) = await ref
         .read(authServiceProvider)
         .completeEmailLink(link);
-    final context = rootNavigatorKey.currentContext;
+    final overlay = rootNavigatorKey.currentState?.overlay;
+    final context = overlay?.context;
     if (context == null || !context.mounted) {
       return;
     }
     switch (outcome) {
       case EmailLinkOutcome.signedIn:
-        showAppToast(context, context.localization.signInDone);
+        showAppToast(
+          context,
+          context.localization.signInDone,
+          overlay: overlay,
+        );
         await promptAccountMerge(context, ref, result);
       case EmailLinkOutcome.needsEmail || EmailLinkOutcome.invalid:
         unawaited(

@@ -97,6 +97,11 @@ void main() {
 
     expect(find.text('Translation & voice'), findsOneWidget);
     expect(find.text('Auto'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Privacy & data'),
+      200,
+      scrollable: find.byType(Scrollable).last,
+    );
     expect(find.text('Privacy & data'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.text('Open-source licenses'),
@@ -117,8 +122,7 @@ void main() {
   ) async {
     final container = await pumpApp(tester);
     await openMe(tester);
-    await tester.tap(find.text('Translation & voice'));
-    await settle(tester);
+    await tapText(tester, 'Translation & voice');
 
     await tapText(tester, 'Prefer Offline');
     await tapText(tester, 'Slow');
@@ -155,8 +159,7 @@ void main() {
   testWidgets('Privacy & data opens the privacy policy', (tester) async {
     await pumpApp(tester);
     await openMe(tester);
-    await tester.tap(find.text('Privacy & data'));
-    await settle(tester);
+    await tapText(tester, 'Privacy & data');
 
     await tapText(tester, 'Privacy policy');
 
@@ -168,8 +171,7 @@ void main() {
   ) async {
     final container = await pumpApp(tester);
     await openMe(tester);
-    await tester.tap(find.text('Privacy & data'));
-    await settle(tester);
+    await tapText(tester, 'Privacy & data');
 
     await tapText(tester, 'Share usage analytics');
     await tapText(tester, 'Send crash reports');
@@ -192,8 +194,7 @@ void main() {
       );
       final container = await pumpApp(tester);
       await openMe(tester);
-      await tester.tap(find.text('Privacy & data'));
-      await settle(tester);
+      await tapText(tester, 'Privacy & data');
 
       await tapText(tester, 'Delete all data');
       expect(find.text('Delete all data?'), findsOneWidget);

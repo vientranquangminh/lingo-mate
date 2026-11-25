@@ -216,7 +216,34 @@ class SessionRepository {
             latencyMs: Value(utterance.latencyMs),
           ),
         );
+    await _meter(sessionId, utterance);
     return id;
+  }
+
+  /// Writes the cloud seconds of [utterance] to the usage ledger; Offline is never metered (doc 03 §10).
+  Future<void> _meter(String sessionId, NewUtterance utterance) async {
+    final engine = switch (utterance.engine) {
+      UtteranceEngine.standard => EngineKind.standard,
+      UtteranceEngine.live => EngineKind.live,
+      _ => null,
+    };
+    if (engine == null) {
+      return;
+    }
+    final seconds = max(
+      1,
+      ((utterance.endMs - utterance.startMs) / 1000).ceil(),
+    );
+    await _db
+        .into(_db.usageLedger)
+        .insert(
+          UsageLedgerCompanion.insert(
+            engine: engine.name,
+            seconds: seconds,
+            at: _now(),
+            sessionId: Value(sessionId),
+          ),
+        );
   }
 
   /// Ends session [id]: sets duration, metered seconds and the auto title; a session with no utterances is removed.

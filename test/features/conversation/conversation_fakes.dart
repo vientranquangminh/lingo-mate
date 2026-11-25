@@ -16,6 +16,8 @@ import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/core/engines/tts/speech_synthesizer.dart';
 import 'package:lingo_mate/core/learning/learning_assistant.dart';
 import 'package:lingo_mate/core/platform/mic_permission.dart';
+import 'package:lingo_mate/core/quota/quota_engine.dart';
+import 'package:lingo_mate/core/quota/quota_providers.dart';
 import 'package:lingo_mate/core/sessions/session_repository.dart';
 import 'package:lingo_mate/core/settings/user_settings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -177,6 +179,7 @@ class ConversationFakes {
   bool online = true;
   final learning = FakeLearningAssistant();
   FeatureSwitches? switches;
+  QuotaLimits limits = const QuotaLimits(win5hSec: 1800, weekSec: 3600);
   int nowMs = 0;
   final db = AppDatabase(NativeDatabase.memory());
   late SharedPreferences prefs;
@@ -200,6 +203,7 @@ class ConversationFakes {
     ),
     onlineProvider.overrideWith((ref) => Stream.value(online)),
     learningAssistantProvider.overrideWithValue(learning),
+    standardLimitsProvider.overrideWithValue(limits),
     featureSwitchesProvider.overrideWithValue(
       switches ?? FeatureSwitches(postSessionReview: reviewEnabled),
     ),
