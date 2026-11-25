@@ -5,7 +5,7 @@ import '../../../../common/widgets/caption_scale.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/mic_button.dart';
-import '../../../../generated/l10n.dart';
+import '../../../../l10n/partner_strings.dart';
 import '../../data/model/conversation_models.dart';
 
 /// One person's half: their language, the latest line said to them and their mic (S-05).
@@ -13,7 +13,6 @@ class ConversationHalf extends StatelessWidget {
   const ConversationHalf({
     super.key,
     required this.strings,
-    required this.languageName,
     required this.incoming,
     required this.micState,
     required this.onMic,
@@ -28,8 +27,7 @@ class ConversationHalf extends StatelessWidget {
     this.onLongPressIncoming,
   });
 
-  final AppLocalizations strings;
-  final String languageName;
+  final PartnerStrings strings;
   final ConversationTurn? incoming;
   final MicButtonState micState;
   final VoidCallback onMic;
@@ -46,10 +44,10 @@ class ConversationHalf extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = switch (micState) {
-      MicButtonState.listening => strings.conversationListening,
-      MicButtonState.processing => strings.conversationTranslating,
-      MicButtonState.speaking => strings.conversationSpeaking,
-      _ => strings.conversationTapToSpeak,
+      MicButtonState.listening => strings.listening,
+      MicButtonState.processing => strings.translating,
+      MicButtonState.speaking => strings.speaking,
+      _ => strings.tapToSpeak,
     };
     return ColoredBox(
       color: background,
@@ -64,7 +62,7 @@ class ConversationHalf extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              languageName.toUpperCase(),
+              strings.languageName.toUpperCase(),
               style: context.textTheme.labelLarge?.copyWith(
                 color: mutedForeground,
               ),
@@ -107,7 +105,7 @@ class ConversationHalf extends StatelessWidget {
                 MicButton(
                   state: micState,
                   label: label,
-                  semanticLabel: strings.conversationMicSemantics(languageName),
+                  semanticLabel: strings.micSemantics(strings.languageName),
                   onPressed: onMic,
                   size: AppParams.micConversation,
                   background: micBackground,
@@ -139,7 +137,7 @@ class _Incoming extends StatelessWidget {
   });
 
   final ConversationTurn? turn;
-  final AppLocalizations strings;
+  final PartnerStrings strings;
   final Color foreground;
   final Color mutedForeground;
 
@@ -151,7 +149,7 @@ class _Incoming extends StatelessWidget {
     }
     final translation = switch (turn.status) {
       TurnStatus.translated => turn.translation,
-      TurnStatus.failed => strings.conversationTranslationFailed,
+      TurnStatus.failed => strings.translationFailed,
       _ => null,
     };
     return Semantics(
@@ -177,7 +175,7 @@ class _Incoming extends StatelessWidget {
           if (turn.fallback) ...[
             SizedBox(height: AppParams.spacing4.h),
             Text(
-              strings.conversationTranslatedOffline,
+              strings.translatedOffline,
               style: context.textTheme.labelMedium?.copyWith(
                 color: mutedForeground,
               ),

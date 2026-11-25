@@ -7,7 +7,7 @@ session, then update it in the same pull request as each feature or fix.
 - Acceptance criteria: `project-docs/06-feature-details-acs.md`
 - Code map: `.agents/CONTEXT.md`
 
-Last updated: 2026-11-25. T-1.11 is merged (#26).
+Last updated: 2026-11-25. T-1.12 is done (#28).
 
 ## How to resume in a new session
 
@@ -59,7 +59,7 @@ Status legend:
 | T-1.9 | Phrasebook (F-08) | ✅ | #24 |
 | T-1.10 | Quick phrases (F-09) | ✅ | #25 |
 | T-1.11 | Settings and privacy (F-10) | ✅ | #26 |
-| T-1.12 | Localization (F-11) | 🚧 partly | en and vi ARBs and the App language setting exist. See the F-11 ACs for what is missing |
+| T-1.12 | Localization (F-11) | ✅ · 📱 | #28. AC-11.6 needs a check in system Settings on an Android 13+ phone |
 | T-1.13 | Internal testing release, bug bash | ⬜ | After T-1.6, T-1.7 and T-1.12 |
 
 Phase 2 (T-2.x) and Phase 3 (T-3.x) have not started. Do not begin them unless the owner asks.
@@ -83,34 +83,32 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | F-09 Quick phrases | 09.1–09.6 | ✅ | 09.2 "within 500 ms" 📱 |
 | F-10 Settings | 10.2, 10.3, 10.5 | ✅ | 10.1 is covered by F-11 |
 | | 10.4 | ✅ · 📱 | Gating is tested. Check DebugView on a device |
-| F-11 Localization | 11.3, 11.4, 11.5 | ✅ | |
-| | 11.1 hard-coded string check | ⬜ | Add a test or lint over `presentation/` |
-| | 11.2 en and vi goldens at 1.0 and 2.0 | ⬜ | Several 200% widget tests exist; no golden suite yet |
-| | 11.6 Android 13 per-app language | ⬜ | Needs `locales_config.xml`, `android:localeConfig` and a LocaleManager sync channel |
+| F-11 Localization | 11.1–11.5, 11.8, 11.9 | ✅ | 11.1 `test/l10n/hard_coded_strings_test.dart`; 11.2 `test/l10n/screens_golden_test.dart` (16 screens × en/vi × 1.0/2.0); 11.8 `PartnerStrings`; 11.9 `arb_files_test.dart` and the CI step `scripts/check-untranslated.sh` |
+| | 11.6 Android 13 per-app language | ✅ · 📱 | `locales_config.xml`, `AppLocaleChannel` and `AppLocaleSync` are tested; check system Settings → App languages on a device |
 | | 11.7 `uiLocale` when signed in | ➖ | P2 |
-| | 11.8 partner strings in every wave-1 language | ⬜ | Partner half falls back to English except vi |
-| | 11.9 CI untranslated-key check | ⬜ | `untranslated-messages-file` plus a CI step |
 | F-12 Devtools | 12.1–12.4 | ✅ | |
 
 ## Next up (in order)
 
-1. **T-1.12 Localization.** Close the F-11 gaps: 11.1, 11.2, 11.6, 11.8 and 11.9.
-2. **T-1.6 Listen mode (F-03).** S-06: caption list, jump to live, keep screen on, font size, pause.
-3. **T-1.7 Meeting mode (F-04).** Setup card, overlay permission explainer, service notification, overlay bubble with save, stop flow, in-app transcript.
-4. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
+1. **T-1.6 Listen mode (F-03).** S-06: caption list, jump to live, keep screen on, font size, pause.
+2. **T-1.7 Meeting mode (F-04).** Setup card, overlay permission explainer, service notification, overlay bubble with save, stop flow, in-app transcript.
+3. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
 
 ## Waiting on the owner (device and account work)
 
 - Push speech models with adb, or fill the Remote Config `asr_models` entry, so Offline works on a phone.
 - Run the T-0.4 to T-0.8 measurements on the reference phone and a low-end phone, then write the T-0.10 spike report (answers OQ-3, OQ-4, OQ-5).
 - Add the App Distribution secrets so CI can ship dev builds.
-- Device checks: AC-02.3, AC-02.4, AC-02.5, AC-04.6, AC-04.7, AC-04.9, AC-06.3, AC-09.2 (timing) and AC-10.4 (DebugView).
+- Device checks: AC-02.3, AC-02.4, AC-02.5, AC-04.6, AC-04.7, AC-04.9, AC-06.3, AC-09.2 (timing), AC-10.4 (DebugView) and AC-11.6 (system Settings → App languages on Android 13+, both directions).
+- Have native speakers review the partner strings for ja, ko, zh, th, id, es, fr and de in `lib/l10n/partner_strings.dart`.
 - Decide whether analytics and crash consent should start off (they start on, set in #26).
 
 ## Known follow-ups and decisions taken
 
 - Auto and Prefer Standard pick engines in the same order (Standard, then Offline). Only Prefer Offline changes the order.
 - Quick phrase rows show the user's language first and the translation below, as F-09 says. The S-14 mockup shows the reverse.
+- Screen goldens (`test/l10n/goldens`) are compared only on Linux, as in CI. After a UI change, regenerate them with `fvm flutter test test/l10n/screens_golden_test.dart --update-goldens` and look at the changed images. The test font has no CJK or arrow glyphs, so those show as blanks; a phone falls back to system fonts.
+- Partner strings for wave-1 languages that are not UI languages live in `PartnerStrings.bundled`; en and vi come from the ARB files.
 - `RatedSpeechSynthesizer` applies the voice speed. Tests that override `speechSynthesizerProvider` bypass it.
 
 ## Log
@@ -118,4 +116,4 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | Date | Change |
 |------|--------|
 | 2026-11-24 | Phase 0 foundations and spikes (#2–#11); design system T-1.1 (#12–#15) |
-| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27) |
+| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28) |

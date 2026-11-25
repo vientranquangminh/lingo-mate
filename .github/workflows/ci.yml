@@ -43,6 +43,9 @@ jobs:
       - name: Test
         run: flutter test
 
+      - name: Check translations
+        run: scripts/check-untranslated.sh
+
       - name: Build production release APK
         run: |
           cp .env.sample .env
