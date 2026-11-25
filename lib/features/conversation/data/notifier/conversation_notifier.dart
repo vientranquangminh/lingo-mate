@@ -58,12 +58,18 @@ class ConversationNotifier extends Notifier<ConversationState> {
     _sessions = ref.read(sessionRepositoryProvider);
     _tts = ref.read(speechSynthesizerProvider);
     ref.onDispose(_dispose);
-    ref.listen(
-      engineSelectionProvider(_request),
-      (_, next) => next.whenData(_onSelection),
-      fireImmediately: true,
+    final current = ref
+        .listen(
+          engineSelectionProvider(_request),
+          (_, next) => next.whenData(_onSelection),
+        )
+        .read()
+        .value;
+    return ConversationState(
+      pair: pair,
+      engine: current?.conversationEngine,
+      blocked: current?.blocked ?? const {},
     );
-    return ConversationState(pair: pair);
   }
 
   /// Starts listening for [speaker], or stops when that side is already listening; leaves auto mode.

@@ -443,4 +443,27 @@ void main() {
     expect(created, isEmpty);
     expect(await fakes.sessions.search('xin chao'), hasLength(1));
   });
+
+  test(
+    'starts on an engine that was already selected, as when opened from Home',
+    () async {
+      fakes.recognizer.texts.add('Xin chào');
+      final c = ProviderContainer(overrides: fakes.overrides());
+      addTearDown(c.dispose);
+      await c.read(
+        engineSelectionProvider(
+          const EngineRequest(mode: SessionMode.conversation, pair: pair),
+        ).future,
+      );
+      c.listen(conversationProvider(pair), (_, _) {});
+
+      expect(c.read(conversationProvider(pair)).engine, EngineKind.standard);
+      await notifier(c).toggleMic(Speaker.a);
+      await speak();
+      expect(
+        c.read(conversationProvider(pair)).lastBy(Speaker.a)!.translation,
+        '[en] Xin chào',
+      );
+    },
+  );
 }
