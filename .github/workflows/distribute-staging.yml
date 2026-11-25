@@ -1,25 +1,19 @@
-name: Build & Distribute Android (dev)
-
-# Every push to main builds the dev flavor (com.lingomate.app.dev, Firebase
-# project lingo-mate-4f38d) and distributes the APK to the testers through
-# Firebase App Distribution. Setup: docs/ci-cd.md.
+name: Build & Distribute Android (staging)
 
 on:
   push:
     branches:
-      - main
+      - staging
   workflow_dispatch:
 
 concurrency:
-  group: distribute-dev
+  group: distribute-staging
   cancel-in-progress: false
 
 env:
   FIREBASE_PROJECT: lingo-mate-4f38d
 
 jobs:
-  # Skips the build, without failing or emailing, until distribution is set up;
-  # fails when it is only partly set up.
   config:
     runs-on: ubuntu-latest
     outputs:
@@ -157,14 +151,12 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/firebase-service-account.json"
 
-      # The commit message goes through env, not into the script, so quotes or
-      # backticks in it cannot break the command.
       - name: Upload to Firebase App Distribution
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/firebase-service-account.json
           APP_ID: ${{ steps.meta.outputs.app_id }}
           GROUPS: ${{ vars.FIREBASE_DISTRIBUTION_GROUPS }}
-          RELEASE_NOTES: "Build #${{ github.run_number }}: ${{ github.event.head_commit.message || 'manual run' }}"
+          RELEASE_NOTES: "staging #${{ github.run_number }} (${{ github.sha }}): ${{ github.event.head_commit.message || 'manual run' }}"
         run: |
           firebase appdistribution:distribute \
             build/app/outputs/flutter-apk/app-dev-release.apk \

@@ -121,7 +121,7 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - Only dev is connected to Firebase (project `lingo-mate-4f38d`): `lib/firebase_options_dev.dart` and `android/app/src/dev/google-services.json`. Regenerate with `flutterfire-config.sh`.
 - `main_dev.dart` startup: `bootstrapFirebase` → `AppConfiguration.ensureAppConfiguration` (DI) → `CrashReporter.installErrorHandlers` → `RemoteConfigService.initialize` (activate last fetch, fetch in background). `RemoteConfigService` and `CrashReporter` work without Firebase (in-app defaults, no reports), so staging and production run before their projects exist.
 - Crashlytics mapping upload is turned off for flavors without a `google-services.json` (`android/app/build.gradle`).
-- Every push to `main` runs `.github/workflows/distribute-dev.yml`: analyze, test, signed dev release APK, upload to Firebase App Distribution. Secrets, variables and keystore setup: `docs/ci-cd.md`.
+- Every push to the `staging` branch runs `.github/workflows/distribute-staging.yml`: analyze, test, signed dev-flavor release APK, upload to Firebase App Distribution (project lingo-mate-4f38d). Push `main` to `staging` to send testers a build. Secrets, variables and keystore setup: `docs/ci-cd.md`.
 
 ## Devtools
 - `DEVTOOLS_ENABLED=true` in `.env.dev` turns on the `/devtools` route (opened from Me → Devtools) and the `LatencyHud` overlay in `my_app.dart`. It is a compile-time constant, so production builds contain no devtools code (AC-12.1).
