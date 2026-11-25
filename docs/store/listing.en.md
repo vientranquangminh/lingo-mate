@@ -36,7 +36,7 @@ LEARN AS YOU GO
 See how a native speaker would have said your sentences, and keep a glossary of names and terms so translations use the words you prefer.
 
 PRIVATE BY DESIGN
-Audio stays in your phone's memory and is never saved. Transcripts and phrases stay on your phone. Choose the Offline engine for confidential conversations. No ads, no account needed.
+Audio is never saved; with the Offline engine it never leaves your phone. Transcripts and phrases stay on your phone. Choose the Offline engine for confidential conversations. No ads, no account needed.
 
 Languages: Vietnamese, English, Japanese, Korean, Chinese, Thai, Indonesian, Spanish, French and German, with more on the way. Offline quality and features vary by language.
 

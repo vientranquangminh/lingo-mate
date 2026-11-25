@@ -20,6 +20,8 @@ abstract final class RemoteDefaults {
   static const ffSummary = 'ff_summary';
   static const ffSuggestReply = 'ff_suggest_reply';
   static const ffGlossary = 'ff_glossary';
+  static const ffCloudSpeech = 'ff_cloud_speech';
+  static const modelSpeechTranslate = 'model_speech_translate';
 
   static const _quotaLimitsJson =
       '{"free":{"standard":{"win5hSec":1800,"weekSec":3600},'
@@ -31,6 +33,8 @@ abstract final class RemoteDefaults {
   static Map<String, Object> values({required bool liveEnabled}) => {
     modelTextTranslate: 'gemini-2.5-flash-lite',
     modelTextReview: 'gemini-2.5-flash-lite',
+    modelSpeechTranslate: 'gemini-2.5-flash',
+    ffCloudSpeech: true,
     modelLiveTranslate: 'gemini-3.5-live-translate-preview',
     modelLiveFallback: 'gemini-3.1-flash-live-preview',
     capabilityMatrix: '',

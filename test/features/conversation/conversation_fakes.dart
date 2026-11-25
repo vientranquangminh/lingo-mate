@@ -181,6 +181,7 @@ class ConversationFakes {
   final standard = FakeTranslator(EngineKind.standard);
   final offline = FakeTranslator(EngineKind.offline);
   final tts = FakeSynthesizer();
+  SpeechTranslatorEngine? speech;
   bool hasRecognizer = true;
   bool online = true;
   final learning = FakeLearningAssistant();
@@ -205,6 +206,7 @@ class ConversationFakes {
       (ref, kind) => kind == EngineKind.offline ? offline : standard,
     ),
     speechSynthesizerProvider.overrideWithValue(tts),
+    speechTranslatorProvider.overrideWithValue(speech),
     conversationClockProvider.overrideWithValue(() => nowMs),
     engineSelectionProvider.overrideWith(
       (ref, request) async => ref.watch(fakeSelectionProvider),

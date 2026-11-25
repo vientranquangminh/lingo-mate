@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
+import 'package:lingo_mate/core/engines/translate/gemini_speech_translator.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/features/listen/data/model/listen_models.dart';
 import 'package:lingo_mate/features/listen/data/notifier/listen_notifier.dart';
@@ -96,6 +97,49 @@ void main() {
       final state = c.read(listenProvider(languages));
       expect(state.draft, isNull);
       expect(state.captions.single.original, 'こんにちは');
+    },
+  );
+
+  test(
+    'on Standard, Gemini hears and translates the sentence in one call',
+    () async {
+      fakes.recognizer.texts.add('should not be used');
+      fakes.speech = GeminiSpeechTranslator(
+        ({required system, required wav, required user}) async =>
+            '{"lang": "ja", "original": "こんにちは", "translation": "Xin chào"}',
+      );
+      final c = await build();
+      await notifier(c).start();
+
+      await speak();
+
+      final caption = c.read(listenProvider(languages)).captions.single;
+      expect(caption.original, 'こんにちは');
+      expect(caption.translation, 'Xin chào');
+      expect(caption.status, CaptionStatus.translated);
+      expect(caption.engine, EngineKind.standard);
+      expect(fakes.recognizer.hints, isEmpty);
+      expect(fakes.standard.requests, isEmpty);
+    },
+  );
+
+  test(
+    'when Gemini cannot hear the sentence, the phone recognizes it',
+    () async {
+      fakes.recognizer.texts.add('こんにちは');
+      fakes.speech = GeminiSpeechTranslator(
+        ({required system, required wav, required user}) async =>
+            throw StateError('down'),
+      );
+      final c = await build();
+      await notifier(c).start();
+
+      await speak();
+
+      final caption = c.read(listenProvider(languages)).captions.single;
+      expect(caption.original, 'こんにちは');
+      expect(caption.translation, '[vi] こんにちは');
+      expect(fakes.recognizer.hints, ['ja']);
     },
   );
 

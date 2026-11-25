@@ -17,6 +17,7 @@ import '../../../../core/engines/live/live_captioner.dart';
 import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
+import '../../../../core/engines/translate/cloud_hearing.dart';
 import '../../../../core/engines/translate/gemini_text_translator.dart';
 import '../../../../core/phrases/phrase_repository.dart';
 import '../../../../core/sessions/session_repository.dart';
@@ -449,12 +450,29 @@ class MeetingNotifier extends Notifier<MeetingState> {
     final last = _lastSegmentEndMs;
     _lastSegmentEndMs = segment.endMs;
     try {
-      await recognizer.ensureReady(state.source);
-      final result = await recognizer.transcribe(
-        segment,
-        hintLang: state.source,
+      final (:handled, :heard) = await hearOnCloud(
+        ref,
+        engine: state.engine,
+        segment: segment,
+        from: [state.source],
+        to: state.target,
+        context: [for (final l in state.lines) l.original].reversed
+            .take(contextLines)
+            .toList()
+            .reversed
+            .toList(),
       );
-      final text = result.text.trim();
+      final String text;
+      if (handled) {
+        text = heard?.original ?? '';
+      } else {
+        await recognizer.ensureReady(state.source);
+        final result = await recognizer.transcribe(
+          segment,
+          hintLang: state.source,
+        );
+        text = result.text.trim();
+      }
       if (!ref.mounted) {
         return;
       }
@@ -474,9 +492,18 @@ class MeetingNotifier extends Notifier<MeetingState> {
             state.lines.isNotEmpty &&
             last != null &&
             segment.startMs - last >= turnGapMs,
+        translation: heard?.translation,
+        engine: heard == null ? null : EngineKind.standard,
+        status: heard == null
+            ? MeetingLineStatus.translating
+            : MeetingLineStatus.translated,
       );
       state = state.copyWith(lines: [...state.lines, line], draft: () => null);
       _pushOverlay();
+      if (heard != null) {
+        _record(line.id, endMs - segment.durationMs, endMs);
+        return;
+      }
       unawaited(
         _translate(line)
             .then((_) {

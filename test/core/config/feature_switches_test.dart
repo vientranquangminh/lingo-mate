@@ -35,6 +35,7 @@ void main() {
         RemoteDefaults.ffSuggestReply: false,
         RemoteDefaults.ffGlossary: false,
         RemoteDefaults.ffPostSessionReview: true,
+        RemoteDefaults.ffCloudSpeech: false,
       }),
       const FeatureSwitches(
         standard: false,
@@ -42,6 +43,7 @@ void main() {
         suggestReply: false,
         glossary: false,
         postSessionReview: true,
+        cloudSpeech: false,
       ),
     );
   });

@@ -12,6 +12,7 @@ class FeatureSwitches extends Equatable {
     this.suggestReply = true,
     this.glossary = true,
     this.postSessionReview = false,
+    this.cloudSpeech = true,
   });
 
   /// Reads the switches from [config].
@@ -21,6 +22,7 @@ class FeatureSwitches extends Equatable {
     suggestReply: config.suggestReplyEnabled,
     glossary: config.glossaryEnabled,
     postSessionReview: config.postSessionReviewEnabled,
+    cloudSpeech: config.cloudSpeechEnabled,
   );
 
   final bool standard;
@@ -28,6 +30,7 @@ class FeatureSwitches extends Equatable {
   final bool suggestReply;
   final bool glossary;
   final bool postSessionReview;
+  final bool cloudSpeech;
 
   @override
   List<Object?> get props => [
@@ -36,6 +39,7 @@ class FeatureSwitches extends Equatable {
     suggestReply,
     glossary,
     postSessionReview,
+    cloudSpeech,
   ];
 }
 

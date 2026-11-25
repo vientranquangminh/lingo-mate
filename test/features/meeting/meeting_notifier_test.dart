@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/core/background/background_capture.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
+import 'package:lingo_mate/core/engines/translate/gemini_speech_translator.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/core/phrases/phrase_repository.dart';
 import 'package:lingo_mate/features/meeting/data/model/meeting_models.dart';
@@ -66,6 +67,23 @@ void main() {
     expect(state.source, 'en');
     expect(state.target, 'vi');
     expect(state.engine, EngineKind.standard);
+  });
+
+  test('on Standard, Gemini hears and translates the line', () async {
+    fakes.speech = GeminiSpeechTranslator(
+      ({required system, required wav, required user}) async =>
+          '{"lang": "en", "original": "ship it", "translation": "giao đi"}',
+    );
+    final c = await build();
+    await notifier(c).start(overlay: false);
+
+    await speak();
+
+    final line = c.read(meetingProvider).lines.single;
+    expect(line.original, 'ship it');
+    expect(line.translation, 'giao đi');
+    expect(line.status, MeetingLineStatus.translated);
+    expect(fakes.recognizer.hints, isEmpty);
   });
 
   test('shows the words heard so far until the line is ready', () async {

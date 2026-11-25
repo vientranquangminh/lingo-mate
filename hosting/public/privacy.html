@@ -12,13 +12,13 @@
   <h1>Lingo Mate privacy policy</h1>
   <p class="meta">Effective 1 December 2026</p>
 
-  <p>Lingo Mate ("the app", "we") translates speech for face-to-face conversations, talks and online meetings. This policy explains what the app processes, where, for how long, and the choices you have. The short version: audio stays in your phone's memory and is never saved; your transcripts, phrasebook and settings stay on your phone; text is sent to Google only when you use an online engine or an online learning feature.</p>
+  <p>Lingo Mate ("the app", "we") translates speech for face-to-face conversations, talks and online meetings. This policy explains what the app processes, where, for how long, and the choices you have. The short version: audio is never saved; with the Offline engine it never leaves your phone, and with the Standard or Live engine it is sent to Google to be recognised and translated; your transcripts, phrasebook and settings stay on your phone.</p>
 
   <h2>1. What the app processes and why</h2>
   <table>
     <tr><th>Data</th><th>Where it goes</th><th>Why</th></tr>
-    <tr><td>Microphone audio</td><td>Kept in memory on your phone (at most the last 30 seconds) and turned into text on your phone. It is never written to storage or uploaded. A notification and an on-screen indicator show whenever the microphone is on.</td><td>To recognise what is said.</td></tr>
-    <tr><td>Recognised text (what was said)</td><td>With the <strong>Offline</strong> engine it stays on your phone (Google ML Kit translates on the device). With the <strong>Standard</strong> engine the sentence, up to three previous sentences for context and matching glossary terms are sent to Google Gemini through Firebase AI Logic and the translation comes back.</td><td>To translate.</td></tr>
+    <tr><td>Microphone audio</td><td>Kept in memory on your phone (at most the last 30 seconds) and never written to storage. With the <strong>Offline</strong> engine it is turned into text on your phone and never uploaded. With the <strong>Standard</strong> engine the audio of each sentence is sent to Google Gemini through Firebase AI Logic, which writes down what was said and translates it. With the <strong>Live</strong> engine the audio is streamed to Google Gemini Live while you talk. A notification and an on-screen indicator show whenever the microphone is on.</td><td>To recognise and translate what is said.</td></tr>
+    <tr><td>Recognised text (what was said)</td><td>With the <strong>Offline</strong> engine it stays on your phone (Google ML Kit translates on the device). With the <strong>Standard</strong> engine up to three previous sentences are sent with each sentence as context (and, when the sentence was recognised on the phone, the sentence and matching glossary terms), and the translation comes back.</td><td>To translate.</td></tr>
     <tr><td>Transcripts, saved phrases, glossaries, review schedule, settings</td><td>Stored only in the app's private storage on your phone.</td><td>History, phrasebook, review and preferences.</td></tr>
     <tr><td>Session lines you choose to send</td><td>When you tap <em>Summarize</em>, <em>How would a native say it?</em> or <em>Suggest reply</em>, the lines of that session (or the last few lines) are sent to Google Gemini. The answer (for example a summary) is stored on your phone.</td><td>Learning and meeting helpers you ask for.</td></tr>
     <tr><td>Usage events and crash reports</td><td>Google Analytics for Firebase and Firebase Crashlytics receive events such as "session started" or "phrase saved", app version, device model, OS version and a random app-instance identifier. They never contain what was said, transcripts or audio. You can turn both off in <em>Me → Privacy &amp; data</em>.</td><td>To understand which features are used and fix crashes.</td></tr>
@@ -27,7 +27,7 @@
   </table>
 
   <h2>2. Google services</h2>
-  <p>Online translation and learning features use the Gemini API through Firebase AI Logic. Google processes this text under the <a href="https://policies.google.com/privacy">Google Privacy Policy</a> and the <a href="https://ai.google.dev/gemini-api/terms">Gemini API terms</a>. While the app uses Gemini's free tier, Google may use the text it receives to improve its products, and people at Google may review it. Do not use the Standard engine or the online helpers for confidential conversations; switch to <strong>Offline</strong> in the engine menu instead.</p>
+  <p>Online translation and learning features use the Gemini API through Firebase AI Logic. Google processes this audio and text under the <a href="https://policies.google.com/privacy">Google Privacy Policy</a> and the <a href="https://ai.google.dev/gemini-api/terms">Gemini API terms</a>. While the app uses Gemini's free tier, Google may use the audio and text it receives to improve its products, and people at Google may review it. Do not use the Standard engine or the online helpers for confidential conversations; switch to <strong>Offline</strong> in the engine menu instead.</p>
 
   <h2>3. What we do not do</h2>
   <ul>

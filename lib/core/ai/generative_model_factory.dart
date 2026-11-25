@@ -21,6 +21,18 @@ class GenerativeModelFactory {
         ),
       );
 
+  /// Returns the audio model the Standard engine uses to transcribe and translate a sentence in one call, answering in JSON.
+  GenerativeModel speechModel({required String systemInstruction}) =>
+      FirebaseAI.googleAI().generativeModel(
+        model: _remoteConfig.modelSpeechTranslate,
+        systemInstruction: Content.system(systemInstruction),
+        generationConfig: GenerationConfig(
+          temperature: 0,
+          maxOutputTokens: 1024,
+          responseMimeType: 'application/json',
+        ),
+      );
+
   /// Returns the review model used by the learning features, answering in JSON.
   GenerativeModel reviewModel({required String systemInstruction}) =>
       FirebaseAI.googleAI().generativeModel(

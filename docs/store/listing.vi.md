@@ -36,7 +36,7 @@ HỌC TRONG KHI DÙNG
 Xem người bản xứ sẽ nói câu của bạn thế nào, và lưu bảng thuật ngữ cho tên riêng, từ chuyên môn để bản dịch dùng đúng từ bạn muốn.
 
 RIÊNG TƯ NGAY TỪ THIẾT KẾ
-Âm thanh chỉ nằm trong bộ nhớ tạm và không bao giờ được lưu. Bản ghi và cụm từ ở lại trên điện thoại. Chọn công cụ Ngoại tuyến cho cuộc trò chuyện bí mật. Không quảng cáo, không cần tài khoản.
+Âm thanh không bao giờ được lưu; với công cụ Ngoại tuyến, âm thanh không rời khỏi điện thoại. Bản ghi và cụm từ ở lại trên điện thoại. Chọn công cụ Ngoại tuyến cho cuộc trò chuyện bí mật. Không quảng cáo, không cần tài khoản.
 
 Ngôn ngữ: tiếng Việt, Anh, Nhật, Hàn, Trung, Thái, Indonesia, Tây Ban Nha, Pháp và Đức, sẽ có thêm. Chất lượng và tính năng khi offline khác nhau tuỳ ngôn ngữ.
 

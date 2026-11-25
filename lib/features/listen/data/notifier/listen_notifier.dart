@@ -11,6 +11,7 @@ import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/engines/engine_instances.dart';
 import '../../../../core/engines/asr/partial_transcriber.dart';
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/translate/cloud_hearing.dart';
 import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/live/live_captioner.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
@@ -400,6 +401,9 @@ class ListenNotifier extends Notifier<ListenState> {
       return;
     }
     try {
+      if (await _cloudCaption(segment)) {
+        return;
+      }
       final from = await _languageOf(recognizer, segment);
       _lastFrom = from;
       await recognizer.ensureReady(from);
@@ -439,6 +443,48 @@ class ListenNotifier extends Notifier<ListenState> {
         state = state.copyWith(draft: () => null);
       }
     }
+  }
+
+  /// On Standard, has Gemini hear and translate [segment]; false when it is off or fails, so the on-device path runs.
+  Future<bool> _cloudCaption(AudioSegment segment) async {
+    final (:handled, :heard) = await hearOnCloud(
+      ref,
+      engine: state.engine,
+      segment: segment,
+      from: state.source == listenAutoSource ? autoCandidates : [state.source],
+      to: languages.b,
+      context: [for (final c in state.captions) c.original].reversed
+          .take(contextCaptions)
+          .toList()
+          .reversed
+          .toList(),
+    );
+    if (!handled || !ref.mounted) {
+      return handled;
+    }
+    if (heard == null) {
+      state = state.copyWith(draft: () => null);
+      return true;
+    }
+    _lastFrom = heard.lang;
+    final endMs = _clock();
+    _ensureSession();
+    final caption = Caption(
+      id: _nextId++,
+      from: heard.lang,
+      to: languages.b,
+      original: heard.original,
+      translation: heard.translation,
+      engine: EngineKind.standard,
+      status: CaptionStatus.translated,
+      atMs: (endMs - segment.durationMs - _sessionStartMs).clamp(0, 1 << 31),
+    );
+    state = state.copyWith(
+      captions: [...state.captions, caption],
+      draft: () => null,
+    );
+    _record(caption.id, endMs - segment.durationMs, endMs);
+    return true;
   }
 
   /// Returns the picked source language, or the detected one in Auto.

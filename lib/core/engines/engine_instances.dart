@@ -18,6 +18,7 @@ import 'asr/whisper_cpp_engine.dart';
 import 'engines.dart';
 import 'live/live_models.dart';
 import 'live/live_session.dart';
+import 'translate/gemini_speech_translator.dart';
 import 'translate/gemini_text_translator.dart';
 import 'translate/mlkit_text_translator.dart';
 import 'tts/speech_synthesizer.dart';
@@ -50,6 +51,13 @@ final geminiTranslatorProvider = Provider<TextTranslatorEngine>(
         ? ref.watch(glossaryRepositoryProvider).termsIn
         : (_) async => const {},
   ),
+);
+
+/// Standard engine speech translator: Gemini hears each sentence; null when switched off in Remote Config.
+final speechTranslatorProvider = Provider<SpeechTranslatorEngine?>(
+  (ref) => ref.watch(featureSwitchesProvider.select((s) => s.cloudSpeech))
+      ? GeminiSpeechTranslator.firebase(getIt<GenerativeModelFactory>())
+      : null,
 );
 
 /// Offline engine translator (ML Kit).
