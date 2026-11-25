@@ -7,7 +7,7 @@ session, then update it in the same pull request as each feature or fix.
 - Acceptance criteria: `project-docs/06-feature-details-acs.md`
 - Code map: `.agents/CONTEXT.md`
 
-Last updated: 2026-11-25. T-1.7 is done (#30).
+Last updated: 2026-11-25. T-1.7 is done (#30); speech model hosting is set up (#31, #32).
 
 ## How to resume in a new session
 
@@ -95,7 +95,7 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 
 ## Waiting on the owner (device and account work)
 
-- Host the speech model and fill the Remote Config `asr_models` entry (`docs/speech-models.md`), or push models with adb, so the voice modes work on a phone.
+- Test the voice modes on a phone: the speech model is hosted (GitHub release `models-v1` of the public repo `vientranquangminh/lingomate-models`: `ggml-base.bin`, `ggml-small-q5_1.bin`, `silero_vad.onnx`) and Remote Config `asr_models` points every language at `ggml-base.bin` (2026-11-25). Download a pack in Offline packs, then try Conversation, Listen and Meeting. Switch to `ggml-small-q5_1.bin` if Vietnamese recognition is weak (OQ-3).
 - Run the T-0.4 to T-0.8 measurements on the reference phone and a low-end phone, then write the T-0.10 spike report (answers OQ-3, OQ-4, OQ-5).
 - Add the App Distribution secrets so CI can ship dev builds.
 - Device checks: the Meeting overlay (drag, tap to expand, Stop, long-press a line, position kept), AC-02.3, AC-02.4, AC-02.5, AC-04.6, AC-04.7, AC-04.9, AC-06.3, AC-09.2 (timing), AC-10.4 (DebugView) and AC-11.6 (system Settings → App languages on Android 13+, both directions).
@@ -118,4 +118,4 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | Date | Change |
 |------|--------|
 | 2026-11-24 | Phase 0 foundations and spikes (#2–#11); design system T-1.1 (#12–#15) |
-| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28); listen mode T-1.6 (#29); meeting mode T-1.7 (#30) |
+| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28); listen mode T-1.6 (#29); meeting mode T-1.7 (#30); speech model hosting guide (#31) and GitHub Releases setup (#32) |

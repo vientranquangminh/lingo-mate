@@ -18,6 +18,21 @@ speech model.
   to `ggml-small-q5_1.bin` later if Vietnamese accuracy is too low: change the file in
   Storage and the value in Remote Config, nothing else.
 
+## Current setup (GitHub Releases, free)
+
+The models are assets of release `models-v1` in the public repository
+`vientranquangminh/lingomate-models`, and Remote Config `asr_models` points every language at
+`https://github.com/vientranquangminh/lingomate-models/releases/download/models-v1/ggml-base.bin`
+(147 951 465 bytes, SHA-256 `60ed5bc3dd14eea856493d334349b405782ddcaf0028d4b5df4088345fba2efe`).
+
+- The repository must stay public: private release assets need a login and the phone gets 404.
+- Never replace an asset of a published release; the phones check the SHA-256. Publish a new
+  tag (`models-v2`) and update `asr_models` instead.
+- To switch model, run step 4 below with `--url` set to the release asset URL and the same
+  file, then publish the new value in Remote Config.
+
+Firebase Storage (below) is the alternative when the Blaze plan is on.
+
 ## 1. Create the Storage bucket (once)
 
 1. Firebase console → project `lingo-mate-4f38d` → Build → Storage → Get started.
