@@ -5,6 +5,9 @@
 - `.agents/CONTEXT.md`: the code map. It shows the architecture, the folder layout and the
   patterns each layer follows. Read it before searching the tree, so you open only the
   files you need and don't miss related ones.
+- `.agents/PROGRESS.md`: where the implementation stands, task by task and AC by AC, what is
+  next and what waits on the owner. Read it at the start of every session. Every pull request
+  that finishes or changes a task updates it: the task row, the AC table, "Next up" and the log.
 - `.agents/INSTRUCTIONS.md`: how to add a feature (folders, states, repositories).
 - When you add or move a feature, route, server call, shared widget or cross-feature
   dependency, update `.agents/CONTEXT.md` in the same change.

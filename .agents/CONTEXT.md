@@ -8,7 +8,7 @@ globs:
 
 ## Overview
 
-This document describes the architectural patterns, folder structure, and coding standards for the Flutter application. Use this context when adding new features to ensure consistency.
+This document describes the architectural patterns, folder structure, and coding standards for the Flutter application. Use this context when adding new features to ensure consistency. For what is built and what comes next, see `.agents/PROGRESS.md`.
 
 ## High-Level Architecture
 
