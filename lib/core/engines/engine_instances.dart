@@ -13,6 +13,8 @@ import 'asr/asr_models.dart';
 import 'asr/sherpa_whisper_engine.dart';
 import 'asr/whisper_cpp_engine.dart';
 import 'engines.dart';
+import 'live/live_models.dart';
+import 'live/live_session.dart';
 import 'translate/gemini_text_translator.dart';
 import 'translate/mlkit_text_translator.dart';
 import 'tts/speech_synthesizer.dart';
@@ -85,3 +87,7 @@ final speechSynthesizerProvider = Provider<SpeechSynthesizerEngine>((ref) {
     rate: () => ref.read(appPreferencesProvider).voiceSpeed.rate,
   );
 });
+
+/// Opens Live Translate sessions.
+final liveSessionOpenerProvider =
+    Provider<LiveSession Function(LiveSessionConfig)>((ref) => LiveSession.new);

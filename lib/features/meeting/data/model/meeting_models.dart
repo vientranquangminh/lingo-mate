@@ -38,6 +38,7 @@ class MeetingLine extends Equatable {
   String get shown => translation ?? original;
 
   MeetingLine copyWith({
+    String? original,
     String? translation,
     EngineKind? engine,
     bool? fallback,
@@ -47,7 +48,7 @@ class MeetingLine extends Equatable {
       id: id,
       from: from,
       to: to,
-      original: original,
+      original: original ?? this.original,
       atMs: atMs,
       newTurn: newTurn,
       translation: translation ?? this.translation,

@@ -12,6 +12,8 @@ import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/background/background_capture.dart';
 import '../../../../core/engines/engine_instances.dart';
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/live/live_captioner.dart';
+import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../../../../core/engines/translate/gemini_text_translator.dart';
@@ -53,6 +55,11 @@ class MeetingNotifier extends Notifier<MeetingState> {
   int? _lastSegmentEndMs;
   int _nextId = 0;
   List<MeetingLine> _overlaySent = const [];
+  EngineSelection? _lastSelection;
+  bool _liveOff = false;
+  LiveCaptioner? _live;
+  SpeechRecognizerEngine? _recognizer;
+  final _liveLines = <int, (int id, int startMs)>{};
 
   @override
   MeetingState build() {
@@ -63,8 +70,9 @@ class MeetingNotifier extends Notifier<MeetingState> {
     final pair = ref.read(userSettingsProvider).pair;
     final initial = MeetingState(source: pair.b, target: pair.a);
     final current = _watchSelection(initial);
+    _lastSelection = current;
     return initial.copyWith(
-      engine: () => current?.conversationEngine,
+      engine: () => current == null ? null : _engineOf(current),
       blocked: current?.blocked ?? const {},
     );
   }
@@ -143,12 +151,13 @@ class MeetingNotifier extends Notifier<MeetingState> {
       }
       _pipeline = pipeline;
       _lastSegmentEndMs = null;
-      _subscriptions.add(
-        pipeline.segments.listen(
-          (segment) =>
-              _queue = _queue.then((_) => _onSegment(recognizer, segment)),
-        ),
-      );
+      _recognizer = recognizer;
+      if (state.engine != EngineKind.live || !await _startLive(pipeline)) {
+        _listenToSegments(pipeline, recognizer);
+      }
+      if (!ref.mounted) {
+        return;
+      }
       final shown = overlay && await background.showOverlay();
       state = state.copyWith(
         running: true,
@@ -227,8 +236,136 @@ class MeetingNotifier extends Notifier<MeetingState> {
     return saved;
   }
 
+  /// The engine Meeting uses: Live while it works, else the text engines.
+  EngineKind? _engineOf(EngineSelection selection) =>
+      selection.engine == EngineKind.live && !_liveOff
+      ? EngineKind.live
+      : selection.conversationEngine;
+
+  /// Uses the text engines from now on, e.g. after declining sign-in for Live (AC-13.6).
+  void skipLive() {
+    _liveOff = true;
+    final selection = _lastSelection;
+    if (selection != null) {
+      _onSelection(selection);
+    }
+  }
+
+  /// Captions the meeting through on-device speech recognition and text translation.
+  void _listenToSegments(
+    AudioPipeline pipeline,
+    SpeechRecognizerEngine recognizer,
+  ) {
+    _subscriptions.add(
+      pipeline.segments.listen(
+        (segment) =>
+            _queue = _queue.then((_) => _onSegment(recognizer, segment)),
+      ),
+    );
+  }
+
+  /// Streams the meeting audio to Live Translate; false, with the reason in the state, when Live is refused or fails (F-05).
+  Future<bool> _startLive(AudioPipeline pipeline) async {
+    final captioner = LiveCaptioner(
+      access: ref.read(liveAccessProvider),
+      openSession: ref.read(liveSessionOpenerProvider),
+      model: ref.read(engineRemoteConfigProvider).modelLiveTranslate,
+      target: state.target,
+      mode: SessionMode.meeting,
+    );
+    if (!await captioner.start()) {
+      final denial = captioner.denial;
+      await captioner.stop();
+      if (ref.mounted) {
+        state = state.copyWith(
+          liveDenial: denial,
+          liveStops: state.liveStops + 1,
+        );
+        skipLive();
+      }
+      return false;
+    }
+    _live = captioner;
+    _subscriptions
+      ..add(pipeline.liveChunks.listen(captioner.send))
+      ..add(captioner.events.listen(_onLiveEvent));
+    return true;
+  }
+
+  /// Shows a Live line as it grows; a finished turn is saved.
+  void _onLiveEvent(LiveCaptionEvent event) {
+    if (!ref.mounted || !state.running && _live == null) {
+      return;
+    }
+    switch (event) {
+      case LiveCaptionUpdate(
+        :final turn,
+        :final original,
+        :final translation,
+        :final done,
+      ):
+        final now = _clock();
+        var entry = _liveLines[turn];
+        if (entry == null) {
+          _ensureSession();
+          final line = MeetingLine(
+            id: _nextId++,
+            from: state.source,
+            to: state.target,
+            original: original,
+            atMs: (now - _sessionStartMs).clamp(0, 1 << 31),
+            engine: EngineKind.live,
+          );
+          entry = (line.id, now);
+          _liveLines[turn] = entry;
+          state = state.copyWith(lines: [...state.lines, line]);
+        }
+        final (id, startMs) = entry;
+        _update(
+          id,
+          (l) => l.copyWith(
+            original: original,
+            translation: translation,
+            engine: EngineKind.live,
+            status: done
+                ? MeetingLineStatus.translated
+                : MeetingLineStatus.translating,
+          ),
+        );
+        _pushOverlay();
+        if (done) {
+          _liveLines.remove(turn);
+          _record(id, startMs, now);
+        }
+      case LiveCaptionStopped(:final denial):
+        unawaited(_fallBackFromLive(denial));
+    }
+  }
+
+  /// Leaves Live for the text engines and keeps captioning (AC-14.2).
+  Future<void> _fallBackFromLive(LiveDenial? denial) async {
+    final live = _live;
+    _live = null;
+    _liveLines.clear();
+    await live?.stop();
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(liveDenial: denial, liveStops: state.liveStops + 1);
+    skipLive();
+    final pipeline = _pipeline;
+    final recognizer = _recognizer;
+    if (state.running && pipeline != null && recognizer != null) {
+      _listenToSegments(pipeline, recognizer);
+    }
+  }
+
   /// Stops capture, the overlay and the service.
   Future<void> _release() async {
+    final live = _live;
+    _live = null;
+    _liveLines.clear();
+    await live?.stop();
     for (final subscription in _subscriptions) {
       await subscription.cancel();
     }
@@ -263,7 +400,8 @@ class MeetingNotifier extends Notifier<MeetingState> {
 
   /// Tracks the engine and clears a no-engine block once one is back.
   void _onSelection(EngineSelection selection) {
-    final engine = selection.conversationEngine;
+    _lastSelection = selection;
+    final engine = _engineOf(selection);
     state = state.copyWith(
       engine: () => engine,
       blocked: selection.blocked,

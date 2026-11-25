@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../model/meeting_models.dart';
 
@@ -18,6 +19,8 @@ class MeetingState extends Equatable {
     this.lines = const [],
     this.block,
     this.savedCount = 0,
+    this.liveDenial,
+    this.liveStops = 0,
   });
 
   final String source;
@@ -31,6 +34,8 @@ class MeetingState extends Equatable {
   final List<MeetingLine> lines;
   final MeetingBlock? block;
   final int savedCount;
+  final LiveDenial? liveDenial;
+  final int liveStops;
 
   MeetingState copyWith({
     String? source,
@@ -44,6 +49,8 @@ class MeetingState extends Equatable {
     List<MeetingLine>? lines,
     MeetingBlock? Function()? block,
     int? savedCount,
+    LiveDenial? liveDenial,
+    int? liveStops,
   }) {
     return MeetingState(
       source: source ?? this.source,
@@ -57,6 +64,8 @@ class MeetingState extends Equatable {
       lines: lines ?? this.lines,
       block: block != null ? block() : this.block,
       savedCount: savedCount ?? this.savedCount,
+      liveDenial: liveDenial ?? this.liveDenial,
+      liveStops: liveStops ?? this.liveStops,
     );
   }
 
@@ -73,5 +82,7 @@ class MeetingState extends Equatable {
     lines,
     block,
     savedCount,
+    liveDenial,
+    liveStops,
   ];
 }

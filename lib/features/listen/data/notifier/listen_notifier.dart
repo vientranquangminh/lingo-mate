@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,6 +10,8 @@ import '../../../../core/audio/echo_gate.dart';
 import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/engines/engine_instances.dart';
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/live/live_access.dart';
+import '../../../../core/engines/live/live_captioner.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../../../../core/engines/translate/gemini_text_translator.dart';
@@ -46,6 +49,12 @@ class ListenNotifier extends Notifier<ListenState> {
   Future<void> _writes = Future.value();
   int _sessionStartMs = 0;
   int _nextId = 0;
+  EngineSelection? _lastSelection;
+  bool _liveOff = false;
+  LiveCaptioner? _live;
+  StreamSubscription<Uint8List>? _liveChunks;
+  StreamSubscription<LiveCaptionEvent>? _liveEvents;
+  final _liveCaptions = <int, (int id, int startMs)>{};
 
   @override
   ListenState build() {
@@ -55,8 +64,9 @@ class ListenNotifier extends Notifier<ListenState> {
     ref.onDispose(_dispose);
     final initial = ListenState(source: languages.a, target: languages.b);
     final current = _watchSelection(initial.source);
+    _lastSelection = current;
     return initial.copyWith(
-      engine: () => current?.conversationEngine,
+      engine: () => current == null ? null : _engineOf(current),
       blocked: current?.blocked ?? const {},
     );
   }
@@ -105,10 +115,33 @@ class ListenNotifier extends Notifier<ListenState> {
     }
   }
 
+  /// The engine Listen uses: Live while it works, else the text engines.
+  EngineKind? _engineOf(EngineSelection selection) =>
+      selection.engine == EngineKind.live && !_liveOff
+      ? EngineKind.live
+      : selection.conversationEngine;
+
+  /// Uses the text engines for the rest of this screen, e.g. after declining sign-in for Live (AC-13.6).
+  void skipLive() {
+    _liveOff = true;
+    final selection = _lastSelection;
+    if (selection != null) {
+      _onSelection(selection);
+    }
+  }
+
   /// Opens the mic and starts captioning (AC-03.1), or resumes after a pause.
   Future<void> start() async {
     if (state.listening) {
       return;
+    }
+    if (state.engine == EngineKind.live) {
+      if (await _startLive()) {
+        return;
+      }
+      if (!ref.mounted) {
+        return;
+      }
     }
     final recognizer = await ref
         .read(speechRecognizerProvider.future)
@@ -150,8 +183,143 @@ class ListenNotifier extends Notifier<ListenState> {
     );
   }
 
+  /// Streams the mic to Live Translate and shows its captions; false when Live is refused or fails (F-05).
+  Future<bool> _startLive() async {
+    final remote = ref.read(engineRemoteConfigProvider);
+    final captioner = LiveCaptioner(
+      access: ref.read(liveAccessProvider),
+      openSession: ref.read(liveSessionOpenerProvider),
+      model: remote.modelLiveTranslate,
+      target: languages.b,
+      mode: SessionMode.listen,
+    );
+    if (!await captioner.start()) {
+      final denial = captioner.denial;
+      await captioner.stop();
+      if (ref.mounted) {
+        state = state.copyWith(
+          liveDenial: denial,
+          liveStops: state.liveStops + 1,
+        );
+        skipLive();
+      }
+      return false;
+    }
+    _liveEvents = captioner.events.listen(_onLiveEvent);
+    final pipeline = AudioPipeline(
+      capture: ref.read(audioCaptureProvider),
+      vad: EnergyVoiceActivityDetector(),
+      echoGate: EchoGate(nowMs: _clock),
+    );
+    _liveChunks = pipeline.liveChunks.listen(captioner.send);
+    if (!await pipeline.start()) {
+      await _stopLive(pipeline: pipeline);
+      await captioner.stop();
+      if (ref.mounted) {
+        state = state.copyWith(block: () => ListenBlock.micDenied);
+      }
+      return true;
+    }
+    if (!ref.mounted) {
+      await pipeline.dispose();
+      await captioner.stop();
+      return true;
+    }
+    _live = captioner;
+    _pipeline = pipeline;
+    state = state.copyWith(started: true, listening: true);
+    return true;
+  }
+
+  /// Shows a Live caption as it grows; a finished turn is saved (AC-03.2).
+  void _onLiveEvent(LiveCaptionEvent event) {
+    if (!ref.mounted) {
+      return;
+    }
+    switch (event) {
+      case LiveCaptionUpdate(
+        :final turn,
+        :final original,
+        :final translation,
+        :final done,
+      ):
+        final now = _clock();
+        var entry = _liveCaptions[turn];
+        if (entry == null) {
+          _ensureSession();
+          final caption = Caption(
+            id: _nextId++,
+            from: _engineSource(state.source),
+            to: languages.b,
+            original: original,
+            atMs: (now - _sessionStartMs).clamp(0, 1 << 31),
+            engine: EngineKind.live,
+          );
+          entry = (caption.id, now);
+          _liveCaptions[turn] = entry;
+          state = state.copyWith(captions: [...state.captions, caption]);
+        }
+        final (id, startMs) = entry;
+        _update(
+          id,
+          (c) => c.copyWith(
+            original: original,
+            translation: translation,
+            engine: EngineKind.live,
+            status: done ? CaptionStatus.translated : CaptionStatus.translating,
+          ),
+        );
+        if (done) {
+          _liveCaptions.remove(turn);
+          _record(id, startMs, now);
+        }
+      case LiveCaptionStopped(:final denial):
+        unawaited(_fallBackFromLive(denial));
+    }
+  }
+
+  /// Leaves Live for the text engines and carries on listening (AC-14.2).
+  Future<void> _fallBackFromLive(LiveDenial? denial) async {
+    final wasListening = state.listening;
+    await _stopLive(pipeline: _pipeline);
+    _pipeline = null;
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(
+      listening: false,
+      liveDenial: denial,
+      liveStops: state.liveStops + 1,
+    );
+    skipLive();
+    if (wasListening) {
+      await start();
+    }
+  }
+
+  /// Stops the Live captioner and the mic feeding it.
+  Future<void> _stopLive({AudioPipeline? pipeline}) async {
+    await _liveChunks?.cancel();
+    _liveChunks = null;
+    await _liveEvents?.cancel();
+    _liveEvents = null;
+    final live = _live;
+    _live = null;
+    await live?.stop();
+    await pipeline?.dispose();
+    _liveCaptions.clear();
+  }
+
   /// Stops the mic and keeps the captions; nothing is heard or counted until [start] (AC-03.6).
   Future<void> pause() async {
+    if (_live != null) {
+      await _stopLive(pipeline: _pipeline);
+      _pipeline = null;
+      if (ref.mounted && state.listening) {
+        state = state.copyWith(listening: false);
+      }
+      return;
+    }
     final pipeline = _pipeline;
     _pipeline = null;
     await _segments?.cancel();
@@ -164,7 +332,8 @@ class ListenNotifier extends Notifier<ListenState> {
 
   /// Tracks the engine; a change mid-session raises the switched notice.
   void _onSelection(EngineSelection selection) {
-    final engine = selection.conversationEngine;
+    _lastSelection = selection;
+    final engine = _engineOf(selection);
     final previous = state.engine;
     final switched =
         state.started &&
@@ -386,6 +555,7 @@ class ListenNotifier extends Notifier<ListenState> {
   /// Releases the mic and saves the session.
   void _dispose() {
     _selection?.close();
+    unawaited(_stopLive());
     unawaited(_segments?.cancel());
     unawaited(_pipeline?.dispose());
     final session = _sessionId;

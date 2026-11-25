@@ -36,6 +36,7 @@ class Caption extends Equatable {
   final CaptionStatus status;
 
   Caption copyWith({
+    String? original,
     String? translation,
     EngineKind? engine,
     bool? fallback,
@@ -45,7 +46,7 @@ class Caption extends Equatable {
       id: id,
       from: from,
       to: to,
-      original: original,
+      original: original ?? this.original,
       atMs: atMs,
       translation: translation ?? this.translation,
       engine: engine ?? this.engine,

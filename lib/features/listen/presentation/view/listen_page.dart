@@ -3,6 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../core/auth/auth_models.dart';
+import '../../../../core/engines/live/live_access.dart';
+import '../../../../common/widgets/usage_sheet.dart';
+import '../../../../common/widgets/require_sign_in.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
@@ -96,9 +100,15 @@ class _ListenPageState extends ConsumerState<ListenPage> {
 
   /// Starts or resumes captions once the microphone is allowed.
   Future<void> _start() async {
-    if (await ensureMicAccess(context, ref)) {
-      await _notifier.start();
+    if (!await ensureMicAccess(context, ref) || !mounted) {
+      return;
     }
+    final live =
+        ref.read(listenProvider(widget.languages)).engine == EngineKind.live;
+    if (live && !await requireSignIn(context, ref, SignInReason.live)) {
+      _notifier.skipLive();
+    }
+    await _notifier.start();
   }
 
   /// Ends the session and leaves.
@@ -119,6 +129,18 @@ class _ListenPageState extends ConsumerState<ListenPage> {
       ..listen(provider.select((s) => s.captions.length), (previous, next) {
         if (_follow && next > (previous ?? 0)) {
           _scrollToLive();
+        }
+      })
+      ..listen(provider.select((s) => s.liveStops), (_, _) {
+        final denial = ref.read(provider).liveDenial;
+        showAppToast(
+          context,
+          denial == LiveDenial.quota
+              ? l10n.liveQuotaFallback
+              : l10n.liveUnavailableFallback,
+        );
+        if (denial == LiveDenial.quota) {
+          showUsageSheet(context);
         }
       })
       ..listen(provider.select((s) => s.switchCount), (_, _) {
