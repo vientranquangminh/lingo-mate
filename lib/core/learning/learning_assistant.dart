@@ -36,6 +36,14 @@ abstract interface class LearningAssistant {
     required List<LearningLine> lines,
     required String userLang,
   });
+
+  /// The roleplay partner's next line in [targetLang] and feedback on the learner's last line (AC-22.1).
+  Future<RoleplayTurn> roleplay({
+    required String situation,
+    required List<RoleplayMessage> messages,
+    required String targetLang,
+    required String userLang,
+  });
 }
 
 /// [LearningAssistant] on Gemini (`model_text_review`) through Firebase AI Logic.
@@ -134,6 +142,43 @@ class GeminiLearningAssistant implements LearningAssistant {
         for (final item in _list(json, 'actionItems'))
           if (item is String && item.trim().isNotEmpty) item.trim(),
       ],
+    );
+  }
+
+  @override
+  Future<RoleplayTurn> roleplay({
+    required String situation,
+    required List<RoleplayMessage> messages,
+    required String targetLang,
+    required String userLang,
+  }) async {
+    final json = await _ask(
+      LearningPrompts.roleplaySystem(
+        situation: situation,
+        targetLang: targetLang,
+        userLang: userLang,
+      ),
+      LearningPrompts.roleplay(messages),
+      replyTimeout,
+    );
+    final reply = _text(json, 'reply');
+    if (reply == null) {
+      throw const FormatException('reply missing');
+    }
+    final feedback = json['feedback'];
+    final improved = _text(feedback, 'improved');
+    final last = messages.lastOrNull;
+    return RoleplayTurn(
+      reply: reply,
+      replyTranslation: _text(json, 'replyTranslation') ?? '',
+      feedback: improved == null || last == null || !last.fromLearner
+          ? null
+          : PhrasingTip(
+              original: last.text,
+              improved: improved,
+              reason: _text(feedback, 'note') ?? '',
+              meaning: _text(feedback, 'meaning') ?? '',
+            ),
     );
   }
 

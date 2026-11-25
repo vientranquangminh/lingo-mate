@@ -83,6 +83,7 @@ class RemoteConfigService {
   bool get suggestReplyEnabled => _bool(RemoteDefaults.ffSuggestReply);
   bool get glossaryEnabled => _bool(RemoteDefaults.ffGlossary);
   bool get cloudSpeechEnabled => _bool(RemoteDefaults.ffCloudSpeech);
+  bool get roleplayEnabled => _bool(RemoteDefaults.ffRoleplay);
   bool get paywallEnabled => _bool(RemoteDefaults.ffPaywall);
   bool get emailLinkSigninEnabled => _bool(RemoteDefaults.ffEmailLinkSignin);
   bool get manageSubscriptionEnabled =>

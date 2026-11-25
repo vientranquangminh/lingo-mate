@@ -1,14 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/app_circle_icon_button.dart';
+import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_app_bar.dart';
 import '../../../../common/widgets/app_scaffold.dart';
+import '../../../../core/config/feature_switches.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../../../../core/quick_phrases/quick_phrases.dart';
+import '../../../../navigation/route_const.dart';
 import '../widget/quick_phrase_row.dart';
 import '../widget/situation_names.dart';
 
@@ -35,6 +40,19 @@ class SituationPage extends ConsumerWidget {
     return AppPlatformScaffold(
       appBar: AppPlatformAppBar(
         title: Text(SituationNames.name(l10n, situationKey)),
+        trailingActions: [
+          if (ref.watch(featureSwitchesProvider.select((s) => s.roleplay)))
+            AppCircleIconButton(
+              icon: AppIcons.modeConversation,
+              semanticLabel: l10n.roleplayStart,
+              borderColor: Colors.transparent,
+              onPressed: () => context.pushNamed(
+                AppRouteName.roleplay,
+                pathParameters: {'key': situationKey},
+                queryParameters: {'from': pair.a, 'to': pair.b},
+              ),
+            ),
+        ],
       ),
       body: situation == null
           ? const SizedBox.shrink()

@@ -931,5 +931,33 @@
   "draftHearing": "Hearing…",
   "@draftHearing": {
     "description": "Label above the words recognised so far while the person is still speaking."
-  }
+  },
+  "roleplayTitle": "Practise: {situation}",
+  "@roleplayTitle": {
+    "placeholders": {
+      "situation": {
+        "type": "String"
+      }
+    }
+  },
+  "roleplayStart": "Practise this situation",
+  "roleplayIntro": "Your partner speaks {language}. Answer by typing or with the mic; you'll get tips on your phrasing.",
+  "@roleplayIntro": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "roleplayAnswerHint": "Your answer in {language}",
+  "@roleplayAnswerHint": {
+    "placeholders": {
+      "language": {
+        "type": "String"
+      }
+    }
+  },
+  "roleplaySpeak": "Answer by voice",
+  "roleplaySend": "Send",
+  "roleplayListen": "Listen"
 }
