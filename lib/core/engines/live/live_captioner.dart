@@ -31,6 +31,16 @@ class LiveCaptionUpdate extends LiveCaptionEvent {
   List<Object?> get props => [turn, original, translation, done];
 }
 
+/// Translated speech to play: 24 kHz mono PCM16.
+class LiveCaptionAudio extends LiveCaptionEvent {
+  const LiveCaptionAudio(this.pcm24k);
+
+  final Uint8List pcm24k;
+
+  @override
+  List<Object?> get props => [pcm24k.length];
+}
+
 /// Live stopped and the caller should fall back to Standard; [denial] says why when Live was refused.
 class LiveCaptionStopped extends LiveCaptionEvent {
   const LiveCaptionStopped({this.denial, this.resetAt});
@@ -183,6 +193,8 @@ class LiveCaptioner {
       case LiveOutputTranscript(:final text):
         _translation.write(text);
         _update(done: false);
+      case LiveOutputAudio(:final pcm24k):
+        _emit(LiveCaptionAudio(pcm24k));
       case LiveTurnComplete():
         if (_original.isNotEmpty || _translation.isNotEmpty) {
           _update(done: true);

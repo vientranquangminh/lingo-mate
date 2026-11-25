@@ -19,10 +19,13 @@ import '../../../../common/widgets/engine_chip.dart';
 import '../../../../common/widgets/engine_sheet.dart';
 import '../../../../common/widgets/mic_button.dart';
 import '../../../../common/widgets/mic_permission_gate.dart';
+import '../../../../common/widgets/require_sign_in.dart';
 import '../../../../common/widgets/save_phrase_action.dart';
 import '../../../../core/config/feature_switches.dart';
 import '../../../../core/learning/learning_models.dart';
+import '../../../../core/auth/auth_models.dart';
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../../../../core/platform/system_settings.dart';
@@ -47,6 +50,15 @@ class ConversationPage extends ConsumerWidget {
     final notifier = ref.read(provider.notifier);
     final l10n = context.localization;
     final scheme = Theme.of(context).colorScheme;
+    ref.listen(provider.select((s) => s.liveStops), (_, _) {
+      final denial = ref.read(provider).liveDenial;
+      showAppToast(
+        context,
+        denial == LiveDenial.quota
+            ? l10n.liveQuotaFallback
+            : l10n.liveUnavailableFallback,
+      );
+    });
     ref.listen(provider.select((s) => s.switchCount), (_, _) {
       final engine = ref.read(provider).switchedTo;
       if (engine != null) {
@@ -113,6 +125,11 @@ class ConversationPage extends ConsumerWidget {
                         ),
                   banner: state.paused != null
                       ? _PausedBanner(reason: state.paused!)
+                      : state.liveListening
+                      ? AppBanner(
+                          kind: AppBannerKind.info,
+                          message: l10n.conversationLiveOn,
+                        )
                       : state.auto
                       ? AppBanner(
                           kind: AppBannerKind.info,
@@ -169,9 +186,26 @@ class ConversationPage extends ConsumerWidget {
   ) async {
     final notifier = ref.read(conversationProvider(pair).notifier);
     if (ref.read(conversationProvider(pair)).listening == speaker ||
-        await ensureMicAccess(context, ref)) {
+        await ensureMicAccess(context, ref) &&
+            context.mounted &&
+            await prepareLive(context, ref, pair)) {
       await notifier.toggleMic(speaker);
     }
+  }
+
+  /// Before starting on Live, asks to sign in; declining switches to the text engines (AC-13.6). Always returns true.
+  static Future<bool> prepareLive(
+    BuildContext context,
+    WidgetRef ref,
+    LanguagePair pair,
+  ) async {
+    final state = ref.read(conversationProvider(pair));
+    if (state.engine == EngineKind.live &&
+        !state.liveListening &&
+        !await requireSignIn(context, ref, SignInReason.live)) {
+      ref.read(conversationProvider(pair).notifier).skipLive();
+    }
+    return true;
   }
 
   /// Offers Replay, Copy and Show large for a line (AC-02.6).
@@ -321,7 +355,14 @@ class _Divider extends ConsumerWidget {
                   final notifier = ref.read(
                     conversationProvider(pair).notifier,
                   );
-                  if (state.auto || await ensureMicAccess(context, ref)) {
+                  if (state.auto ||
+                      await ensureMicAccess(context, ref) &&
+                          context.mounted &&
+                          await ConversationPage.prepareLive(
+                            context,
+                            ref,
+                            pair,
+                          )) {
                     await notifier.toggleAuto();
                   }
                 },

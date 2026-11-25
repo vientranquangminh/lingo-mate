@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../model/conversation_models.dart';
 
@@ -19,6 +20,8 @@ class ConversationState extends Equatable {
     this.switchedTo,
     this.switchCount = 0,
     this.paused,
+    this.liveDenial,
+    this.liveStops = 0,
   });
 
   final LanguagePair pair;
@@ -33,6 +36,11 @@ class ConversationState extends Equatable {
   final EngineKind? switchedTo;
   final int switchCount;
   final PauseReason? paused;
+  final LiveDenial? liveDenial;
+  final int liveStops;
+
+  /// Whether Live is translating both sides through one open mic.
+  bool get liveListening => auto && engine == EngineKind.live;
 
   /// Returns the language [speaker] speaks.
   String languageOf(Speaker speaker) => speaker == Speaker.a ? pair.a : pair.b;
@@ -53,6 +61,8 @@ class ConversationState extends Equatable {
     EngineKind? switchedTo,
     int? switchCount,
     PauseReason? Function()? paused,
+    LiveDenial? liveDenial,
+    int? liveStops,
   }) {
     return ConversationState(
       pair: pair,
@@ -67,6 +77,8 @@ class ConversationState extends Equatable {
       switchedTo: switchedTo ?? this.switchedTo,
       switchCount: switchCount ?? this.switchCount,
       paused: paused != null ? paused() : this.paused,
+      liveDenial: liveDenial ?? this.liveDenial,
+      liveStops: liveStops ?? this.liveStops,
     );
   }
 
@@ -84,5 +96,7 @@ class ConversationState extends Equatable {
     switchedTo,
     switchCount,
     paused,
+    liveDenial,
+    liveStops,
   ];
 }

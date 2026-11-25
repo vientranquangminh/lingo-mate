@@ -253,10 +253,15 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Translation engine'), findsOneWidget);
-    expect(find.text('Download the offline packs first'), findsOneWidget);
-    expect(find.text('In use'), findsOneWidget);
+    expect(
+      find.text(
+        'On this phone, no internet needed · Download the offline packs first',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Online, after each sentence · In use'), findsOneWidget);
 
-    await tester.tap(find.text('In use'));
+    await tester.tap(find.text('Online, after each sentence · In use'));
     await tester.pumpAndSettle();
     expect(container.read(enginePinProvider), EngineKind.standard);
   });

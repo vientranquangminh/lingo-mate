@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../ai/generative_model_factory.dart';
 import '../audio/audio_capture.dart';
+import '../audio/pcm_player.dart';
 import '../audio/silero_voice_activity_detector.dart';
 import '../audio/voice_activity_detector.dart';
 import '../config/feature_switches.dart';
@@ -91,3 +92,8 @@ final speechSynthesizerProvider = Provider<SpeechSynthesizerEngine>((ref) {
 /// Opens Live Translate sessions.
 final liveSessionOpenerProvider =
     Provider<LiveSession Function(LiveSessionConfig)>((ref) => LiveSession.new);
+
+/// Plays Live translated speech.
+final livePlayerProvider = Provider<PcmPlayer>(
+  (ref) => const NativePcmPlayer(),
+);
