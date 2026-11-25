@@ -765,5 +765,71 @@
   "glossaryDeleteSetBody": "Its terms are deleted too. This can't be undone.",
   "glossaryDeleteTerm": "Delete term",
   "privacyPolicy": "Privacy policy",
-  "engineBlockStandardDisabled": "Paused for now, using Offline"
+  "engineBlockStandardDisabled": "Paused for now, using Offline",
+  "signInTitle": "Sign in to keep everything with you",
+  "signInReasonAccount": "Your account keeps your phrases and plan when you change phones.",
+  "signInReasonSync": "Sign in to sync your phrasebook and review schedule.",
+  "signInReasonLive": "Live translation needs an account, including the free trial.",
+  "signInReasonPurchase": "Sign in so your plan follows you to any phone.",
+  "signInReasonRestore": "Sign in to restore your purchases.",
+  "signInBenefitSync": "Sync your phrasebook and review schedule across devices",
+  "signInBenefitLive": "Use Live minutes and keep Pro when you switch phones",
+  "signInBenefitRestore": "Restore your data after reinstalling",
+  "signInGoogle": "Continue with Google",
+  "signInEmail": "Continue with email",
+  "signInLater": "Later, use without an account",
+  "signInOfflineNote": "Offline translation always works without signing in.",
+  "signInDone": "Signed in",
+  "signInFailed": "Couldn't sign in. Check your connection and try again.",
+  "signInEmailIntro": "We'll email you a sign-in link. No password needed.",
+  "signInEmailLabel": "Email address",
+  "signInEmailSend": "Send link",
+  "signInEmailSendFailed": "Couldn't send the link. Check the address and your connection.",
+  "signInEmailSentTitle": "Check your inbox",
+  "signInEmailSentBody": "We sent a sign-in link to {email}. Open it on this phone to finish.",
+  "@signInEmailSentBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "signInEmailSendAgain": "Send again",
+  "signInEmailChange": "Use a different email",
+  "signInLinkConfirm": "This link was opened on a different phone. Enter the email address you used to confirm.",
+  "signInLinkInvalid": "This sign-in link is invalid or has expired.",
+  "signInLinkContinue": "Continue",
+  "accountTitle": "Account",
+  "accountName": "Name",
+  "accountEmail": "Email",
+  "accountProvider": "Signed in with",
+  "accountProviderGoogle": "Google",
+  "accountProviderEmail": "Email link",
+  "accountProviderNone": "Not signed in",
+  "accountSignOut": "Sign out",
+  "accountSignOutTitle": "Sign out? Your account data stays in the cloud.",
+  "accountSignOutKeep": "Keep this phone's data",
+  "accountSignOutRemove": "Remove this phone's data",
+  "accountSignedOut": "Signed out",
+  "accountSignInPrompt": "Sign in to sync and use Live",
+  "accountSignInPromptBody": "Keep your phrases when you change phones",
+  "meStatHours": "{hours} h",
+  "@meStatHours": {
+    "placeholders": {
+      "hours": {
+        "type": "String"
+      }
+    }
+  },
+  "meStatTranslated": "translated",
+  "meStatPhrases": "phrases saved",
+  "meStatDays": "{count, plural, =1{1 day} other{{count} days}}",
+  "@meStatDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "meStatStreak": "review streak"
 }

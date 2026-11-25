@@ -88,14 +88,17 @@ android {
         dev {
             dimension "default"
             applicationId "com.lingomate.app.dev"
+            manifestPlaceholders["authLinkHost"] = "lingo-mate-4f38d.firebaseapp.com"
         }
         staging {
             dimension "default"
             applicationId "com.lingomate.app.staging"
+            manifestPlaceholders["authLinkHost"] = "lingo-mate-staging.firebaseapp.com"
         }
         production {
             dimension "default"
             applicationId "com.lingomate.app"
+            manifestPlaceholders["authLinkHost"] = "lingo-mate-prod.firebaseapp.com"
         }
     }
 

@@ -2,9 +2,14 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/auth/auth_models.dart';
 import '../core/engines/selection/engine_selector.dart';
 import '../core/settings/user_settings.dart';
 import '../env.dart';
+import '../features/account/presentation/view/account_page.dart';
+import '../features/account/presentation/view/email_link_page.dart';
+import '../features/account/presentation/view/email_sign_in_page.dart';
+import '../features/account/presentation/view/sign_in_page.dart';
 import '../features/conversation/presentation/view/conversation_page.dart';
 import '../features/devtools/presentation/view/devtools_page.dart';
 import '../features/history/presentation/view/history_page.dart';
@@ -207,6 +212,13 @@ final goRouterProvider = Provider((ref) {
                         const CupertinoPage(child: PrivacyPage()),
                   ),
                   GoRoute(
+                    name: AppRouteName.account,
+                    path: AppRoutePath.account,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) =>
+                        const CupertinoPage(child: AccountPage()),
+                  ),
+                  GoRoute(
                     name: AppRouteName.glossary,
                     path: AppRoutePath.glossary,
                     parentNavigatorKey: rootNavigatorKey,
@@ -230,6 +242,40 @@ final goRouterProvider = Provider((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        name: AppRouteName.signIn,
+        path: AppRoutePath.signIn,
+        pageBuilder: (context, state) => CupertinoPage(
+          fullscreenDialog: true,
+          child: SignInPage(
+            reason:
+                SignInReason.values
+                    .where((r) => r.name == state.uri.queryParameters['reason'])
+                    .firstOrNull ??
+                SignInReason.account,
+          ),
+        ),
+        routes: [
+          GoRoute(
+            name: AppRouteName.signInEmail,
+            path: AppRoutePath.signInEmail,
+            pageBuilder: (context, state) =>
+                const CupertinoPage(child: EmailSignInPage()),
+          ),
+        ],
+      ),
+      GoRoute(
+        name: AppRouteName.emailLink,
+        path: AppRoutePath.emailLink,
+        pageBuilder: (context, state) {
+          final extra = state.extra is EmailLinkRequest
+              ? state.extra! as EmailLinkRequest
+              : const EmailLinkRequest('', EmailLinkOutcome.invalid);
+          return CupertinoPage(
+            child: EmailLinkPage(link: extra.link, outcome: extra.outcome),
+          );
+        },
       ),
       GoRoute(
         name: AppRouteName.languagePacks,

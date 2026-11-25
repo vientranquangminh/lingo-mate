@@ -12,11 +12,14 @@ import '../../../../common/widgets/app_license_page.dart';
 import '../../../../common/widgets/app_platform_app_bar.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../common/widgets/settings_row.dart';
+import '../../../../core/auth/auth_providers.dart';
 import '../../../../core/settings/app_preferences.dart';
 import '../../../../core/settings/user_settings.dart';
 import '../../../../env.dart';
 import '../../../../navigation/route_const.dart';
+import '../widget/account_card.dart';
 import '../widget/setting_labels.dart';
+import '../widget/stats_row.dart';
 
 /// Me tab S-17 (P1 part): app language, languages, offline packs, translation & voice, privacy & data, licenses, setup again (F-10).
 class MePage extends ConsumerWidget {
@@ -34,6 +37,24 @@ class MePage extends ConsumerWidget {
       appBar: AppPlatformAppBar(title: Text(l10n.meTitle)),
       body: ListView(
         children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              AppParams.spacing16.w,
+              AppParams.spacing16.h,
+              AppParams.spacing16.w,
+              0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (ref.watch(authServiceProvider).available) ...[
+                  const AccountCard(),
+                  SizedBox(height: AppParams.spacing12.h),
+                ],
+                const StatsRow(),
+              ],
+            ),
+          ),
           Padding(
             padding: EdgeInsets.fromLTRB(
               AppParams.spacing16.w,
