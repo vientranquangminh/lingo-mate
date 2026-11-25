@@ -18,6 +18,7 @@ import '../features/onboarding/presentation/view/welcome_page.dart';
 import '../features/phrasebook/presentation/view/add_phrase_page.dart';
 import '../features/phrasebook/presentation/view/phrase_detail_page.dart';
 import '../features/phrasebook/presentation/view/phrases_page.dart';
+import '../features/phrasebook/presentation/view/situation_page.dart';
 import '../features/show_mode/presentation/view/show_mode_page.dart';
 import 'route_const.dart';
 
@@ -95,9 +96,24 @@ final goRouterProvider = Provider((ref) {
               GoRoute(
                 name: AppRouteName.phrases,
                 path: AppRoutePath.phrases,
-                pageBuilder: (context, state) =>
-                    const NoTransitionPage(child: PhrasesPage()),
+                pageBuilder: (context, state) => NoTransitionPage(
+                  child: PhrasesPage(
+                    initialTab: state.uri.queryParameters['tab'] == 'quick'
+                        ? PhrasesTab.quick
+                        : PhrasesTab.mine,
+                  ),
+                ),
                 routes: [
+                  GoRoute(
+                    name: AppRouteName.situation,
+                    path: AppRoutePath.situation,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) => CupertinoPage(
+                      child: SituationPage(
+                        situationKey: state.pathParameters['key']!,
+                      ),
+                    ),
+                  ),
                   GoRoute(
                     name: AppRouteName.addPhrase,
                     path: AppRoutePath.addPhrase,
@@ -183,6 +199,8 @@ final goRouterProvider = Provider((ref) {
             child: ShowModePage(
               text: extra['text'] ?? '',
               original: extra['original'],
+              lang: extra['lang'],
+              hint: extra['hint'],
             ),
           );
         },

@@ -1,0 +1,321 @@
+{
+ "key": "taxi",
+ "icon": "sit_taxi",
+ "phrases": [
+  {
+   "key": "taxi.take_me",
+   "text": {
+    "en": "Please take me to this address.",
+    "vi": "Làm ơn chở tôi đến địa chỉ này.",
+    "ja": "この住所までお願いします。",
+    "ko": "이 주소로 가 주세요.",
+    "zh": "请带我去这个地址。",
+    "th": "ช่วยไปส่งที่อยู่นี้หน่อย",
+    "id": "Tolong antar saya ke alamat ini.",
+    "es": "Lléveme a esta dirección, por favor.",
+    "fr": "Emmenez-moi à cette adresse, s'il vous plaît.",
+    "de": "Bitte bringen Sie mich zu dieser Adresse."
+   }
+  },
+  {
+   "key": "taxi.airport",
+   "text": {
+    "en": "To the airport, please.",
+    "vi": "Cho tôi ra sân bay.",
+    "ja": "空港までお願いします。",
+    "ko": "공항으로 가 주세요.",
+    "zh": "请去机场。",
+    "th": "ไปสนามบิน",
+    "id": "Ke bandara, ya.",
+    "es": "Al aeropuerto, por favor.",
+    "fr": "À l'aéroport, s'il vous plaît.",
+    "de": "Zum Flughafen, bitte."
+   }
+  },
+  {
+   "key": "taxi.how_much",
+   "text": {
+    "en": "How much will it cost?",
+    "vi": "Đi hết bao nhiêu tiền?",
+    "ja": "いくらかかりますか？",
+    "ko": "요금이 얼마나 나와요?",
+    "zh": "大概多少钱？",
+    "th": "ไปเท่าไร",
+    "id": "Berapa ongkosnya?",
+    "es": "¿Cuánto costará?",
+    "fr": "Combien ça va coûter ?",
+    "de": "Wie viel wird es kosten?"
+   }
+  },
+  {
+   "key": "taxi.meter",
+   "text": {
+    "en": "Please use the meter.",
+    "vi": "Làm ơn bật đồng hồ tính tiền.",
+    "ja": "メーターを使ってください。",
+    "ko": "미터기 켜 주세요.",
+    "zh": "请打表。",
+    "th": "กดมิเตอร์ด้วย",
+    "id": "Tolong pakai argo.",
+    "es": "Ponga el taxímetro, por favor.",
+    "fr": "Mettez le compteur, s'il vous plaît.",
+    "de": "Bitte schalten Sie das Taxameter ein."
+   }
+  },
+  {
+   "key": "taxi.how_long",
+   "text": {
+    "en": "How long does it take?",
+    "vi": "Đi mất bao lâu?",
+    "ja": "どのくらいかかりますか？",
+    "ko": "얼마나 걸려요?",
+    "zh": "要多长时间？",
+    "th": "ใช้เวลานานเท่าไร",
+    "id": "Berapa lama perjalanannya?",
+    "es": "¿Cuánto se tarda?",
+    "fr": "Combien de temps ça prend ?",
+    "de": "Wie lange dauert es?"
+   }
+  },
+  {
+   "key": "taxi.stop_here",
+   "text": {
+    "en": "Please stop here.",
+    "vi": "Cho tôi dừng ở đây.",
+    "ja": "ここで止めてください。",
+    "ko": "여기서 세워 주세요.",
+    "zh": "请在这里停。",
+    "th": "จอดตรงนี้",
+    "id": "Berhenti di sini, ya.",
+    "es": "Pare aquí, por favor.",
+    "fr": "Arrêtez-vous ici, s'il vous plaît.",
+    "de": "Bitte halten Sie hier."
+   }
+  },
+  {
+   "key": "taxi.wait_here",
+   "text": {
+    "en": "Could you wait here for a moment?",
+    "vi": "Bạn đợi ở đây một chút được không?",
+    "ja": "ここで少し待ってもらえますか？",
+    "ko": "여기서 잠깐 기다려 주실 수 있어요?",
+    "zh": "可以在这里等一下吗？",
+    "th": "รอตรงนี้สักครู่ได้ไหม",
+    "id": "Bisa tunggu di sini sebentar?",
+    "es": "¿Puede esperar aquí un momento?",
+    "fr": "Pouvez-vous attendre ici un instant ?",
+    "de": "Können Sie hier kurz warten?"
+   }
+  },
+  {
+   "key": "taxi.slower",
+   "text": {
+    "en": "Please drive more slowly.",
+    "vi": "Làm ơn đi chậm lại.",
+    "ja": "もう少しゆっくり走ってください。",
+    "ko": "좀 천천히 가 주세요.",
+    "zh": "请开慢一点。",
+    "th": "ขับช้าลงหน่อย",
+    "id": "Tolong pelan-pelan.",
+    "es": "Más despacio, por favor.",
+    "fr": "Roulez plus lentement, s'il vous plaît.",
+    "de": "Bitte fahren Sie langsamer."
+   }
+  },
+  {
+   "key": "taxi.in_hurry",
+   "text": {
+    "en": "I'm in a hurry.",
+    "vi": "Tôi đang vội.",
+    "ja": "急いでいます。",
+    "ko": "급해요.",
+    "zh": "我赶时间。",
+    "th": "ฉันรีบ",
+    "id": "Saya sedang terburu-buru.",
+    "es": "Tengo prisa.",
+    "fr": "Je suis pressé.",
+    "de": "Ich habe es eilig."
+   }
+  },
+  {
+   "key": "taxi.turn_left",
+   "text": {
+    "en": "Turn left here.",
+    "vi": "Rẽ trái ở đây.",
+    "ja": "ここを左に曲がってください。",
+    "ko": "여기서 왼쪽으로 가 주세요.",
+    "zh": "在这里左转。",
+    "th": "เลี้ยวซ้ายตรงนี้",
+    "id": "Belok kiri di sini.",
+    "es": "Gire a la izquierda aquí.",
+    "fr": "Tournez à gauche ici.",
+    "de": "Hier links abbiegen."
+   }
+  },
+  {
+   "key": "taxi.turn_right",
+   "text": {
+    "en": "Turn right here.",
+    "vi": "Rẽ phải ở đây.",
+    "ja": "ここを右に曲がってください。",
+    "ko": "여기서 오른쪽으로 가 주세요.",
+    "zh": "在这里右转。",
+    "th": "เลี้ยวขวาตรงนี้",
+    "id": "Belok kanan di sini.",
+    "es": "Gire a la derecha aquí.",
+    "fr": "Tournez à droite ici.",
+    "de": "Hier rechts abbiegen."
+   }
+  },
+  {
+   "key": "taxi.straight",
+   "text": {
+    "en": "Go straight ahead.",
+    "vi": "Đi thẳng.",
+    "ja": "まっすぐ行ってください。",
+    "ko": "직진해 주세요.",
+    "zh": "一直往前走。",
+    "th": "ตรงไป",
+    "id": "Lurus terus.",
+    "es": "Siga recto.",
+    "fr": "Allez tout droit.",
+    "de": "Fahren Sie geradeaus."
+   }
+  },
+  {
+   "key": "taxi.where_is",
+   "text": {
+    "en": "Where is this place?",
+    "vi": "Chỗ này ở đâu?",
+    "ja": "この場所はどこですか？",
+    "ko": "여기가 어디예요?",
+    "zh": "这个地方在哪里？",
+    "th": "ที่นี่อยู่ที่ไหน",
+    "id": "Di mana tempat ini?",
+    "es": "¿Dónde está este lugar?",
+    "fr": "Où se trouve cet endroit ?",
+    "de": "Wo ist dieser Ort?"
+   }
+  },
+  {
+   "key": "taxi.walk_distance",
+   "text": {
+    "en": "Can I walk there?",
+    "vi": "Tôi đi bộ đến đó được không?",
+    "ja": "歩いて行けますか？",
+    "ko": "걸어서 갈 수 있어요?",
+    "zh": "可以走路过去吗？",
+    "th": "เดินไปได้ไหม",
+    "id": "Bisa jalan kaki ke sana?",
+    "es": "¿Se puede ir andando?",
+    "fr": "Peut-on y aller à pied ?",
+    "de": "Kann man dorthin laufen?"
+   }
+  },
+  {
+   "key": "taxi.nearest_station",
+   "text": {
+    "en": "Where is the nearest station?",
+    "vi": "Nhà ga gần nhất ở đâu?",
+    "ja": "一番近い駅はどこですか？",
+    "ko": "가장 가까운 역이 어디예요?",
+    "zh": "最近的车站在哪里？",
+    "th": "สถานีที่ใกล้ที่สุดอยู่ที่ไหน",
+    "id": "Di mana stasiun terdekat?",
+    "es": "¿Dónde está la estación más cercana?",
+    "fr": "Où est la gare la plus proche ?",
+    "de": "Wo ist der nächste Bahnhof?"
+   }
+  },
+  {
+   "key": "taxi.which_bus",
+   "text": {
+    "en": "Which bus goes to the centre?",
+    "vi": "Xe buýt nào đi vào trung tâm?",
+    "ja": "中心部へ行くバスはどれですか？",
+    "ko": "시내로 가는 버스가 어느 거예요?",
+    "zh": "哪路公交车去市中心？",
+    "th": "รถเมล์สายไหนไปใจกลางเมือง",
+    "id": "Bus mana yang ke pusat kota?",
+    "es": "¿Qué autobús va al centro?",
+    "fr": "Quel bus va au centre ?",
+    "de": "Welcher Bus fährt ins Zentrum?"
+   }
+  },
+  {
+   "key": "taxi.ticket",
+   "text": {
+    "en": "One ticket, please.",
+    "vi": "Cho tôi một vé.",
+    "ja": "切符を一枚ください。",
+    "ko": "표 한 장 주세요.",
+    "zh": "请给我一张票。",
+    "th": "ขอตั๋วหนึ่งใบ",
+    "id": "Satu tiket, ya.",
+    "es": "Un billete, por favor.",
+    "fr": "Un billet, s'il vous plaît.",
+    "de": "Eine Fahrkarte, bitte."
+   }
+  },
+  {
+   "key": "taxi.lost",
+   "text": {
+    "en": "I'm lost.",
+    "vi": "Tôi bị lạc.",
+    "ja": "道に迷いました。",
+    "ko": "길을 잃었어요.",
+    "zh": "我迷路了。",
+    "th": "ฉันหลงทาง",
+    "id": "Saya tersesat.",
+    "es": "Me he perdido.",
+    "fr": "Je suis perdu.",
+    "de": "Ich habe mich verlaufen."
+   }
+  },
+  {
+   "key": "taxi.show_map",
+   "text": {
+    "en": "Can you show me on the map?",
+    "vi": "Bạn chỉ giúp tôi trên bản đồ được không?",
+    "ja": "地図で教えてもらえますか？",
+    "ko": "지도에서 보여 주실 수 있어요?",
+    "zh": "可以在地图上指给我看吗？",
+    "th": "ช่วยชี้ในแผนที่ให้หน่อยได้ไหม",
+    "id": "Bisa tunjukkan di peta?",
+    "es": "¿Me lo puede señalar en el mapa?",
+    "fr": "Pouvez-vous me le montrer sur la carte ?",
+    "de": "Können Sie es mir auf der Karte zeigen?"
+   }
+  },
+  {
+   "key": "taxi.keep_change",
+   "text": {
+    "en": "Keep the change.",
+    "vi": "Không cần thối lại.",
+    "ja": "おつりは取っておいてください。",
+    "ko": "잔돈은 가지세요.",
+    "zh": "不用找了。",
+    "th": "ไม่ต้องทอน",
+    "id": "Simpan saja kembaliannya.",
+    "es": "Quédese con el cambio.",
+    "fr": "Gardez la monnaie.",
+    "de": "Stimmt so."
+   }
+  },
+  {
+   "key": "taxi.receipt",
+   "text": {
+    "en": "Could I have a receipt, please?",
+    "vi": "Cho tôi xin hóa đơn được không?",
+    "ja": "領収書をいただけますか？",
+    "ko": "영수증 주시겠어요?",
+    "zh": "可以给我开张收据吗？",
+    "th": "ขอใบเสร็จได้ไหม",
+    "id": "Boleh saya minta kuitansinya?",
+    "es": "¿Me da un recibo, por favor?",
+    "fr": "Je peux avoir un reçu, s'il vous plaît ?",
+    "de": "Könnte ich bitte eine Quittung bekommen?"
+   }
+  }
+ ]
+}

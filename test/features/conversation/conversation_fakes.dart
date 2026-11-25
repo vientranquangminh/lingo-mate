@@ -108,6 +108,7 @@ class FakeTranslator implements TextTranslatorEngine {
 /// Synthesizer that records what it speaks; [hold] keeps playback going until [finish].
 class FakeSynthesizer implements SpeechSynthesizerEngine {
   final spoken = <(String, String)>[];
+  final missingVoices = <String>{};
   bool hold = false;
   Completer<void>? _playing;
   int stops = 0;
@@ -116,7 +117,7 @@ class FakeSynthesizer implements SpeechSynthesizerEngine {
   Stream<TtsState> get state => const Stream.empty();
 
   @override
-  Future<bool> supports(String lang) async => true;
+  Future<bool> supports(String lang) async => !missingVoices.contains(lang);
 
   @override
   Future<void> speak(String text, {required String lang, double rate = 1.0}) {

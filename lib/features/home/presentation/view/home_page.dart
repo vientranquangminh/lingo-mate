@@ -14,8 +14,10 @@ import '../../../../common/widgets/app_scaffold.dart';
 import '../../../../common/widgets/app_toast.dart';
 import '../../../../common/widgets/engine_chip.dart';
 import '../../../../common/widgets/engine_sheet.dart';
+import '../../../../common/widgets/quick_phrase_card.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
+import '../../../../core/quick_phrases/quick_phrases.dart';
 import '../../../../core/sessions/session_repository.dart';
 import '../../../../core/settings/user_settings.dart';
 import '../../../../navigation/route_const.dart';
@@ -55,10 +57,12 @@ class HomePage extends ConsumerWidget {
             vertical: AppParams.spacing16.h,
           ),
           children: [
-            Row(
+            Wrap(
+              spacing: AppParams.spacing8.w,
+              runSpacing: AppParams.spacing8.h,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                Flexible(child: _PairPill(pair: pair)),
-                SizedBox(width: AppParams.spacing8.w),
+                _PairPill(pair: pair),
                 EngineChip(
                   engine: selection?.conversationEngine,
                   onTap: selection == null
@@ -122,6 +126,22 @@ class HomePage extends ConsumerWidget {
               ),
             ),
             SizedBox(height: AppParams.spacing20.h),
+            QuickFavoritesRow(
+              pair: LanguagePair(
+                ref.watch(quickSourceProvider),
+                ref.watch(quickTargetProvider),
+              ),
+              title: l10n.homeFavoritePhrases,
+              padding: 0,
+              bottomSpacing: AppParams.spacing20,
+              trailing: AppPlatformTextButton(
+                onPressed: () => context.goNamed(
+                  AppRouteName.phrases,
+                  queryParameters: {'tab': 'quick'},
+                ),
+                text: l10n.homeSeeAll,
+              ),
+            ),
             _OfflineCard(pair: pair),
             SizedBox(height: AppParams.spacing12.h),
             const _ContinueCard(),

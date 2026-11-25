@@ -1,0 +1,321 @@
+{
+ "key": "smalltalk",
+ "icon": "sit_smalltalk",
+ "phrases": [
+  {
+   "key": "smalltalk.hello",
+   "text": {
+    "en": "Hello!",
+    "vi": "Xin chào!",
+    "ja": "こんにちは！",
+    "ko": "안녕하세요!",
+    "zh": "你好！",
+    "th": "สวัสดี",
+    "id": "Halo!",
+    "es": "¡Hola!",
+    "fr": "Bonjour !",
+    "de": "Hallo!"
+   }
+  },
+  {
+   "key": "smalltalk.nice_meet",
+   "text": {
+    "en": "Nice to meet you.",
+    "vi": "Rất vui được gặp bạn.",
+    "ja": "はじめまして。",
+    "ko": "만나서 반가워요.",
+    "zh": "很高兴认识你。",
+    "th": "ยินดีที่ได้รู้จัก",
+    "id": "Senang bertemu dengan Anda.",
+    "es": "Encantado de conocerte.",
+    "fr": "Enchanté.",
+    "de": "Freut mich, Sie kennenzulernen."
+   }
+  },
+  {
+   "key": "smalltalk.how_are_you",
+   "text": {
+    "en": "How are you?",
+    "vi": "Bạn khỏe không?",
+    "ja": "お元気ですか？",
+    "ko": "잘 지내세요?",
+    "zh": "你好吗？",
+    "th": "สบายดีไหม",
+    "id": "Apa kabar?",
+    "es": "¿Cómo estás?",
+    "fr": "Comment allez-vous ?",
+    "de": "Wie geht es Ihnen?"
+   }
+  },
+  {
+   "key": "smalltalk.fine_thanks",
+   "text": {
+    "en": "I'm fine, thank you.",
+    "vi": "Tôi khỏe, cảm ơn.",
+    "ja": "元気です、ありがとう。",
+    "ko": "잘 지내요, 감사합니다.",
+    "zh": "我很好，谢谢。",
+    "th": "สบายดี ขอบคุณ",
+    "id": "Saya baik, terima kasih.",
+    "es": "Bien, gracias.",
+    "fr": "Je vais bien, merci.",
+    "de": "Mir geht es gut, danke."
+   }
+  },
+  {
+   "key": "smalltalk.my_name",
+   "text": {
+    "en": "My name is …",
+    "vi": "Tên tôi là …",
+    "ja": "私の名前は…です。",
+    "ko": "제 이름은 …예요.",
+    "zh": "我叫……",
+    "th": "ฉันชื่อ …",
+    "id": "Nama saya …",
+    "es": "Me llamo …",
+    "fr": "Je m'appelle …",
+    "de": "Ich heiße …"
+   }
+  },
+  {
+   "key": "smalltalk.your_name",
+   "text": {
+    "en": "What's your name?",
+    "vi": "Bạn tên là gì?",
+    "ja": "お名前は何ですか？",
+    "ko": "성함이 어떻게 되세요?",
+    "zh": "你叫什么名字？",
+    "th": "คุณชื่ออะไร",
+    "id": "Siapa nama Anda?",
+    "es": "¿Cómo te llamas?",
+    "fr": "Comment vous appelez-vous ?",
+    "de": "Wie heißen Sie?"
+   }
+  },
+  {
+   "key": "smalltalk.where_from",
+   "text": {
+    "en": "Where are you from?",
+    "vi": "Bạn đến từ đâu?",
+    "ja": "どちらのご出身ですか？",
+    "ko": "어디에서 오셨어요?",
+    "zh": "你是哪里人？",
+    "th": "คุณมาจากไหน",
+    "id": "Anda berasal dari mana?",
+    "es": "¿De dónde eres?",
+    "fr": "D'où venez-vous ?",
+    "de": "Woher kommen Sie?"
+   }
+  },
+  {
+   "key": "smalltalk.from_vietnam",
+   "text": {
+    "en": "I'm from Vietnam.",
+    "vi": "Tôi đến từ Việt Nam.",
+    "ja": "ベトナムから来ました。",
+    "ko": "베트남에서 왔어요.",
+    "zh": "我来自越南。",
+    "th": "ฉันมาจากเวียดนาม",
+    "id": "Saya dari Vietnam.",
+    "es": "Soy de Vietnam.",
+    "fr": "Je viens du Vietnam.",
+    "de": "Ich komme aus Vietnam."
+   }
+  },
+  {
+   "key": "smalltalk.first_time",
+   "text": {
+    "en": "It's my first time here.",
+    "vi": "Đây là lần đầu tôi đến đây.",
+    "ja": "ここに来るのは初めてです。",
+    "ko": "여기 처음 와 봐요.",
+    "zh": "我第一次来这里。",
+    "th": "ฉันมาที่นี่เป็นครั้งแรก",
+    "id": "Ini pertama kalinya saya ke sini.",
+    "es": "Es mi primera vez aquí.",
+    "fr": "C'est ma première fois ici.",
+    "de": "Ich bin zum ersten Mal hier."
+   }
+  },
+  {
+   "key": "smalltalk.love_city",
+   "text": {
+    "en": "I love this city.",
+    "vi": "Tôi rất thích thành phố này.",
+    "ja": "この街が大好きです。",
+    "ko": "이 도시가 정말 좋아요.",
+    "zh": "我很喜欢这座城市。",
+    "th": "ฉันชอบเมืองนี้มาก",
+    "id": "Saya suka kota ini.",
+    "es": "Me encanta esta ciudad.",
+    "fr": "J'adore cette ville.",
+    "de": "Ich liebe diese Stadt."
+   }
+  },
+  {
+   "key": "smalltalk.thank_you",
+   "text": {
+    "en": "Thank you very much.",
+    "vi": "Cảm ơn bạn rất nhiều.",
+    "ja": "どうもありがとうございます。",
+    "ko": "정말 감사합니다.",
+    "zh": "非常感谢。",
+    "th": "ขอบคุณมาก",
+    "id": "Terima kasih banyak.",
+    "es": "Muchas gracias.",
+    "fr": "Merci beaucoup.",
+    "de": "Vielen Dank."
+   }
+  },
+  {
+   "key": "smalltalk.welcome",
+   "text": {
+    "en": "You're welcome.",
+    "vi": "Không có gì.",
+    "ja": "どういたしまして。",
+    "ko": "천만에요.",
+    "zh": "不客气。",
+    "th": "ยินดี",
+    "id": "Sama-sama.",
+    "es": "De nada.",
+    "fr": "De rien.",
+    "de": "Gern geschehen."
+   }
+  },
+  {
+   "key": "smalltalk.sorry",
+   "text": {
+    "en": "Sorry.",
+    "vi": "Xin lỗi.",
+    "ja": "すみません。",
+    "ko": "죄송해요.",
+    "zh": "对不起。",
+    "th": "ขอโทษ",
+    "id": "Maaf.",
+    "es": "Lo siento.",
+    "fr": "Pardon.",
+    "de": "Entschuldigung."
+   }
+  },
+  {
+   "key": "smalltalk.excuse_me",
+   "text": {
+    "en": "Excuse me.",
+    "vi": "Xin lỗi, cho tôi hỏi.",
+    "ja": "すみません。",
+    "ko": "저기요.",
+    "zh": "打扰一下。",
+    "th": "ขอโทษนะ",
+    "id": "Permisi.",
+    "es": "Disculpe.",
+    "fr": "Excusez-moi.",
+    "de": "Entschuldigen Sie."
+   }
+  },
+  {
+   "key": "smalltalk.dont_understand",
+   "text": {
+    "en": "I don't understand.",
+    "vi": "Tôi không hiểu.",
+    "ja": "わかりません。",
+    "ko": "잘 모르겠어요.",
+    "zh": "我不明白。",
+    "th": "ฉันไม่เข้าใจ",
+    "id": "Saya tidak mengerti.",
+    "es": "No entiendo.",
+    "fr": "Je ne comprends pas.",
+    "de": "Ich verstehe nicht."
+   }
+  },
+  {
+   "key": "smalltalk.slowly",
+   "text": {
+    "en": "Could you speak more slowly?",
+    "vi": "Bạn nói chậm hơn được không?",
+    "ja": "もう少しゆっくり話してもらえますか？",
+    "ko": "좀 더 천천히 말씀해 주시겠어요?",
+    "zh": "可以说慢一点吗？",
+    "th": "พูดช้าลงหน่อยได้ไหม",
+    "id": "Bisa bicara lebih pelan?",
+    "es": "¿Puede hablar más despacio?",
+    "fr": "Pouvez-vous parler plus lentement ?",
+    "de": "Können Sie bitte langsamer sprechen?"
+   }
+  },
+  {
+   "key": "smalltalk.repeat",
+   "text": {
+    "en": "Could you say that again?",
+    "vi": "Bạn nói lại được không?",
+    "ja": "もう一度言ってもらえますか？",
+    "ko": "다시 한번 말씀해 주시겠어요?",
+    "zh": "可以再说一遍吗？",
+    "th": "พูดอีกครั้งได้ไหม",
+    "id": "Bisa diulang?",
+    "es": "¿Puede repetirlo?",
+    "fr": "Pouvez-vous répéter ?",
+    "de": "Können Sie das wiederholen?"
+   }
+  },
+  {
+   "key": "smalltalk.photo",
+   "text": {
+    "en": "Could you take a photo of us?",
+    "vi": "Bạn chụp giúp chúng tôi một tấm ảnh được không?",
+    "ja": "写真を撮ってもらえますか？",
+    "ko": "사진 좀 찍어 주시겠어요?",
+    "zh": "可以帮我们拍张照吗？",
+    "th": "ช่วยถ่ายรูปให้หน่อยได้ไหม",
+    "id": "Bisa fotokan kami?",
+    "es": "¿Nos puede hacer una foto?",
+    "fr": "Pourriez-vous nous prendre en photo ?",
+    "de": "Könnten Sie ein Foto von uns machen?"
+   }
+  },
+  {
+   "key": "smalltalk.keep_touch",
+   "text": {
+    "en": "Let's keep in touch.",
+    "vi": "Giữ liên lạc nhé.",
+    "ja": "連絡を取り合いましょう。",
+    "ko": "연락하고 지내요.",
+    "zh": "保持联系吧。",
+    "th": "ติดต่อกันนะ",
+    "id": "Mari tetap berhubungan.",
+    "es": "Sigamos en contacto.",
+    "fr": "Restons en contact.",
+    "de": "Lass uns in Kontakt bleiben."
+   }
+  },
+  {
+   "key": "smalltalk.see_you",
+   "text": {
+    "en": "See you later!",
+    "vi": "Hẹn gặp lại!",
+    "ja": "また後で！",
+    "ko": "나중에 봐요!",
+    "zh": "回头见！",
+    "th": "แล้วเจอกัน",
+    "id": "Sampai jumpa!",
+    "es": "¡Hasta luego!",
+    "fr": "À plus tard !",
+    "de": "Bis später!"
+   }
+  },
+  {
+   "key": "smalltalk.goodbye",
+   "text": {
+    "en": "Goodbye!",
+    "vi": "Tạm biệt!",
+    "ja": "さようなら！",
+    "ko": "안녕히 가세요!",
+    "zh": "再见！",
+    "th": "ลาก่อน",
+    "id": "Selamat tinggal!",
+    "es": "¡Adiós!",
+    "fr": "Au revoir !",
+    "de": "Auf Wiedersehen!"
+   }
+  }
+ ]
+}

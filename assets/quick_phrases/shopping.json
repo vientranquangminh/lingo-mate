@@ -1,0 +1,330 @@
+{
+ "key": "shopping",
+ "icon": "sit_shopping",
+ "phrases": [
+  {
+   "key": "shopping.how_much",
+   "text": {
+    "en": "How much is this?",
+    "vi": "Cái này bao nhiêu tiền?",
+    "ja": "これはいくらですか？",
+    "ko": "이거 얼마예요?",
+    "zh": "这个多少钱？",
+    "th": "อันนี้เท่าไร",
+    "id": "Berapa harganya?",
+    "es": "¿Cuánto cuesta esto?",
+    "fr": "Combien ça coûte ?",
+    "de": "Wie viel kostet das?"
+   }
+  },
+  {
+   "key": "shopping.just_looking",
+   "text": {
+    "en": "I'm just looking, thanks.",
+    "vi": "Tôi chỉ xem thôi, cảm ơn.",
+    "ja": "見ているだけです、ありがとう。",
+    "ko": "그냥 구경하는 거예요, 감사합니다.",
+    "zh": "我只是看看，谢谢。",
+    "th": "แค่ดูเฉยๆ ขอบคุณ",
+    "id": "Saya hanya lihat-lihat, terima kasih.",
+    "es": "Solo estoy mirando, gracias.",
+    "fr": "Je regarde seulement, merci.",
+    "de": "Ich schaue nur, danke."
+   }
+  },
+  {
+   "key": "shopping.try_on",
+   "text": {
+    "en": "Can I try this on?",
+    "vi": "Tôi mặc thử được không?",
+    "ja": "試着してもいいですか？",
+    "ko": "입어 봐도 돼요?",
+    "zh": "可以试穿吗？",
+    "th": "ลองได้ไหม",
+    "id": "Boleh saya coba?",
+    "es": "¿Me lo puedo probar?",
+    "fr": "Je peux l'essayer ?",
+    "de": "Kann ich das anprobieren?"
+   }
+  },
+  {
+   "key": "shopping.fitting_room",
+   "text": {
+    "en": "Where is the fitting room?",
+    "vi": "Phòng thử đồ ở đâu?",
+    "ja": "試着室はどこですか？",
+    "ko": "탈의실이 어디예요?",
+    "zh": "试衣间在哪里？",
+    "th": "ห้องลองเสื้ออยู่ที่ไหน",
+    "id": "Di mana kamar pas?",
+    "es": "¿Dónde están los probadores?",
+    "fr": "Où sont les cabines d'essayage ?",
+    "de": "Wo ist die Umkleidekabine?"
+   }
+  },
+  {
+   "key": "shopping.bigger",
+   "text": {
+    "en": "Do you have a bigger size?",
+    "vi": "Có cỡ lớn hơn không?",
+    "ja": "もっと大きいサイズはありますか？",
+    "ko": "더 큰 사이즈 있어요?",
+    "zh": "有大一号的吗？",
+    "th": "มีไซซ์ใหญ่กว่านี้ไหม",
+    "id": "Ada ukuran yang lebih besar?",
+    "es": "¿Tiene una talla más grande?",
+    "fr": "Avez-vous une taille plus grande ?",
+    "de": "Haben Sie das eine Nummer größer?"
+   }
+  },
+  {
+   "key": "shopping.smaller",
+   "text": {
+    "en": "Do you have a smaller size?",
+    "vi": "Có cỡ nhỏ hơn không?",
+    "ja": "もっと小さいサイズはありますか？",
+    "ko": "더 작은 사이즈 있어요?",
+    "zh": "有小一号的吗？",
+    "th": "มีไซซ์เล็กกว่านี้ไหม",
+    "id": "Ada ukuran yang lebih kecil?",
+    "es": "¿Tiene una talla más pequeña?",
+    "fr": "Avez-vous une taille plus petite ?",
+    "de": "Haben Sie das eine Nummer kleiner?"
+   }
+  },
+  {
+   "key": "shopping.other_color",
+   "text": {
+    "en": "Do you have this in another colour?",
+    "vi": "Cái này có màu khác không?",
+    "ja": "これの別の色はありますか？",
+    "ko": "이거 다른 색 있어요?",
+    "zh": "这个有别的颜色吗？",
+    "th": "อันนี้มีสีอื่นไหม",
+    "id": "Ada warna lain?",
+    "es": "¿Lo tiene en otro color?",
+    "fr": "Vous l'avez dans une autre couleur ?",
+    "de": "Haben Sie das in einer anderen Farbe?"
+   }
+  },
+  {
+   "key": "shopping.discount",
+   "text": {
+    "en": "Can you give me a discount?",
+    "vi": "Bớt cho tôi một chút được không?",
+    "ja": "少し安くしてもらえますか？",
+    "ko": "좀 깎아 주실 수 있어요?",
+    "zh": "可以便宜一点吗？",
+    "th": "ลดได้ไหม",
+    "id": "Bisa kasih diskon?",
+    "es": "¿Me puede hacer un descuento?",
+    "fr": "Pouvez-vous me faire une réduction ?",
+    "de": "Können Sie mir einen Rabatt geben?"
+   }
+  },
+  {
+   "key": "shopping.too_expensive",
+   "text": {
+    "en": "That's too expensive.",
+    "vi": "Đắt quá.",
+    "ja": "高すぎます。",
+    "ko": "너무 비싸요.",
+    "zh": "太贵了。",
+    "th": "แพงเกินไป",
+    "id": "Terlalu mahal.",
+    "es": "Es demasiado caro.",
+    "fr": "C'est trop cher.",
+    "de": "Das ist zu teuer."
+   }
+  },
+  {
+   "key": "shopping.take_it",
+   "text": {
+    "en": "I'll take it.",
+    "vi": "Tôi lấy cái này.",
+    "ja": "これにします。",
+    "ko": "이걸로 할게요.",
+    "zh": "我要这个。",
+    "th": "เอาอันนี้",
+    "id": "Saya ambil yang ini.",
+    "es": "Me lo llevo.",
+    "fr": "Je le prends.",
+    "de": "Ich nehme es."
+   }
+  },
+  {
+   "key": "shopping.buy_n",
+   "text": {
+    "en": "I'd like {n} of these, please.",
+    "vi": "Cho tôi {n} cái này.",
+    "ja": "これを{n}つください。",
+    "ko": "이거 {n}개 주세요.",
+    "zh": "我要{n}个这个。",
+    "th": "ขออันนี้ {n} ชิ้น",
+    "id": "Saya mau {n} buah yang ini.",
+    "es": "Quiero {n} de estos, por favor.",
+    "fr": "J'en voudrais {n}, s'il vous plaît.",
+    "de": "Ich hätte gern {n} davon, bitte."
+   },
+   "slot": {
+    "name": "n",
+    "values": [
+     "1",
+     "2",
+     "3",
+     "4"
+    ]
+   }
+  },
+  {
+   "key": "shopping.pay_card",
+   "text": {
+    "en": "Can I pay by card?",
+    "vi": "Tôi trả bằng thẻ được không?",
+    "ja": "カードで払えますか？",
+    "ko": "카드로 결제할 수 있어요?",
+    "zh": "可以刷卡吗？",
+    "th": "จ่ายด้วยบัตรได้ไหม",
+    "id": "Bisakah saya bayar dengan kartu?",
+    "es": "¿Puedo pagar con tarjeta?",
+    "fr": "Puis-je payer par carte ?",
+    "de": "Kann ich mit Karte bezahlen?"
+   }
+  },
+  {
+   "key": "shopping.cash_only",
+   "text": {
+    "en": "Do you only take cash?",
+    "vi": "Chỉ nhận tiền mặt thôi à?",
+    "ja": "現金のみですか？",
+    "ko": "현금만 받아요?",
+    "zh": "只收现金吗？",
+    "th": "รับแค่เงินสดเหรอ",
+    "id": "Hanya terima tunai?",
+    "es": "¿Solo aceptan efectivo?",
+    "fr": "Vous n'acceptez que les espèces ?",
+    "de": "Nehmen Sie nur Bargeld?"
+   }
+  },
+  {
+   "key": "shopping.bag",
+   "text": {
+    "en": "Could I have a bag, please?",
+    "vi": "Cho tôi xin một cái túi được không?",
+    "ja": "袋をいただけますか？",
+    "ko": "봉투 하나 주시겠어요?",
+    "zh": "可以给我一个袋子吗？",
+    "th": "ขอถุงหน่อยได้ไหม",
+    "id": "Boleh saya minta kantong?",
+    "es": "¿Me da una bolsa, por favor?",
+    "fr": "Je peux avoir un sac, s'il vous plaît ?",
+    "de": "Könnte ich bitte eine Tüte bekommen?"
+   }
+  },
+  {
+   "key": "shopping.gift_wrap",
+   "text": {
+    "en": "Could you gift-wrap it?",
+    "vi": "Bạn gói quà giúp tôi được không?",
+    "ja": "ギフト用に包んでもらえますか？",
+    "ko": "선물 포장해 주실 수 있어요?",
+    "zh": "可以帮我包装成礼物吗？",
+    "th": "ช่วยห่อของขวัญให้ได้ไหม",
+    "id": "Bisa dibungkus kado?",
+    "es": "¿Me lo envuelve para regalo?",
+    "fr": "Pouvez-vous faire un paquet cadeau ?",
+    "de": "Können Sie es als Geschenk einpacken?"
+   }
+  },
+  {
+   "key": "shopping.tax_free",
+   "text": {
+    "en": "Can I get a tax refund?",
+    "vi": "Tôi có được hoàn thuế không?",
+    "ja": "免税にできますか？",
+    "ko": "택스 리펀드 받을 수 있어요?",
+    "zh": "可以退税吗？",
+    "th": "ขอคืนภาษีได้ไหม",
+    "id": "Bisa dapat pengembalian pajak?",
+    "es": "¿Puedo pedir la devolución de impuestos?",
+    "fr": "Puis-je obtenir la détaxe ?",
+    "de": "Kann ich die Mehrwertsteuer zurückbekommen?"
+   }
+  },
+  {
+   "key": "shopping.return",
+   "text": {
+    "en": "I'd like to return this.",
+    "vi": "Tôi muốn trả lại món này.",
+    "ja": "これを返品したいです。",
+    "ko": "이거 반품하고 싶어요.",
+    "zh": "我想退货。",
+    "th": "ฉันอยากคืนของชิ้นนี้",
+    "id": "Saya ingin mengembalikan ini.",
+    "es": "Quiero devolver esto.",
+    "fr": "Je voudrais rendre ceci.",
+    "de": "Ich möchte das zurückgeben."
+   }
+  },
+  {
+   "key": "shopping.broken",
+   "text": {
+    "en": "This is broken.",
+    "vi": "Cái này bị hỏng.",
+    "ja": "これは壊れています。",
+    "ko": "이거 고장 났어요.",
+    "zh": "这个坏了。",
+    "th": "อันนี้เสีย",
+    "id": "Ini rusak.",
+    "es": "Esto está roto.",
+    "fr": "C'est cassé.",
+    "de": "Das ist kaputt."
+   }
+  },
+  {
+   "key": "shopping.open_hours",
+   "text": {
+    "en": "What time do you close?",
+    "vi": "Mấy giờ cửa hàng đóng cửa?",
+    "ja": "何時に閉まりますか？",
+    "ko": "몇 시에 문 닫아요?",
+    "zh": "你们几点关门？",
+    "th": "ร้านปิดกี่โมง",
+    "id": "Jam berapa tutup?",
+    "es": "¿A qué hora cierran?",
+    "fr": "À quelle heure fermez-vous ?",
+    "de": "Wann schließen Sie?"
+   }
+  },
+  {
+   "key": "shopping.where_find",
+   "text": {
+    "en": "Where can I find this?",
+    "vi": "Tôi có thể tìm cái này ở đâu?",
+    "ja": "これはどこにありますか？",
+    "ko": "이거 어디서 찾을 수 있어요?",
+    "zh": "这个在哪里能找到？",
+    "th": "หาอันนี้ได้ที่ไหน",
+    "id": "Di mana saya bisa menemukan ini?",
+    "es": "¿Dónde puedo encontrar esto?",
+    "fr": "Où puis-je trouver ceci ?",
+    "de": "Wo finde ich das?"
+   }
+  },
+  {
+   "key": "shopping.receipt",
+   "text": {
+    "en": "Could I have a receipt, please?",
+    "vi": "Cho tôi xin hóa đơn được không?",
+    "ja": "レシートをいただけますか？",
+    "ko": "영수증 주시겠어요?",
+    "zh": "可以给我小票吗？",
+    "th": "ขอใบเสร็จได้ไหม",
+    "id": "Boleh saya minta struknya?",
+    "es": "¿Me da el tique, por favor?",
+    "fr": "Je peux avoir le ticket, s'il vous plaît ?",
+    "de": "Könnte ich bitte den Kassenbon bekommen?"
+   }
+  }
+ ]
+}

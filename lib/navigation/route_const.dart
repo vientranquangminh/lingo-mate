@@ -12,6 +12,7 @@ abstract class AppRouteName {
   static const transcript = 'transcript';
   static const phrase = 'phrase';
   static const addPhrase = 'add-phrase';
+  static const situation = 'situation';
 }
 
 abstract class AppRoutePath {
@@ -28,4 +29,5 @@ abstract class AppRoutePath {
   static const transcript = ':id';
   static const phrase = ':id';
   static const addPhrase = 'new';
+  static const situation = 'quick/:key';
 }

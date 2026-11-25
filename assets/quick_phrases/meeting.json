@@ -1,0 +1,329 @@
+{
+ "key": "meeting",
+ "icon": "sit_meeting",
+ "phrases": [
+  {
+   "key": "meeting.good_morning",
+   "text": {
+    "en": "Good morning, everyone.",
+    "vi": "Chào buổi sáng mọi người.",
+    "ja": "皆さん、おはようございます。",
+    "ko": "여러분, 좋은 아침입니다.",
+    "zh": "大家早上好。",
+    "th": "สวัสดีตอนเช้าทุกคน",
+    "id": "Selamat pagi, semuanya.",
+    "es": "Buenos días a todos.",
+    "fr": "Bonjour à tous.",
+    "de": "Guten Morgen zusammen."
+   }
+  },
+  {
+   "key": "meeting.introduce",
+   "text": {
+    "en": "Let me introduce myself.",
+    "vi": "Cho phép tôi tự giới thiệu.",
+    "ja": "自己紹介させてください。",
+    "ko": "제 소개를 하겠습니다.",
+    "zh": "请允许我自我介绍一下。",
+    "th": "ขอแนะนำตัวเองก่อน",
+    "id": "Izinkan saya memperkenalkan diri.",
+    "es": "Permítanme presentarme.",
+    "fr": "Permettez-moi de me présenter.",
+    "de": "Darf ich mich vorstellen?"
+   }
+  },
+  {
+   "key": "meeting.thanks_coming",
+   "text": {
+    "en": "Thank you for coming.",
+    "vi": "Cảm ơn mọi người đã đến.",
+    "ja": "お越しいただきありがとうございます。",
+    "ko": "와 주셔서 감사합니다.",
+    "zh": "感谢各位的到来。",
+    "th": "ขอบคุณที่มา",
+    "id": "Terima kasih sudah datang.",
+    "es": "Gracias por venir.",
+    "fr": "Merci d'être venus.",
+    "de": "Danke, dass Sie gekommen sind."
+   }
+  },
+  {
+   "key": "meeting.start",
+   "text": {
+    "en": "Shall we get started?",
+    "vi": "Chúng ta bắt đầu nhé?",
+    "ja": "始めましょうか？",
+    "ko": "시작할까요?",
+    "zh": "我们开始吧？",
+    "th": "เริ่มกันเลยไหม",
+    "id": "Kita mulai sekarang?",
+    "es": "¿Empezamos?",
+    "fr": "On commence ?",
+    "de": "Sollen wir anfangen?"
+   }
+  },
+  {
+   "key": "meeting.agenda",
+   "text": {
+    "en": "Let's go through the agenda.",
+    "vi": "Chúng ta cùng xem qua chương trình họp.",
+    "ja": "議題を確認しましょう。",
+    "ko": "안건을 살펴보겠습니다.",
+    "zh": "我们过一下议程。",
+    "th": "มาดูวาระการประชุมกัน",
+    "id": "Mari kita bahas agendanya.",
+    "es": "Repasemos el orden del día.",
+    "fr": "Passons en revue l'ordre du jour.",
+    "de": "Gehen wir die Tagesordnung durch."
+   }
+  },
+  {
+   "key": "meeting.hear_me",
+   "text": {
+    "en": "Can you hear me?",
+    "vi": "Mọi người có nghe tôi nói không?",
+    "ja": "聞こえますか？",
+    "ko": "제 말 들리세요?",
+    "zh": "听得到我说话吗？",
+    "th": "ได้ยินไหม",
+    "id": "Apakah suara saya terdengar?",
+    "es": "¿Me oyen?",
+    "fr": "Vous m'entendez ?",
+    "de": "Können Sie mich hören?"
+   }
+  },
+  {
+   "key": "meeting.see_screen",
+   "text": {
+    "en": "Can you see my screen?",
+    "vi": "Mọi người có thấy màn hình của tôi không?",
+    "ja": "画面は見えていますか？",
+    "ko": "제 화면 보이세요?",
+    "zh": "能看到我的屏幕吗？",
+    "th": "เห็นหน้าจอฉันไหม",
+    "id": "Apakah layar saya terlihat?",
+    "es": "¿Ven mi pantalla?",
+    "fr": "Vous voyez mon écran ?",
+    "de": "Können Sie meinen Bildschirm sehen?"
+   }
+  },
+  {
+   "key": "meeting.question",
+   "text": {
+    "en": "I have a question.",
+    "vi": "Tôi có một câu hỏi.",
+    "ja": "質問があります。",
+    "ko": "질문이 있어요.",
+    "zh": "我有一个问题。",
+    "th": "ฉันมีคำถาม",
+    "id": "Saya punya pertanyaan.",
+    "es": "Tengo una pregunta.",
+    "fr": "J'ai une question.",
+    "de": "Ich habe eine Frage."
+   }
+  },
+  {
+   "key": "meeting.clarify",
+   "text": {
+    "en": "Could you clarify that?",
+    "vi": "Bạn có thể làm rõ điều đó không?",
+    "ja": "それを詳しく説明していただけますか？",
+    "ko": "그 부분을 좀 더 설명해 주시겠어요?",
+    "zh": "可以解释清楚一点吗？",
+    "th": "ช่วยอธิบายให้ชัดกว่านี้ได้ไหม",
+    "id": "Bisa dijelaskan lebih lanjut?",
+    "es": "¿Podría aclararlo?",
+    "fr": "Pourriez-vous préciser ?",
+    "de": "Könnten Sie das näher erläutern?"
+   }
+  },
+  {
+   "key": "meeting.agree",
+   "text": {
+    "en": "I agree.",
+    "vi": "Tôi đồng ý.",
+    "ja": "賛成です。",
+    "ko": "동의합니다.",
+    "zh": "我同意。",
+    "th": "ฉันเห็นด้วย",
+    "id": "Saya setuju.",
+    "es": "Estoy de acuerdo.",
+    "fr": "Je suis d'accord.",
+    "de": "Ich stimme zu."
+   }
+  },
+  {
+   "key": "meeting.disagree",
+   "text": {
+    "en": "I see it differently.",
+    "vi": "Tôi có quan điểm khác.",
+    "ja": "私は違う見方をしています。",
+    "ko": "저는 생각이 좀 달라요.",
+    "zh": "我的看法不太一样。",
+    "th": "ฉันมองต่างออกไป",
+    "id": "Saya punya pandangan berbeda.",
+    "es": "Yo lo veo de otra manera.",
+    "fr": "Je vois les choses autrement.",
+    "de": "Ich sehe das anders."
+   }
+  },
+  {
+   "key": "meeting.good_point",
+   "text": {
+    "en": "That's a good point.",
+    "vi": "Đó là một ý hay.",
+    "ja": "いい指摘ですね。",
+    "ko": "좋은 지적이에요.",
+    "zh": "说得很好。",
+    "th": "เป็นประเด็นที่ดี",
+    "id": "Itu poin yang bagus.",
+    "es": "Es un buen punto.",
+    "fr": "C'est un bon point.",
+    "de": "Das ist ein guter Punkt."
+   }
+  },
+  {
+   "key": "meeting.deadline",
+   "text": {
+    "en": "What's the deadline?",
+    "vi": "Hạn chót là khi nào?",
+    "ja": "締め切りはいつですか？",
+    "ko": "마감이 언제예요?",
+    "zh": "截止日期是什么时候？",
+    "th": "กำหนดส่งเมื่อไร",
+    "id": "Kapan tenggat waktunya?",
+    "es": "¿Cuál es la fecha límite?",
+    "fr": "Quelle est la date limite ?",
+    "de": "Was ist die Frist?"
+   }
+  },
+  {
+   "key": "meeting.follow_up",
+   "text": {
+    "en": "I'll follow up by email.",
+    "vi": "Tôi sẽ gửi email trao đổi thêm.",
+    "ja": "後ほどメールでご連絡します。",
+    "ko": "이메일로 후속 연락 드리겠습니다.",
+    "zh": "我会发邮件跟进。",
+    "th": "ฉันจะส่งอีเมลติดตามผล",
+    "id": "Saya akan menindaklanjuti lewat email.",
+    "es": "Haré el seguimiento por correo.",
+    "fr": "Je ferai un suivi par e-mail.",
+    "de": "Ich melde mich per E-Mail."
+   }
+  },
+  {
+   "key": "meeting.send_slides",
+   "text": {
+    "en": "Could you send me the slides?",
+    "vi": "Bạn gửi cho tôi slide được không?",
+    "ja": "スライドを送っていただけますか？",
+    "ko": "슬라이드 좀 보내 주시겠어요?",
+    "zh": "可以把幻灯片发给我吗？",
+    "th": "ช่วยส่งสไลด์ให้หน่อยได้ไหม",
+    "id": "Bisa kirimkan slidenya ke saya?",
+    "es": "¿Me podría enviar las diapositivas?",
+    "fr": "Pourriez-vous m'envoyer les diapositives ?",
+    "de": "Könnten Sie mir die Folien schicken?"
+   }
+  },
+  {
+   "key": "meeting.next_meeting",
+   "text": {
+    "en": "When is our next meeting?",
+    "vi": "Khi nào là cuộc họp tiếp theo?",
+    "ja": "次の会議はいつですか？",
+    "ko": "다음 회의는 언제예요?",
+    "zh": "我们下次会议是什么时候？",
+    "th": "ประชุมครั้งหน้าเมื่อไร",
+    "id": "Kapan rapat berikutnya?",
+    "es": "¿Cuándo es nuestra próxima reunión?",
+    "fr": "Quand est notre prochaine réunion ?",
+    "de": "Wann ist unser nächstes Treffen?"
+   }
+  },
+  {
+   "key": "meeting.minutes",
+   "text": {
+    "en": "Let's take a {n}-minute break.",
+    "vi": "Chúng ta nghỉ {n} phút nhé.",
+    "ja": "{n}分休憩しましょう。",
+    "ko": "{n}분 쉬었다 할까요.",
+    "zh": "我们休息{n}分钟。",
+    "th": "พัก {n} นาทีกัน",
+    "id": "Mari istirahat {n} menit.",
+    "es": "Hagamos una pausa de {n} minutos.",
+    "fr": "Faisons une pause de {n} minutes.",
+    "de": "Machen wir {n} Minuten Pause."
+   },
+   "slot": {
+    "name": "n",
+    "values": [
+     "5",
+     "10",
+     "15"
+    ]
+   }
+  },
+  {
+   "key": "meeting.running_late",
+   "text": {
+    "en": "Sorry, I'm running a little late.",
+    "vi": "Xin lỗi, tôi đến hơi muộn.",
+    "ja": "すみません、少し遅れます。",
+    "ko": "죄송해요, 조금 늦을 것 같아요.",
+    "zh": "抱歉，我会晚到一点。",
+    "th": "ขอโทษ ฉันจะไปสายนิดหน่อย",
+    "id": "Maaf, saya agak terlambat.",
+    "es": "Perdón, llego un poco tarde.",
+    "fr": "Désolé, je suis un peu en retard.",
+    "de": "Entschuldigung, ich verspäte mich etwas."
+   }
+  },
+  {
+   "key": "meeting.summary",
+   "text": {
+    "en": "To sum up …",
+    "vi": "Tóm lại …",
+    "ja": "まとめると…",
+    "ko": "요약하자면…",
+    "zh": "总结一下……",
+    "th": "สรุปคือ …",
+    "id": "Kesimpulannya …",
+    "es": "En resumen …",
+    "fr": "Pour résumer …",
+    "de": "Zusammenfassend …"
+   }
+  },
+  {
+   "key": "meeting.thanks_time",
+   "text": {
+    "en": "Thank you for your time.",
+    "vi": "Cảm ơn bạn đã dành thời gian.",
+    "ja": "お時間をいただきありがとうございます。",
+    "ko": "시간 내 주셔서 감사합니다.",
+    "zh": "感谢您抽出时间。",
+    "th": "ขอบคุณที่สละเวลา",
+    "id": "Terima kasih atas waktunya.",
+    "es": "Gracias por su tiempo.",
+    "fr": "Merci pour votre temps.",
+    "de": "Vielen Dank für Ihre Zeit."
+   }
+  },
+  {
+   "key": "meeting.business_card",
+   "text": {
+    "en": "Here is my business card.",
+    "vi": "Đây là danh thiếp của tôi.",
+    "ja": "こちらが私の名刺です。",
+    "ko": "제 명함입니다.",
+    "zh": "这是我的名片。",
+    "th": "นี่คือนามบัตรของฉัน",
+    "id": "Ini kartu nama saya.",
+    "es": "Aquí tiene mi tarjeta.",
+    "fr": "Voici ma carte de visite.",
+    "de": "Hier ist meine Visitenkarte."
+   }
+  }
+ ]
+}
