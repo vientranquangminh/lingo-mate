@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/account_merge_prompt.dart';
 import '../../../../common/widgets/app_platform_app_bar.dart';
 import '../../../../common/widgets/app_platform_elevated_button.dart';
 import '../../../../common/widgets/app_scaffold.dart';
@@ -41,7 +42,7 @@ class _EmailLinkPageState extends ConsumerState<EmailLinkPage> {
   Future<void> _confirm() async {
     final l10n = context.localization;
     setState(() => _busy = true);
-    final (outcome, _) = await ref
+    final (outcome, result) = await ref
         .read(authServiceProvider)
         .completeEmailLink(widget.link, email: _email.text.trim());
     if (!mounted) {
@@ -53,7 +54,10 @@ class _EmailLinkPageState extends ConsumerState<EmailLinkPage> {
     });
     if (outcome == EmailLinkOutcome.signedIn) {
       showAppToast(context, l10n.signInDone);
-      context.pop(true);
+      await promptAccountMerge(context, ref, result);
+      if (mounted) {
+        context.pop(true);
+      }
     }
   }
 

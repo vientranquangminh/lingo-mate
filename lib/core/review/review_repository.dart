@@ -89,6 +89,7 @@ class ReviewRepository {
               phraseId: phraseId,
               direction: direction.name,
               dueAt: now,
+              updatedAt: Value(now),
             ),
             mode: InsertMode.insertOrIgnore,
           );
@@ -180,6 +181,7 @@ class ReviewRepository {
         lapses: Value(next.lapses),
         dueAt: Value(now.add(Duration(days: next.intervalDays))),
         lastReviewedAt: Value(now),
+        updatedAt: Value(now),
       ),
     );
     return next;

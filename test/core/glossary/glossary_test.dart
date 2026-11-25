@@ -67,7 +67,10 @@ void main() {
 
     await repo.deleteSet(id);
 
-    expect(await db.select(db.glossaryTerms).get(), isEmpty);
+    expect(await repo.watchSets().first, isEmpty);
+    expect(await repo.watchTerms(id).first, isEmpty);
+    final tombstones = await db.select(db.glossaryTerms).get();
+    expect(tombstones.single.deletedAt, isNotNull);
   });
 
   test(

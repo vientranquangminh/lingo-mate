@@ -12,12 +12,14 @@ import 'package:overlay_support/overlay_support.dart';
 import 'common/extensions/build_context_ext.dart';
 import 'common/resources/app_config.dart';
 import 'common/resources/app_theme.dart';
+import 'common/widgets/account_merge_prompt.dart';
 import 'common/widgets/app_toast.dart';
 import 'core/analytics/analytics_service.dart';
 import 'core/auth/auth_models.dart';
 import 'core/auth/auth_providers.dart';
 import 'core/review/review_reminder.dart';
 import 'core/settings/app_locale_sync.dart';
+import 'core/sync/sync_controller.dart';
 import 'core/settings/user_settings.dart';
 import 'env.dart';
 import 'features/devtools/presentation/widget/latency_hud.dart';
@@ -75,7 +77,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   /// Completes an email sign-in link, or opens the screen that needs the user.
   Future<void> _onLink(String link) async {
-    final (outcome, _) = await ref
+    final (outcome, result) = await ref
         .read(authServiceProvider)
         .completeEmailLink(link);
     final context = rootNavigatorKey.currentContext;
@@ -85,6 +87,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     switch (outcome) {
       case EmailLinkOutcome.signedIn:
         showAppToast(context, context.localization.signInDone);
+        await promptAccountMerge(context, ref, result);
       case EmailLinkOutcome.needsEmail || EmailLinkOutcome.invalid:
         unawaited(
           ref
@@ -110,7 +113,9 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     ref.watch(appLocaleSyncProvider);
     final router = ref.watch(goRouterProvider);
-    ref.watch(privacyConsentProvider);
+    ref
+      ..watch(privacyConsentProvider)
+      ..watch(syncControllerProvider);
     final appLocale = ref.watch(
       userSettingsProvider.select((s) => s.appLocale),
     );

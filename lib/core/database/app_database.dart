@@ -26,11 +26,25 @@ class AppDatabase extends _$AppDatabase {
     : super(executor ?? driftDatabase(name: 'lingo_mate'));
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   /// Deletes every row of every table, children first (AC-10.3).
   Future<void> wipe() => transaction(() async {
     for (final table in allTables.toList().reversed) {
+      await delete(table).go();
+    }
+  });
+
+  /// Deletes the phrasebook, tags, review cards and glossaries, for an account switch without merging (AC-13.4).
+  Future<void> wipeLearningData() => transaction(() async {
+    for (final table in <TableInfo<Table, Object?>>[
+      srsCards,
+      phraseTags,
+      tags,
+      phrases,
+      glossaryTerms,
+      glossarySets,
+    ]) {
       await delete(table).go();
     }
   });
@@ -79,6 +93,20 @@ class AppDatabase extends _$AppDatabase {
         ]) {
           if (!await _hasTable(table.actualTableName)) {
             await m.createTable(table);
+          }
+        }
+      }
+      if (from < 6) {
+        for (final (table, column)
+            in <(TableInfo<Table, Object?>, GeneratedColumn<Object>)>[
+              (srsCards, srsCards.updatedAt),
+              (glossarySets, glossarySets.updatedAt),
+              (glossarySets, glossarySets.deletedAt),
+              (glossaryTerms, glossaryTerms.updatedAt),
+              (glossaryTerms, glossaryTerms.deletedAt),
+            ]) {
+          if (!await _hasColumn(table.actualTableName, column.name)) {
+            await m.addColumn(table, column);
           }
         }
       }

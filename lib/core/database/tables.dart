@@ -127,6 +127,7 @@ class SrsCards extends Table {
   IntColumn get lapses => integer().withDefault(const Constant(0))();
   DateTimeColumn get dueAt => dateTime()();
   DateTimeColumn get lastReviewedAt => dateTime().nullable()();
+  DateTimeColumn get updatedAt => dateTime().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -138,6 +139,8 @@ class GlossarySets extends Table {
   TextColumn get name => text()();
   BoolColumn get active => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime().nullable()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -152,6 +155,8 @@ class GlossaryTerms extends Table {
   TextColumn get translation => text()();
   TextColumn get note => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime().nullable()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
