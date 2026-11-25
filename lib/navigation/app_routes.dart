@@ -8,10 +8,13 @@ import '../env.dart';
 import '../features/conversation/presentation/view/conversation_page.dart';
 import '../features/devtools/presentation/view/devtools_page.dart';
 import '../features/history/presentation/view/history_page.dart';
+import '../features/glossary/presentation/view/glossary_page.dart';
+import '../features/glossary/presentation/view/glossary_set_page.dart';
 import '../features/history/presentation/view/transcript_page.dart';
 import '../features/home/presentation/view/home_page.dart';
 import '../features/home/presentation/view/home_shell.dart';
 import '../features/language_packs/presentation/view/language_packs_page.dart';
+import '../features/learning/presentation/view/phrasing_review_page.dart';
 import '../features/listen/presentation/view/listen_page.dart';
 import '../features/me/presentation/view/me_page.dart';
 import '../features/meeting/presentation/view/meeting_page.dart';
@@ -164,6 +167,18 @@ final goRouterProvider = Provider((ref) {
                         sessionId: state.pathParameters['id']!,
                       ),
                     ),
+                    routes: [
+                      GoRoute(
+                        name: AppRouteName.phrasingReview,
+                        path: AppRoutePath.phrasingReview,
+                        parentNavigatorKey: rootNavigatorKey,
+                        pageBuilder: (context, state) => CupertinoPage(
+                          child: PhrasingReviewPage(
+                            sessionId: state.pathParameters['id']!,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -190,6 +205,25 @@ final goRouterProvider = Provider((ref) {
                     parentNavigatorKey: rootNavigatorKey,
                     pageBuilder: (context, state) =>
                         const CupertinoPage(child: PrivacyPage()),
+                  ),
+                  GoRoute(
+                    name: AppRouteName.glossary,
+                    path: AppRoutePath.glossary,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) =>
+                        const CupertinoPage(child: GlossaryPage()),
+                    routes: [
+                      GoRoute(
+                        name: AppRouteName.glossarySet,
+                        path: AppRoutePath.glossarySet,
+                        parentNavigatorKey: rootNavigatorKey,
+                        pageBuilder: (context, state) => CupertinoPage(
+                          child: GlossarySetPage(
+                            setId: state.pathParameters['id']!,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),

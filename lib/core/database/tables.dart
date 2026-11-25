@@ -13,6 +13,7 @@ class Sessions extends Table {
   IntColumn get durationSec => integer().withDefault(const Constant(0))();
   IntColumn get liveSec => integer().withDefault(const Constant(0))();
   IntColumn get standardSec => integer().withDefault(const Constant(0))();
+  TextColumn get summary => text().nullable()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -126,6 +127,31 @@ class SrsCards extends Table {
   IntColumn get lapses => integer().withDefault(const Constant(0))();
   DateTimeColumn get dueAt => dateTime()();
   DateTimeColumn get lastReviewedAt => dateTime().nullable()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+/// A named set of preferred translations, e.g. for one client (F-18).
+class GlossarySets extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  BoolColumn get active => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
+}
+
+/// A term of a glossary set with its preferred translation.
+class GlossaryTerms extends Table {
+  TextColumn get id => text()();
+  TextColumn get setId =>
+      text().references(GlossarySets, #id, onDelete: KeyAction.cascade)();
+  TextColumn get term => text()();
+  TextColumn get translation => text()();
+  TextColumn get note => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

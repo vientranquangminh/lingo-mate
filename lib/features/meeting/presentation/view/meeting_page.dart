@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -23,8 +24,11 @@ import '../../../../common/widgets/explainer_sheet.dart';
 import '../../../../common/widgets/mic_permission_gate.dart';
 import '../../../../common/widgets/save_phrase_action.dart';
 import '../../../../common/widgets/source_language_pill.dart';
+import '../../../../common/widgets/app_toast.dart';
+import '../../../../common/widgets/suggested_replies_sheet.dart';
 import '../../../../core/background/background_capture.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
+import '../../../../core/learning/learning_models.dart';
 import '../../../../core/platform/system_settings.dart';
 import '../../../../navigation/route_const.dart';
 import '../../data/model/meeting_models.dart';
@@ -336,6 +340,15 @@ class _Header extends ConsumerWidget {
                 ],
               ),
             ),
+            if (state.lines.any((l) => l.translation != null))
+              AppCircleIconButton(
+                icon: AppIcons.suggestReply,
+                semanticLabel: l10n.learningSuggestReply,
+                borderColor: Colors.transparent,
+                onPressed: ref.watch(onlineProvider).value ?? true
+                    ? () => _suggest(context)
+                    : null,
+              ),
             if (state.running)
               AppCircleIconButton(
                 icon: AppIcons.expand,
@@ -352,6 +365,33 @@ class _Header extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  /// Suggests three replies in the meeting language; a tapped one is copied (AC-19.1, AC-19.2).
+  Future<void> _suggest(BuildContext context) {
+    final l10n = context.localization;
+    return showSuggestedRepliesSheet(
+      context,
+      recent: [
+        for (final line in state.lines)
+          if (line.translation != null)
+            LearningLine(
+              sourceLang: line.from,
+              sourceText: line.original,
+              targetLang: line.to,
+              targetText: line.translation!,
+            ),
+      ],
+      replyLang: state.source,
+      userLang: state.target,
+      pickHint: l10n.learningTapToCopy,
+      onPick: (reply) async {
+        await Clipboard.setData(ClipboardData(text: reply.text));
+        if (context.mounted) {
+          showAppToast(context, l10n.bubbleCopied);
+        }
+      },
     );
   }
 }

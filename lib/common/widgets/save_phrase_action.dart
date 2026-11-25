@@ -18,6 +18,7 @@ Future<SaveResult?> saveToPhrasebook(
   required String targetText,
   required String source,
   String? fromUtteranceId,
+  String? note,
 }) async {
   final l10n = context.localization;
   final result = await ref
@@ -28,6 +29,7 @@ Future<SaveResult?> saveToPhrasebook(
         targetLang: targetLang,
         targetText: targetText,
         fromUtteranceId: fromUtteranceId,
+        note: note,
       );
   if (result.outcome == SaveOutcome.saved) {
     unawaited(ref.read(analyticsProvider).phraseSaved(source: source));

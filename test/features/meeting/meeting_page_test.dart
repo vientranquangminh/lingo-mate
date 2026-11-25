@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -162,6 +164,46 @@ void main() {
     expect(background.overlayVisible, isFalse);
     expect(find.text('Start'), findsOneWidget);
     expect(find.text('[vi] so we can ship by Friday'), findsOneWidget);
+  });
+
+  testWidgets('Suggest reply copies the tapped reply (AC-19.1, AC-19.2)', (
+    tester,
+  ) async {
+    final copied = <String>[];
+    tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      SystemChannels.platform,
+      (call) async {
+        if (call.method == 'Clipboard.setData') {
+          copied.add((call.arguments as Map)['text'] as String);
+        }
+        return null;
+      },
+    );
+    addTearDown(
+      () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        SystemChannels.platform,
+        null,
+      ),
+    );
+    fakes.recognizer.texts.add('so we can ship by Friday');
+    await pumpPage(tester);
+    expect(find.bySemanticsLabel('Suggest reply'), findsNothing);
+
+    await tester.tap(find.text('Start'));
+    await settle(tester);
+    await speak(tester);
+
+    await tester.tap(find.bySemanticsLabel('Suggest reply'));
+    await settle(tester);
+    await tester.pumpAndSettle();
+    expect(find.text('Tap a reply to copy it.'), findsOneWidget);
+    expect(fakes.learning.lastReplyLang, 'en');
+
+    await tester.tap(find.text('Could you say that again?'));
+    await settle(tester);
+    await tester.pumpAndSettle();
+    expect(copied, ['Could you say that again?']);
+    await tester.pump(const Duration(seconds: 4));
   });
 
   testWidgets('without the overlay permission, Meeting runs in the app only '

@@ -20,4 +20,16 @@ class GenerativeModelFactory {
           maxOutputTokens: 256,
         ),
       );
+
+  /// Returns the review model used by the learning features, answering in JSON.
+  GenerativeModel reviewModel({required String systemInstruction}) =>
+      FirebaseAI.googleAI().generativeModel(
+        model: _remoteConfig.modelTextReview,
+        systemInstruction: Content.system(systemInstruction),
+        generationConfig: GenerationConfig(
+          temperature: 0.4,
+          maxOutputTokens: 1024,
+          responseMimeType: 'application/json',
+        ),
+      );
 }
