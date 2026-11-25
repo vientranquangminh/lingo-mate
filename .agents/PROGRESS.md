@@ -95,7 +95,7 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 
 ## Waiting on the owner (device and account work)
 
-- Push speech models with adb, or fill the Remote Config `asr_models` entry, so Offline works on a phone.
+- Host the speech model and fill the Remote Config `asr_models` entry (`docs/speech-models.md`), or push models with adb, so the voice modes work on a phone.
 - Run the T-0.4 to T-0.8 measurements on the reference phone and a low-end phone, then write the T-0.10 spike report (answers OQ-3, OQ-4, OQ-5).
 - Add the App Distribution secrets so CI can ship dev builds.
 - Device checks: the Meeting overlay (drag, tap to expand, Stop, long-press a line, position kept), AC-02.3, AC-02.4, AC-02.5, AC-04.6, AC-04.7, AC-04.9, AC-06.3, AC-09.2 (timing), AC-10.4 (DebugView) and AC-11.6 (system Settings → App languages on Android 13+, both directions).

@@ -129,4 +129,5 @@ designs (`S-xx`), decisions (`D-xx`) and icons.
 - Localizations use Flutter's gen-l10n (`l10n.yaml`): edit `lib/l10n/*.arb`, then run `flutter gen-l10n` (`flutter pub get` also runs it). Read strings with `context.localization.<key>`. gen-l10n writes untranslated keys to `lib/generated/untranslated.json`; `scripts/check-untranslated.sh` fails when it is not empty.
 - Use `build_runner` for generating Retrofit clients, Injectable DI files, Drift databases and Riverpod lints.
 - Example: `dart run build_runner build --delete-conflicting-outputs`
+- `scripts/asr_models_config.dart` prints the Remote Config `asr_models` JSON (file, Storage URL, bytes, sha256 for every matrix language) for a hosted `ggml-*.bin`; `storage.rules` makes `models/` publicly readable. Setup: `docs/speech-models.md`.
 - `scripts/cloud-setup.sh` installs Flutter (via fvm) and the Android SDK in cloud sessions.
