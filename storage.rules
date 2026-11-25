@@ -3,7 +3,7 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /models/{file} {
-      allow read: if true;
+      allow get: if true;
       allow write: if false;
     }
 

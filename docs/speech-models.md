@@ -30,7 +30,7 @@ speech model.
 
 ## 2. Publish the rules (once)
 
-`storage.rules` lets anyone read files under `models/` and nobody write anything.
+`storage.rules` lets anyone download a file under `models/` by its exact name, and nobody list the folder or write anything. Uploads from the console bypass the rules. The model is open source, the app checks its SHA-256 after downloading, and every download counts towards Storage egress, so keep a budget alert on the billing account.
 Either paste it into Storage → Rules → Publish, or deploy it from the repository root:
 
 ```bash
