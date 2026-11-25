@@ -130,6 +130,7 @@ void main() {
     session.server
       ..add(const LiveInputTranscript('xin '))
       ..add(const LiveInputTranscript('chào'));
+    await pumpEventQueue();
     await Future<void>.delayed(const Duration(milliseconds: 30));
     session.server
       ..add(LiveOutputAudio(Uint8List(480)))
