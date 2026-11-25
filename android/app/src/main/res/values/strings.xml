@@ -13,4 +13,5 @@
     <string name="widget_empty">Star quick phrases to see them here.</string>
     <string name="widget_description">Start a conversation and say your favourite quick phrases.</string>
     <string name="tile_meeting">Meeting captions</string>
+    <string name="notification_translating_media">Translating media</string>
 </resources>

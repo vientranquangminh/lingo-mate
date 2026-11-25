@@ -4,7 +4,7 @@ import '../engines.dart';
 import 'capability_matrix.dart';
 
 /// Translation mode the engine is chosen for.
-enum SessionMode { conversation, listen, meeting }
+enum SessionMode { conversation, listen, meeting, media }
 
 /// Why an engine was not chosen; the engine sheet turns these into actions (AC-05.7).
 enum EngineBlock {

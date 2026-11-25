@@ -39,9 +39,14 @@ import '../widget/caption_tile.dart';
 
 /// Listen screen S-06: live captions of a speaker in the user's language, with jump to live, pause and stop (F-03).
 class ListenPage extends ConsumerStatefulWidget {
-  const ListenPage({super.key, required this.languages});
+  const ListenPage({super.key, required this.languages, this.media = false});
 
   final LanguagePair languages;
+  final bool media;
+
+  /// The Listen session behind this screen: the mic, or the phone's playback in media mode (F-21).
+  NotifierProvider<ListenNotifier, ListenState> get provider =>
+      media ? mediaListenProvider(languages) : listenProvider(languages);
 
   @override
   ConsumerState<ListenPage> createState() => _ListenPageState();
@@ -51,8 +56,7 @@ class _ListenPageState extends ConsumerState<ListenPage> {
   final _scroll = ScrollController();
   bool _follow = true;
 
-  ListenNotifier get _notifier =>
-      ref.read(listenProvider(widget.languages).notifier);
+  ListenNotifier get _notifier => ref.read(widget.provider.notifier);
 
   @override
   void dispose() {
@@ -104,8 +108,7 @@ class _ListenPageState extends ConsumerState<ListenPage> {
     if (!await ensureMicAccess(context, ref) || !mounted) {
       return;
     }
-    final live =
-        ref.read(listenProvider(widget.languages)).engine == EngineKind.live;
+    final live = ref.read(widget.provider).engine == EngineKind.live;
     if (live && !await requireSignIn(context, ref, SignInReason.live)) {
       _notifier.skipLive();
     }
@@ -122,7 +125,7 @@ class _ListenPageState extends ConsumerState<ListenPage> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = listenProvider(widget.languages);
+    final provider = widget.provider;
     final state = ref.watch(provider);
     final l10n = context.localization;
     final scheme = Theme.of(context).colorScheme;
@@ -164,7 +167,38 @@ class _ListenPageState extends ConsumerState<ListenPage> {
         child: SafeArea(
           child: Column(
             children: [
-              _Header(languages: widget.languages, state: state),
+              _Header(
+                languages: widget.languages,
+                state: state,
+                provider: provider,
+                media: widget.media,
+              ),
+              if (widget.media && !state.started)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppParams.spacing20.w,
+                    AppParams.spacing12.h,
+                    AppParams.spacing20.w,
+                    0,
+                  ),
+                  child: AppBanner(
+                    kind: AppBannerKind.info,
+                    message: l10n.mediaIntro,
+                  ),
+                ),
+              if (state.mediaSilent)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    AppParams.spacing20.w,
+                    AppParams.spacing12.h,
+                    AppParams.spacing20.w,
+                    0,
+                  ),
+                  child: AppBanner(
+                    kind: AppBannerKind.warning,
+                    message: l10n.mediaSilent,
+                  ),
+                ),
               if (state.block != null)
                 Padding(
                   padding: EdgeInsets.fromLTRB(
@@ -226,10 +260,17 @@ class _ListenPageState extends ConsumerState<ListenPage> {
 
 /// Back, the source → target pill, the engine chip and caption settings (S-06 header).
 class _Header extends ConsumerWidget {
-  const _Header({required this.languages, required this.state});
+  const _Header({
+    required this.languages,
+    required this.state,
+    required this.provider,
+    required this.media,
+  });
 
   final LanguagePair languages;
   final ListenState state;
+  final NotifierProvider<ListenNotifier, ListenState> provider;
+  final bool media;
 
   /// Opens the list of speaker languages, Auto first.
   Future<void> _pickSource(BuildContext context, WidgetRef ref) async {
@@ -238,7 +279,7 @@ class _Header extends ConsumerWidget {
     if (!context.mounted) {
       return;
     }
-    final notifier = ref.read(listenProvider(languages).notifier);
+    final notifier = ref.read(provider.notifier);
     await showAppActionSheet(
       context: context,
       title: l10n.listenPickSource,

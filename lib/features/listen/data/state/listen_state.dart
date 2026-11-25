@@ -21,6 +21,7 @@ class ListenState extends Equatable {
     this.liveDenial,
     this.liveStops = 0,
     this.draft,
+    this.mediaSilent = false,
   });
 
   final String? draft;
@@ -37,6 +38,7 @@ class ListenState extends Equatable {
   final int switchCount;
   final LiveDenial? liveDenial;
   final int liveStops;
+  final bool mediaSilent;
 
   /// Whether a started session is paused: mic off, nothing counted (AC-03.6).
   bool get paused => started && !listening;
@@ -54,6 +56,7 @@ class ListenState extends Equatable {
     LiveDenial? liveDenial,
     int? liveStops,
     String? Function()? draft,
+    bool? mediaSilent,
   }) {
     return ListenState(
       source: source ?? this.source,
@@ -69,6 +72,7 @@ class ListenState extends Equatable {
       liveDenial: liveDenial ?? this.liveDenial,
       liveStops: liveStops ?? this.liveStops,
       draft: draft != null ? draft() : this.draft,
+      mediaSilent: mediaSilent ?? this.mediaSilent,
     );
   }
 
@@ -87,5 +91,6 @@ class ListenState extends Equatable {
     liveDenial,
     liveStops,
     draft,
+    mediaSilent,
   ];
 }
