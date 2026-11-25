@@ -16,6 +16,7 @@ class AppParams {
   static const micDefault = 72.0;
   static const micPulseDuration = Duration(milliseconds: 1200);
   static const toastDuration = Duration(seconds: 3);
+  static const undoDuration = Duration(seconds: 5);
   static const standardDuration = Duration(milliseconds: 200);
 
   static const buttonHeight = 48.0;

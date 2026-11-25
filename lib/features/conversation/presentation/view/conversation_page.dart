@@ -18,6 +18,7 @@ import '../../../../common/widgets/engine_chip.dart';
 import '../../../../common/widgets/engine_sheet.dart';
 import '../../../../common/widgets/mic_button.dart';
 import '../../../../common/widgets/mic_permission_gate.dart';
+import '../../../../common/widgets/save_phrase_action.dart';
 import '../../../../core/engines/engines.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
@@ -158,6 +159,27 @@ class ConversationPage extends ConsumerWidget {
             label: l10n.bubbleReplay,
             onSelected: () =>
                 ref.read(conversationProvider(pair).notifier).replay(turn),
+          ),
+        if (translation != null)
+          AppSheetAction(
+            icon: AppIcons.bookmark,
+            label: l10n.phraseSave,
+            onSelected: () async {
+              final utteranceId = await ref
+                  .read(conversationProvider(pair).notifier)
+                  .utteranceIdFor(turn.id);
+              if (context.mounted) {
+                await saveToPhrasebook(
+                  context,
+                  ref,
+                  sourceLang: turn.from,
+                  sourceText: turn.original,
+                  targetLang: turn.to,
+                  targetText: translation,
+                  fromUtteranceId: utteranceId,
+                );
+              }
+            },
           ),
         AppSheetAction(
           icon: AppIcons.copy,

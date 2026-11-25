@@ -10,6 +10,8 @@ abstract class AppRouteName {
   static const showMode = 'show';
   static const history = 'history';
   static const transcript = 'transcript';
+  static const phrase = 'phrase';
+  static const addPhrase = 'add-phrase';
 }
 
 abstract class AppRoutePath {
@@ -24,4 +26,6 @@ abstract class AppRoutePath {
   static const showMode = '/show';
   static const history = '/history';
   static const transcript = ':id';
+  static const phrase = ':id';
+  static const addPhrase = 'new';
 }
