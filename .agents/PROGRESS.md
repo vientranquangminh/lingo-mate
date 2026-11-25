@@ -114,6 +114,10 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 
 1. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
 
+## Ideas for later (owner, 2026-11-25)
+
+- Kill switches for the features that cost money: give every Gemini-backed feature its own Remote Config flag (default on), so the owner can turn one off at once when spending rises. Today only the post-session review has one (`ff_post_session_review`). Candidates: Standard translation (falls back to Offline), Summarize (F-20), Suggest reply (F-19), glossary terms in prompts (F-18), Live (already `ff_live_enabled`). Hide or disable the button with a short "not available right now" note when off. Add the keys to doc 03 §11. Best done with or before T-2.5 (usage limits).
+
 ## Waiting on the owner (device and account work)
 
 - Test the voice modes on a phone: the speech model is hosted (GitHub release `models-v1` of the public repo `vientranquangminh/lingomate-models`: `ggml-base.bin`, `ggml-small-q5_1.bin`, `silero_vad.onnx`) and Remote Config `asr_models` points every language at `ggml-base.bin` (2026-11-25). Download a pack in Offline packs, then try Conversation, Listen and Meeting. Switch to `ggml-small-q5_1.bin` if Vietnamese recognition is weak (OQ-3).
