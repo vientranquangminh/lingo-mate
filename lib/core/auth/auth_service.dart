@@ -31,6 +31,12 @@ abstract interface class AuthService {
 
   /// Signs out and continues as a new anonymous user (AC-13.11).
   Future<void> signOut();
+
+  /// Signs in again with Google to prove a recent login before deleting the account (AC-13.12).
+  Future<SignInResult> reauthenticateWithGoogle();
+
+  /// Asks the server to delete the account and its cloud data, then starts a new anonymous session (AC-13.12).
+  Future<AccountDeletion> deleteAccount();
 }
 
 /// [AuthService] for builds without Firebase: always anonymous and local.
@@ -72,4 +78,11 @@ class LocalOnlyAuthService implements AuthService {
 
   @override
   Future<void> signOut() async {}
+
+  @override
+  Future<SignInResult> reauthenticateWithGoogle() async =>
+      const SignInResult(SignInOutcome.unavailable);
+
+  @override
+  Future<AccountDeletion> deleteAccount() async => AccountDeletion.failed;
 }

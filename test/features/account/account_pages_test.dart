@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lingo_mate/common/widgets/app_platform_elevated_button.dart';
 import 'package:lingo_mate/core/auth/auth_models.dart';
 import 'package:lingo_mate/core/auth/auth_providers.dart';
 import 'package:lingo_mate/core/phrases/phrase_repository.dart';
@@ -373,6 +374,89 @@ void main() {
       );
       expect(left, 0);
       await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  /// Taps Delete account and confirms it in the dialog.
+  Future<void> tapDelete(WidgetTester tester) async {
+    final button = find.widgetWithText(
+      AppPlatformElevatedButton,
+      'Delete account',
+    );
+    await tester.ensureVisible(button);
+    await settle(tester);
+    await tester.tap(button);
+    await settle(tester);
+    expect(find.text('Delete your account?'), findsOneWidget);
+    await tester.tap(find.text('Delete account').last);
+    await settle(tester);
+  }
+
+  /// Opens the delete page as the signed-in [user].
+  Future<void> openDelete(WidgetTester tester, AppUser user) async {
+    auth = FakeAuthService(user: user);
+    final container = await pumpApp(tester);
+    container.read(goRouterProvider).push('/me/account/delete');
+    await settle(tester);
+  }
+
+  const google = AppUser(
+    uid: 'u1',
+    provider: AuthProviderKind.google,
+    displayName: 'Minh Tran',
+    email: 'minh@example.com',
+  );
+
+  testWidgets(
+    'delete account signs in again, deletes and restarts onboarding (AC-13.12, AC-13.13)',
+    (tester) async {
+      await openDelete(tester, google);
+      expect(
+        find.textContaining('not cancelled by deleting your account'),
+        findsOneWidget,
+      );
+      expect(find.text('Open Google Play subscriptions'), findsOneWidget);
+
+      await tapDelete(tester);
+
+      expect(auth.reauths, 1);
+      expect(auth.deletions, 1);
+      expect(fakes.prefs.getBool('onboarding_done'), isNull);
+      expect(find.text('Talk to anyone.'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 4));
+    },
+  );
+
+  testWidgets('a cancelled sign-in keeps the account', (tester) async {
+    await openDelete(tester, google);
+    auth.reauthResult = const SignInResult(SignInOutcome.cancelled);
+
+    await tapDelete(tester);
+
+    expect(auth.deletions, 0);
+    expect(find.text('Delete account'), findsWidgets);
+  });
+
+  testWidgets(
+    'an email account confirms with a new link when the login is old',
+    (tester) async {
+      await openDelete(
+        tester,
+        const AppUser(
+          uid: 'u1',
+          provider: AuthProviderKind.email,
+          email: 'minh@example.com',
+        ),
+      );
+      auth.deletion = AccountDeletion.needsRecentLogin;
+
+      await tapDelete(tester);
+
+      expect(auth.sentTo, ['minh@example.com']);
+      expect(
+        find.textContaining('open the link we sent to minh@example.com'),
+        findsOneWidget,
+      );
     },
   );
 }

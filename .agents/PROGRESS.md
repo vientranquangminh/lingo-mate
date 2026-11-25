@@ -78,6 +78,7 @@ side: the app calls them as doc 03 describes and copes while they are missing.
 | — | Kill switches for paid features (owner's idea) | ✅ | #36. Remote Config `ff_standard_enabled`, `ff_summary`, `ff_suggest_reply`, `ff_glossary` (default on), applied live through `onConfigUpdated` |
 | T-2.2 | Accounts (F-13), part 1: anonymous start, S-24 sign-in (Google, email link), account details, sign out, Me account card and stats | ✅ · 📱 | #37. Needs the providers turned on in the dev Firebase console (see Waiting on the owner). Sync, merge and Firestore rules come in part 2 |
 | T-2.2 | Accounts (F-13), part 2: sync, merge prompt, Firestore rules | ✅ · 📱 | #38. Sync runs against a fake store in tests; real Firestore needs the rules deployed and Firestore created on the dev project |
+| T-2.12 | Account deletion (F-13), app side and web page | ✅ · 📱 | #39. Calls the `deleteAccount` function, which is server work not written yet; until it exists the app says deletion failed. `/delete-account` sends an email request |
 
 ## P1 acceptance criteria
 
@@ -118,7 +119,8 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | F-13 Account | 13.1, 13.2, 13.3, 13.5, 13.7, 13.8, 13.11 | ✅ · 📱 | `test/features/account/` with a fake `AuthService`; real Google and email-link sign-in need the console setup and a phone. The plan card on Me waits on T-2.5/T-2.6 |
 | | 13.4 merge, 13.9 sync, 13.10 | ✅ · 📱 | `test/core/sync/sync_engine_test.dart` (two phones on one fake store: create, edit, last write wins, tombstones, review cards, glossaries, duplicate merge) and the account page tests; the 10 s timing needs two phones. Transcripts are never uploaded (no transcript sync yet) |
 | | 13.6 Live sign-in | ⬜ | With T-2.4 |
-| | 13.12–13.14 deletion | ⬜ | T-2.12 |
+| | 13.12, 13.13 deletion in the app | ✅ · 📱 | Account page tests with a fake `AuthService`: Google sign-in again, confirm, server call, phone wiped, onboarding again; email accounts get a fresh link when the login is old; the Google Play note and link always show (no purchase state yet) |
+| | 13.14 web page | ✅ · 📱 | `hosting/public/delete-account.html` opens an email request to the owner; processing it through `deletionRequests` waits on the server |
 
 ## Next up (in order)
 
@@ -131,6 +133,7 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 - Add the App Distribution secrets so CI can ship dev builds.
 - Accounts (T-2.2) on the dev project: in Firebase console → Authentication → Sign-in method turn on Anonymous, Google and Email/Password with Email link; add the SHA-1 and SHA-256 of the debug and release keys to the dev Android app (Project settings), then download `google-services.json` again into `android/app/src/dev/` so Google sign-in gets its web client id. Staging and production use placeholder link hosts (`lingo-mate-staging/prod.firebaseapp.com` in `android/app/build.gradle`) until T-2.1.
 - Sync on the dev project: create the Firestore database (Native mode) and deploy the rules with `firebase deploy --only firestore:rules --project lingo-mate-4f38d`. Rules tests in the emulator are still to write (doc 07).
+- Account deletion (T-2.12) needs the `deleteAccount` callable (Cloud Functions, server side): delete `users/{uid}` recursively, live tokens, the RevenueCat customer, then the Auth user, refusing logins older than 5 minutes with `failed-precondition`. Until then, delete requests arrive by email from `/delete-account`.
 - Privacy policy (T-2.9): the contact email is filled in; run `firebase login` and `firebase deploy --only hosting --project lingo-mate-4f38d` to publish `/privacy` and `/privacy-vi`. Move hosting and `privacy_policy_url` to the production project with T-2.1.
 - Later (owner): paste the listing, Data safety answers, screenshots, icon and feature graphic from `docs/store/` into Play Console, after the store name check (OQ-7).
 - Turn on `ff_post_session_review` in Remote Config (dev) to try the post-session review (F-17), and measure Suggest reply latency (AC-19.1, 3 s p50).
@@ -163,4 +166,4 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | Date | Change |
 |------|--------|
 | 2026-11-24 | Phase 0 foundations and spikes (#2–#11); design system T-1.1 (#12–#15) |
-| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28); listen mode T-1.6 (#29); meeting mode T-1.7 (#30); speech model hosting guide (#31) and GitHub Releases setup (#32); Phase 2 starts: SRS review T-2.7 (#33); learning helpers and glossary T-2.8 (#34); store kit and privacy policy T-2.9 (#35); kill switches for paid features (#36); accounts part 1 (#37); sync and merge (#38) |
+| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27); localization T-1.12 (#28); listen mode T-1.6 (#29); meeting mode T-1.7 (#30); speech model hosting guide (#31) and GitHub Releases setup (#32); Phase 2 starts: SRS review T-2.7 (#33); learning helpers and glossary T-2.8 (#34); store kit and privacy policy T-2.9 (#35); kill switches for paid features (#36); accounts part 1 (#37); sync and merge (#38); account deletion (#39) |

@@ -25,6 +25,7 @@ abstract class AppRouteName {
   static const signInEmail = 'sign-in-email';
   static const emailLink = 'email-link';
   static const account = 'account';
+  static const deleteAccount = 'delete-account';
 }
 
 abstract class AppRoutePath {
@@ -54,4 +55,5 @@ abstract class AppRoutePath {
   static const signInEmail = 'email';
   static const emailLink = '/email-link';
   static const account = 'account';
+  static const deleteAccount = 'delete';
 }

@@ -852,5 +852,26 @@
     }
   },
   "syncMerge": "Merge",
-  "syncDontMerge": "Don't merge"
+  "syncDontMerge": "Don't merge",
+  "deleteAccountTitle": "Delete account",
+  "deleteAccountIntro": "Deleting your account removes, for good:",
+  "deleteAccountItemAccount": "Your Lingo Mate account and sign-in",
+  "deleteAccountItemCloud": "Synced phrases, review cards, glossaries and profile",
+  "deleteAccountItemUsage": "Usage, Live and purchase records kept for your account",
+  "deleteAccountItemPhone": "Everything the app stored on this phone",
+  "deleteAccountPlayNote": "A Google Play subscription is not cancelled by deleting your account. Cancel it in Google Play to stop payments.",
+  "deleteAccountOpenPlay": "Open Google Play subscriptions",
+  "deleteAccountButton": "Delete account",
+  "deleteAccountConfirmTitle": "Delete your account?",
+  "deleteAccountConfirmBody": "This can't be undone. You may be asked to sign in again first.",
+  "deleteAccountFailed": "Couldn't delete the account. Check your connection and try again.",
+  "deleteAccountEmailAgain": "For your safety, confirm it's you: open the link we sent to {email}, then tap Delete account again.",
+  "@deleteAccountEmailAgain": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteAccountDone": "Account deleted"
 }

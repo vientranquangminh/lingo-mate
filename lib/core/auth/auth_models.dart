@@ -91,3 +91,6 @@ class EmailLinkRequest extends Equatable {
   @override
   List<Object?> get props => [link, outcome];
 }
+
+/// How an account deletion request ended.
+enum AccountDeletion { deleted, needsRecentLogin, failed }

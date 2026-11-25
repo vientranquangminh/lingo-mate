@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,13 +37,7 @@ class FirebaseAuthService implements AuthService {
   @override
   Future<SignInResult> signInWithGoogle() async {
     try {
-      final google = GoogleSignIn.instance;
-      if (!_googleReady) {
-        await google.initialize();
-        _googleReady = true;
-      }
-      final account = await google.authenticate();
-      final idToken = account.authentication.idToken;
+      final idToken = await _googleIdToken();
       if (idToken == null) {
         return const SignInResult(SignInOutcome.failed);
       }
@@ -117,6 +112,57 @@ class FirebaseAuthService implements AuthService {
     await _auth.signInAnonymously();
   }
 
+  @override
+  Future<SignInResult> reauthenticateWithGoogle() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      return const SignInResult(SignInOutcome.failed);
+    }
+    try {
+      final idToken = await _googleIdToken();
+      if (idToken == null) {
+        return const SignInResult(SignInOutcome.cancelled);
+      }
+      await user.reauthenticateWithCredential(
+        GoogleAuthProvider.credential(idToken: idToken),
+      );
+      return const SignInResult(SignInOutcome.signedIn);
+    } on GoogleSignInException catch (e) {
+      return e.code == GoogleSignInExceptionCode.canceled
+          ? const SignInResult(SignInOutcome.cancelled)
+          : SignInResult(SignInOutcome.failed, message: e.description);
+    } on FirebaseAuthException catch (e) {
+      return SignInResult(SignInOutcome.failed, message: e.code);
+    }
+  }
+
+  @override
+  Future<AccountDeletion> deleteAccount() async {
+    try {
+      await FirebaseFunctions.instance
+          .httpsCallable('deleteAccount')
+          .call<void>();
+    } on FirebaseFunctionsException catch (e) {
+      return e.code == 'failed-precondition' || e.code == 'unauthenticated'
+          ? AccountDeletion.needsRecentLogin
+          : AccountDeletion.failed;
+    }
+    await _auth.signOut();
+    await _auth.signInAnonymously();
+    return AccountDeletion.deleted;
+  }
+
+  /// Opens the Google account picker and returns its id token, or null.
+  Future<String?> _googleIdToken() async {
+    final google = GoogleSignIn.instance;
+    if (!_googleReady) {
+      await google.initialize();
+      _googleReady = true;
+    }
+    final account = await google.authenticate();
+    return account.authentication.idToken;
+  }
+
   /// Links [credential] to the anonymous user (same uid), or signs in to the account that already owns it.
   Future<SignInResult> _linkOrSignIn(AuthCredential credential) async {
     final user = _auth.currentUser;
@@ -125,8 +171,13 @@ class FirebaseAuthService implements AuthService {
       return const SignInResult(SignInOutcome.signedIn);
     }
     if (!user.isAnonymous) {
-      await _auth.signInWithCredential(credential);
-      return const SignInResult(SignInOutcome.switchedAccount);
+      final before = user.uid;
+      final signed = await _auth.signInWithCredential(credential);
+      return SignInResult(
+        signed.user?.uid == before
+            ? SignInOutcome.signedIn
+            : SignInOutcome.switchedAccount,
+      );
     }
     try {
       await user.linkWithCredential(credential);
