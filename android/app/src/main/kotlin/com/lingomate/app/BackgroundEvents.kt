@@ -5,9 +5,10 @@ object BackgroundEvents {
     var sink: ((Map<String, Any>) -> Unit)? = null
 
     /** Sends one event to Dart if it is listening. */
-    fun emit(type: String, text: String? = null) {
+    fun emit(type: String, text: String? = null, index: Int? = null) {
         val event = mutableMapOf<String, Any>("type" to type)
         if (text != null) event["text"] = text
+        if (index != null) event["index"] = index
         sink?.invoke(event)
     }
 }

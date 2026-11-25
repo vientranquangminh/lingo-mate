@@ -4,4 +4,8 @@
     <string name="notification_translating_meeting">Đang dịch cuộc họp</string>
     <string name="notification_action_stop">Dừng</string>
     <string name="notification_action_open">Mở</string>
+    <string name="overlay_expand">Hiện thêm dòng</string>
+    <string name="overlay_collapse">Hiện ít dòng hơn</string>
+    <string name="overlay_stop">Dừng dịch</string>
+    <string name="overlay_saved">Đã lưu vào sổ cụm từ</string>
 </resources>

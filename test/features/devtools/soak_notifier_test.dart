@@ -39,7 +39,11 @@ class _FakeBackground implements BackgroundCapture {
   Future<bool> showOverlay() async => overlayVisible = overlayAllowed;
 
   @override
-  Future<void> updateOverlay(List<String> lines) async => overlayLines = lines;
+  Future<void> updateOverlay(
+    List<OverlayLine> lines, {
+    String engine = '',
+    String engineLabel = '',
+  }) async => overlayLines = [for (final line in lines) line.translation];
 
   @override
   Future<void> hideOverlay() async => overlayVisible = false;

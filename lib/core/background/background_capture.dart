@@ -1,20 +1,37 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 /// Something the foreground service or the caption overlay reported.
 sealed class BackgroundEvent {
   const BackgroundEvent();
 }
 
-/// Stop was pressed in the notification.
+/// Stop was pressed in the notification or the overlay.
 class BackgroundStopPressed extends BackgroundEvent {
   const BackgroundStopPressed();
 }
 
-/// A caption line was long-pressed in the overlay.
+/// A caption line was long-pressed in the overlay; [index] is its position in the lines last sent.
 class OverlayLineLongPressed extends BackgroundEvent {
-  const OverlayLineLongPressed(this.text);
+  const OverlayLineLongPressed(this.text, {this.index});
 
   final String text;
+  final int? index;
+}
+
+/// One caption in the overlay: what was said and its translation.
+class OverlayLine {
+  const OverlayLine({required this.original, required this.translation});
+
+  final String original;
+  final String translation;
+
+  /// The channel form of this line.
+  Map<String, String> toMap() => {
+    'original': original,
+    'translation': translation,
+  };
 }
 
 /// Keeps capture alive in the background and shows floating captions (Meeting mode, doc 03 §6.4).
@@ -37,8 +54,12 @@ abstract interface class BackgroundCapture {
   /// Shows the caption bubble; returns false without permission.
   Future<bool> showOverlay();
 
-  /// Replaces the caption lines in the bubble.
-  Future<void> updateOverlay(List<String> lines);
+  /// Replaces the caption lines in the bubble and the engine in its header ([engine] is the kind name, [engineLabel] what is shown).
+  Future<void> updateOverlay(
+    List<OverlayLine> lines, {
+    String engine = '',
+    String engineLabel = '',
+  });
 
   /// Removes the caption bubble.
   Future<void> hideOverlay();
@@ -58,7 +79,10 @@ class NativeBackgroundCapture implements BackgroundCapture {
       .map<BackgroundEvent?>(
         (e) => switch (e['type']) {
           'stop' => const BackgroundStopPressed(),
-          'longPress' => OverlayLineLongPressed(e['text'] as String? ?? ''),
+          'longPress' => OverlayLineLongPressed(
+            e['text'] as String? ?? '',
+            index: e['index'] as int?,
+          ),
           _ => null,
         },
       )
@@ -84,9 +108,27 @@ class NativeBackgroundCapture implements BackgroundCapture {
       await _methods.invokeMethod<bool>('showOverlay') ?? false;
 
   @override
-  Future<void> updateOverlay(List<String> lines) =>
-      _methods.invokeMethod('updateOverlay', {'lines': lines});
+  Future<void> updateOverlay(
+    List<OverlayLine> lines, {
+    String engine = '',
+    String engineLabel = '',
+  }) => _methods.invokeMethod('updateOverlay', {
+    'lines': [for (final line in lines) line.toMap()],
+    'engine': engine,
+    'engineLabel': engineLabel,
+  });
 
   @override
   Future<void> hideOverlay() => _methods.invokeMethod('hideOverlay');
 }
+
+/// The foreground service and caption overlay.
+final backgroundCaptureProvider = Provider<BackgroundCapture>(
+  (ref) => const NativeBackgroundCapture(),
+);
+
+/// Asks for the notification permission the foreground service needs on Android 13+.
+final notificationPermissionProvider = Provider<Future<void> Function()>(
+  (ref) =>
+      () => Permission.notification.request(),
+);

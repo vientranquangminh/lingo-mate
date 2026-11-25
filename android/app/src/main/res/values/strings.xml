@@ -4,4 +4,8 @@
     <string name="notification_translating_meeting">Translating meeting</string>
     <string name="notification_action_stop">Stop</string>
     <string name="notification_action_open">Open</string>
+    <string name="overlay_expand">Show more lines</string>
+    <string name="overlay_collapse">Show fewer lines</string>
+    <string name="overlay_stop">Stop translating</string>
+    <string name="overlay_saved">Saved to phrasebook</string>
 </resources>
