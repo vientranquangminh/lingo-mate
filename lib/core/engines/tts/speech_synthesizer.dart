@@ -20,6 +20,27 @@ abstract interface class SpeechSynthesizerEngine {
   Stream<TtsState> get state;
 }
 
+/// Applies the user's voice speed to every [speak] call of [inner].
+class RatedSpeechSynthesizer implements SpeechSynthesizerEngine {
+  RatedSpeechSynthesizer(this.inner, {required this.rate});
+
+  final SpeechSynthesizerEngine inner;
+  final double Function() rate;
+
+  @override
+  Stream<TtsState> get state => inner.state;
+
+  @override
+  Future<bool> supports(String lang) => inner.supports(lang);
+
+  @override
+  Future<void> speak(String text, {required String lang, double rate = 1.0}) =>
+      inner.speak(text, lang: lang, rate: rate * this.rate());
+
+  @override
+  Future<void> stop() => inner.stop();
+}
+
 /// [SpeechSynthesizerEngine] on the device TTS engine through flutter_tts.
 class FlutterTtsSynthesizer implements SpeechSynthesizerEngine {
   FlutterTtsSynthesizer([FlutterTts? tts]) : _tts = tts ?? FlutterTts() {

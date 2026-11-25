@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'common/resources/app_config.dart';
+import 'core/licenses/app_licenses.dart';
 import 'common/utils/riverpod_logger.dart';
 import 'core/config/remote_config_service.dart';
 import 'core/di/di.dart';
@@ -17,6 +18,7 @@ void main() async {
   FlavorConfig(appFlavor: Flavor.development);
   await bootstrapFirebase(DefaultFirebaseOptions.currentPlatform);
   await AppConfiguration.ensureAppConfiguration();
+  registerAppLicenses();
   await getIt<CrashReporter>().installErrorHandlers();
   await getIt<RemoteConfigService>().initialize();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(

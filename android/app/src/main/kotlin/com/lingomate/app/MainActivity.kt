@@ -1,5 +1,6 @@
 package com.lingomate.app
 
+import android.view.WindowManager
 import com.lingomate.app.channels.BackgroundChannel
 import com.lingomate.app.channels.PcmPlayerChannel
 import com.lingomate.app.channels.SystemSettingsChannel
@@ -17,7 +18,15 @@ class MainActivity : FlutterActivity() {
         val messenger = flutterEngine.dartExecutor.binaryMessenger
         pcmPlayer = PcmPlayerChannel(messenger)
         background = BackgroundChannel(messenger, applicationContext)
-        systemSettings = SystemSettingsChannel(messenger, applicationContext)
+        systemSettings = SystemSettingsChannel(messenger, applicationContext) { on ->
+            runOnUiThread {
+                if (on) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                } else {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+        }
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {

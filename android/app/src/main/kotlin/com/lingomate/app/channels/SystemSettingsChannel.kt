@@ -9,8 +9,12 @@ import android.speech.tts.TextToSpeech
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 
-/** Opens system settings screens and the share sheet on the `lingomate/system_settings` channel. */
-class SystemSettingsChannel(messenger: BinaryMessenger, private val context: Context) {
+/** Opens system settings screens and the share sheet, and keeps the screen on, on the `lingomate/system_settings` channel. */
+class SystemSettingsChannel(
+    messenger: BinaryMessenger,
+    private val context: Context,
+    private val keepScreenOn: (Boolean) -> Unit,
+) {
     private val channel = MethodChannel(messenger, NAME)
 
     init {
@@ -32,6 +36,10 @@ class SystemSettingsChannel(messenger: BinaryMessenger, private val context: Con
                         .putExtra(Intent.EXTRA_TEXT, call.argument<String>("text") ?: "")
                     call.argument<String>("subject")?.let { send.putExtra(Intent.EXTRA_SUBJECT, it) }
                     result.success(open(Intent.createChooser(send, null)))
+                }
+                "keepScreenOn" -> {
+                    keepScreenOn(call.argument<Boolean>("on") == true)
+                    result.success(true)
                 }
                 else -> result.notImplemented()
             }

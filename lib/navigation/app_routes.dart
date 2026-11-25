@@ -13,6 +13,8 @@ import '../features/home/presentation/view/home_page.dart';
 import '../features/home/presentation/view/home_shell.dart';
 import '../features/language_packs/presentation/view/language_packs_page.dart';
 import '../features/me/presentation/view/me_page.dart';
+import '../features/me/presentation/view/privacy_page.dart';
+import '../features/me/presentation/view/translation_voice_page.dart';
 import '../features/onboarding/presentation/view/setup_page.dart';
 import '../features/onboarding/presentation/view/welcome_page.dart';
 import '../features/phrasebook/presentation/view/add_phrase_page.dart';
@@ -164,6 +166,22 @@ final goRouterProvider = Provider((ref) {
                 path: AppRoutePath.me,
                 pageBuilder: (context, state) =>
                     const NoTransitionPage(child: MePage()),
+                routes: [
+                  GoRoute(
+                    name: AppRouteName.translationVoice,
+                    path: AppRoutePath.translationVoice,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) =>
+                        const CupertinoPage(child: TranslationVoicePage()),
+                  ),
+                  GoRoute(
+                    name: AppRouteName.privacy,
+                    path: AppRoutePath.privacy,
+                    parentNavigatorKey: rootNavigatorKey,
+                    pageBuilder: (context, state) =>
+                        const CupertinoPage(child: PrivacyPage()),
+                  ),
+                ],
               ),
             ],
           ),

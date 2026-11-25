@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../common/widgets/keep_screen_on.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
@@ -64,63 +65,68 @@ class ConversationPage extends ConsumerWidget {
     final partner = partnerStrings(pair.b);
     return AppPlatformScaffold(
       backgroundColor: scheme.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: RotatedBox(
-                quarterTurns: 2,
-                child: ConversationHalf(
-                  strings: partner,
-                  languageName: partner.languageName(pair.b),
-                  incoming: state.lastBy(Speaker.a),
-                  micState: _micState(state, Speaker.b),
-                  onMic: () => _toggleMic(context, ref, Speaker.b),
-                  background: scheme.inverseSurface,
-                  foreground: scheme.onInverseSurface,
-                  mutedForeground: scheme.onInverseSurface.withValues(
-                    alpha: 0.72,
+      body: KeepScreenOn(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: RotatedBox(
+                  quarterTurns: 2,
+                  child: ConversationHalf(
+                    strings: partner,
+                    languageName: partner.languageName(pair.b),
+                    incoming: state.lastBy(Speaker.a),
+                    micState: _micState(state, Speaker.b),
+                    onMic: () => _toggleMic(context, ref, Speaker.b),
+                    background: scheme.inverseSurface,
+                    foreground: scheme.onInverseSurface,
+                    mutedForeground: scheme.onInverseSurface.withValues(
+                      alpha: 0.72,
+                    ),
+                    micBackground: scheme.surface,
+                    micForeground: scheme.onSurface,
+                    onLongPressIncoming: (turn) =>
+                        _showActions(context, ref, turn),
                   ),
-                  micBackground: scheme.surface,
-                  micForeground: scheme.onSurface,
+                ),
+              ),
+              _Divider(state: state, pair: pair),
+              Expanded(
+                child: ConversationHalf(
+                  strings: l10n,
+                  languageName: l10n.languageName(pair.a),
+                  incoming: state.lastBy(Speaker.b),
+                  micState: _micState(state, Speaker.a),
+                  onMic: () => _toggleMic(context, ref, Speaker.a),
+                  background: scheme.surface,
+                  foreground: scheme.onSurface,
+                  mutedForeground: scheme.onSurfaceVariant,
+                  micBackground: scheme.primary,
+                  micForeground: scheme.onPrimary,
                   onLongPressIncoming: (turn) =>
                       _showActions(context, ref, turn),
+                  banner: state.paused != null
+                      ? _PausedBanner(reason: state.paused!)
+                      : state.auto
+                      ? AppBanner(
+                          kind: AppBannerKind.info,
+                          message: l10n.conversationAutoOn,
+                        )
+                      : null,
+                  trailing: AppCircleIconButton(
+                    icon: state.speakOn
+                        ? AppIcons.speaker
+                        : AppIcons.speakerOff,
+                    semanticLabel: state.speakOn
+                        ? l10n.conversationSpeakOn
+                        : l10n.conversationSpeakOff,
+                    selected: state.speakOn,
+                    onPressed: () => notifier.setSpeakOn(!state.speakOn),
+                  ),
                 ),
               ),
-            ),
-            _Divider(state: state, pair: pair),
-            Expanded(
-              child: ConversationHalf(
-                strings: l10n,
-                languageName: l10n.languageName(pair.a),
-                incoming: state.lastBy(Speaker.b),
-                micState: _micState(state, Speaker.a),
-                onMic: () => _toggleMic(context, ref, Speaker.a),
-                background: scheme.surface,
-                foreground: scheme.onSurface,
-                mutedForeground: scheme.onSurfaceVariant,
-                micBackground: scheme.primary,
-                micForeground: scheme.onPrimary,
-                onLongPressIncoming: (turn) => _showActions(context, ref, turn),
-                banner: state.paused != null
-                    ? _PausedBanner(reason: state.paused!)
-                    : state.auto
-                    ? AppBanner(
-                        kind: AppBannerKind.info,
-                        message: l10n.conversationAutoOn,
-                      )
-                    : null,
-                trailing: AppCircleIconButton(
-                  icon: state.speakOn ? AppIcons.speaker : AppIcons.speakerOff,
-                  semanticLabel: state.speakOn
-                      ? l10n.conversationSpeakOn
-                      : l10n.conversationSpeakOff,
-                  selected: state.speakOn,
-                  onPressed: () => notifier.setSpeakOn(!state.speakOn),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -172,6 +178,7 @@ class ConversationPage extends ConsumerWidget {
                 await saveToPhrasebook(
                   context,
                   ref,
+                  source: 'conversation',
                   sourceLang: turn.from,
                   sourceText: turn.original,
                   targetLang: turn.to,

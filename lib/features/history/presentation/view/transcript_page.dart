@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../common/widgets/caption_scale.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
@@ -162,10 +163,12 @@ class _Transcript extends ConsumerWidget {
           padding: EdgeInsets.only(bottom: AppParams.spacing24.h),
           sliver: SliverList.builder(
             itemCount: detail.utterances.length,
-            itemBuilder: (context, i) => _Line(
-              utterance: detail.utterances[i],
-              startedAt: started,
-              mainEngine: main,
+            itemBuilder: (context, i) => CaptionScale(
+              child: _Line(
+                utterance: detail.utterances[i],
+                startedAt: started,
+                mainEngine: main,
+              ),
             ),
           ),
         ),
@@ -244,6 +247,7 @@ class _Line extends ConsumerWidget {
               await saveToPhrasebook(
                 context,
                 ref,
+                source: 'transcript',
                 sourceLang: utterance.sourceLang,
                 sourceText: utterance.sourceText,
                 targetLang: utterance.targetLang,

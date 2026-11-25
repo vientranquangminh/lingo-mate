@@ -25,6 +25,13 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 3;
 
+  /// Deletes every row of every table, children first (AC-10.3).
+  Future<void> wipe() => transaction(() async {
+    for (final table in allTables.toList().reversed) {
+      await delete(table).go();
+    }
+  });
+
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (m) async {

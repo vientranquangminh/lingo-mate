@@ -5,6 +5,7 @@ import '../audio/audio_capture.dart';
 import '../audio/silero_voice_activity_detector.dart';
 import '../audio/voice_activity_detector.dart';
 import '../di/di.dart';
+import '../settings/app_preferences.dart';
 import 'asr/asr_models.dart';
 import 'asr/sherpa_whisper_engine.dart';
 import 'asr/whisper_cpp_engine.dart';
@@ -71,5 +72,8 @@ final speechRecognizerProvider = FutureProvider<SpeechRecognizerEngine?>((
 final speechSynthesizerProvider = Provider<SpeechSynthesizerEngine>((ref) {
   final tts = FlutterTtsSynthesizer();
   ref.onDispose(tts.dispose);
-  return tts;
+  return RatedSpeechSynthesizer(
+    tts,
+    rate: () => ref.read(appPreferencesProvider).voiceSpeed.rate,
+  );
 });

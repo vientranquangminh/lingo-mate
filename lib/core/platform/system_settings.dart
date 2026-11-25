@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Opens Android system screens: settings pages and the share sheet (`SystemSettingsChannel.kt`).
+/// Opens Android system screens (settings pages, the share sheet) and keeps the screen on (`SystemSettingsChannel.kt`).
 abstract interface class SystemSettings {
   /// Opens the screen that installs text-to-speech voices; returns false when none opened.
   Future<bool> installTtsVoice();
@@ -11,6 +11,9 @@ abstract interface class SystemSettings {
 
   /// Opens the system share sheet with [text]; [subject] titles it where apps support one.
   Future<bool> shareText(String text, {String? subject});
+
+  /// Keeps the screen awake while [on], for live sessions.
+  Future<bool> keepScreenOn(bool on);
 }
 
 /// [SystemSettings] over the `lingomate/system_settings` channel.
@@ -28,6 +31,9 @@ class ChannelSystemSettings implements SystemSettings {
   @override
   Future<bool> shareText(String text, {String? subject}) =>
       _invoke('shareText', {'text': text, 'subject': subject});
+
+  @override
+  Future<bool> keepScreenOn(bool on) => _invoke('keepScreenOn', {'on': on});
 
   /// Calls [method] with [arguments]; returns false when the platform has no handler.
   Future<bool> _invoke(String method, [Map<String, Object?>? arguments]) async {

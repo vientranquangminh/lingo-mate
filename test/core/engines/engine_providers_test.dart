@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lingo_mate/core/settings/app_preferences.dart';
+import 'package:lingo_mate/core/settings/user_settings.dart';
 import 'package:lingo_mate/core/config/remote_config_service.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
 import 'package:lingo_mate/core/engines/selection/capability_matrix.dart';
@@ -17,15 +19,25 @@ void main() {
     jsonDecode(File(CapabilityMatrix.assetPath).readAsStringSync())
         as Map<String, dynamic>,
   );
+  late SharedPreferences prefs;
   const request = EngineRequest(
     mode: SessionMode.conversation,
     pair: LanguagePair('vi', 'en'),
   );
 
   /// Builds a container with fake connectivity, packs and Remote Config.
-  ProviderContainer build({bool online = true, bool packs = true}) {
+  ProviderContainer build({
+    bool online = true,
+    bool packs = true,
+    EnginePreference engine = EnginePreference.auto,
+    bool allowLive = true,
+  }) {
+    prefs
+      ..setString('pref_engine', engine.name)
+      ..setBool('pref_allow_live', allowLive);
     final c = ProviderContainer(
       overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
         onlineProvider.overrideWith((ref) => Stream.value(online)),
         capabilityMatrixProvider.overrideWith((ref) async => matrix),
         packsInstalledProvider.overrideWith((ref, pair) async => packs),
@@ -38,10 +50,36 @@ void main() {
     return c;
   }
 
-  setUp(() {
+  setUp(() async {
     SharedPreferences.setMockInitialValues({});
+    prefs = await SharedPreferences.getInstance();
     FlavorConfig(appFlavor: Flavor.production);
   });
+
+  test(
+    'Prefer Offline picks Offline online when packs cover the pair (AC-10.2)',
+    () async {
+      expect(
+        (await build(engine: EnginePreference.preferOffline)
+                .read(engineSelectionProvider(request).future))
+            .engine,
+        EngineKind.offline,
+      );
+      expect(
+        (await build(
+          engine: EnginePreference.preferOffline,
+          packs: false,
+        ).read(engineSelectionProvider(request).future)).engine,
+        EngineKind.standard,
+      );
+      expect(
+        (await build(engine: EnginePreference.preferStandard)
+                .read(engineSelectionProvider(request).future))
+            .engine,
+        EngineKind.standard,
+      );
+    },
+  );
 
   test('picks Standard online and Offline without internet', () async {
     expect(
@@ -75,6 +113,12 @@ void main() {
     expect(
       (await dev.read(engineSelectionProvider(request).future)).engine,
       EngineKind.live,
+    );
+    expect(
+      (await build(allowLive: false)
+              .read(engineSelectionProvider(request).future))
+          .engine,
+      EngineKind.standard,
     );
   });
 

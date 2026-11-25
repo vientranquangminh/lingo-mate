@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/audio/audio_frame.dart';
 import '../../../../core/audio/audio_pipeline.dart';
 import '../../../../core/audio/echo_gate.dart';
@@ -40,6 +41,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
   late final SpeechSynthesizerEngine _tts;
   late final SessionRepository _sessions;
   late final int Function() _clock;
+  late final AnalyticsService _analytics;
   Future<String>? _sessionId;
   Future<void> _writes = Future.value();
   final _utteranceIds = <int, Future<String?>>{};
@@ -57,6 +59,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
     _clock = ref.read(conversationClockProvider);
     _gate = EchoGate(nowMs: _clock);
     _sessions = ref.read(sessionRepositoryProvider);
+    _analytics = ref.read(analyticsProvider);
     _tts = ref.read(speechSynthesizerProvider);
     ref.onDispose(_dispose);
     final current = ref
@@ -191,6 +194,16 @@ class ConversationNotifier extends Notifier<ConversationState> {
     final engine = selection.conversationEngine;
     final previous = state.engine;
     final switched = previous != null && engine != null && engine != previous;
+    if (switched && _sessionId != null) {
+      final reason = selection.blocked[previous];
+      unawaited(
+        _analytics.engineSwitch(
+          from: previous.name,
+          to: engine.name,
+          reason: reason?.name ?? 'auto',
+        ),
+      );
+    }
     state = state.copyWith(
       engine: () => engine,
       blocked: selection.blocked,
@@ -366,6 +379,13 @@ class ConversationNotifier extends Notifier<ConversationState> {
       engine: state.engine,
       pair: pair,
     );
+    unawaited(
+      _analytics.sessionStart(
+        mode: SessionMode.conversation.name,
+        engine: state.engine?.name ?? 'none',
+        pair: '${pair.a}-${pair.b}',
+      ),
+    );
   }
 
   /// Queues the turn with [id] for saving, translated or not, so captured text is kept (AC-02.8).
@@ -415,6 +435,12 @@ class ConversationNotifier extends Notifier<ConversationState> {
     unawaited(_tts.stop().catchError((Object _) {}));
     final session = _sessionId;
     if (session != null) {
+      unawaited(
+        _analytics.sessionEnd(
+          mode: SessionMode.conversation.name,
+          durationSec: (_clock() - _sessionStartMs) ~/ 1000,
+        ),
+      );
       unawaited(
         _writes
             .then((_) async => _sessions.finish(await session))

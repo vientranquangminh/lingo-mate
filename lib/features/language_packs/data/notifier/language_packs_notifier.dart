@@ -166,6 +166,33 @@ class LanguagePacksNotifier extends Notifier<LanguagePacksState> {
     ref.invalidate(packsInstalledProvider);
   }
 
+  /// Removes every downloaded translation and speech model, English last.
+  Future<void> deleteAll() async {
+    if (state.loading) {
+      await load();
+    }
+    final translation = ref.read(translationModelsProvider);
+    final speech = ref.read(speechModelFilesProvider);
+    final langs = [
+      for (final p in state.packs)
+        if (p.lang != pivot) p.lang,
+      pivot,
+    ];
+    for (final lang in langs) {
+      await translation.delete(lang).catchError((Object _) => false);
+    }
+    final specs = {
+      for (final p in state.packs)
+        if (p.speechSpec != null) p.speechSpec!.fileName: p.speechSpec!,
+    };
+    for (final spec in specs.values) {
+      await speech.delete(spec).catchError((Object _) {});
+    }
+    ref
+      ..invalidate(packsInstalledProvider)
+      ..invalidateSelf();
+  }
+
   /// Whether [lang] may be deleted: English only once no other language has a translation model.
   bool canDelete(String lang) {
     if (lang != pivot) {
