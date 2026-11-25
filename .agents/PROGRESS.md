@@ -7,7 +7,7 @@ session, then update it in the same pull request as each feature or fix.
 - Acceptance criteria: `project-docs/06-feature-details-acs.md`
 - Code map: `.agents/CONTEXT.md`
 
-Last updated: 2026-11-25. T-1.10 is merged and T-1.11 is in review as #26.
+Last updated: 2026-11-25. T-1.11 is merged (#26).
 
 ## How to resume in a new session
 
@@ -58,7 +58,7 @@ Status legend:
 | T-1.8 | Sessions and transcripts (F-07) | ✅ | #22 |
 | T-1.9 | Phrasebook (F-08) | ✅ | #24 |
 | T-1.10 | Quick phrases (F-09) | ✅ | #25 |
-| T-1.11 | Settings and privacy (F-10) | 🔄 | #26 |
+| T-1.11 | Settings and privacy (F-10) | ✅ | #26 |
 | T-1.12 | Localization (F-11) | 🚧 partly | en and vi ARBs and the App language setting exist. See the F-11 ACs for what is missing |
 | T-1.13 | Internal testing release, bug bash | ⬜ | After T-1.6, T-1.7 and T-1.12 |
 
@@ -81,8 +81,8 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | F-07 History | 07.1–07.6 | ✅ | |
 | F-08 Phrasebook | 08.1–08.6 | ✅ | |
 | F-09 Quick phrases | 09.1–09.6 | ✅ | 09.2 "within 500 ms" 📱 |
-| F-10 Settings | 10.2, 10.3, 10.5 | 🔄 | In #26. 10.1 is covered by F-11 |
-| | 10.4 | 🔄 · 📱 | Gating is tested. Check DebugView on a device |
+| F-10 Settings | 10.2, 10.3, 10.5 | ✅ | 10.1 is covered by F-11 |
+| | 10.4 | ✅ · 📱 | Gating is tested. Check DebugView on a device |
 | F-11 Localization | 11.3, 11.4, 11.5 | ✅ | |
 | | 11.1 hard-coded string check | ⬜ | Add a test or lint over `presentation/` |
 | | 11.2 en and vi goldens at 1.0 and 2.0 | ⬜ | Several 200% widget tests exist; no golden suite yet |
@@ -94,11 +94,10 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 
 ## Next up (in order)
 
-1. **Merge #26 (T-1.11)** once CI is green, then mark T-1.11 ✅ here.
-2. **T-1.12 Localization.** Close the F-11 gaps: 11.1, 11.2, 11.6, 11.8 and 11.9.
-3. **T-1.6 Listen mode (F-03).** S-06: caption list, jump to live, keep screen on, font size, pause.
-4. **T-1.7 Meeting mode (F-04).** Setup card, overlay permission explainer, service notification, overlay bubble with save, stop flow, in-app transcript.
-5. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
+1. **T-1.12 Localization.** Close the F-11 gaps: 11.1, 11.2, 11.6, 11.8 and 11.9.
+2. **T-1.6 Listen mode (F-03).** S-06: caption list, jump to live, keep screen on, font size, pause.
+3. **T-1.7 Meeting mode (F-04).** Setup card, overlay permission explainer, service notification, overlay bubble with save, stop flow, in-app transcript.
+4. **T-1.13** Internal testing release and bug bash. This needs the owner's devices and testers.
 
 ## Waiting on the owner (device and account work)
 
@@ -106,7 +105,7 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 - Run the T-0.4 to T-0.8 measurements on the reference phone and a low-end phone, then write the T-0.10 spike report (answers OQ-3, OQ-4, OQ-5).
 - Add the App Distribution secrets so CI can ship dev builds.
 - Device checks: AC-02.3, AC-02.4, AC-02.5, AC-04.6, AC-04.7, AC-04.9, AC-06.3, AC-09.2 (timing) and AC-10.4 (DebugView).
-- Decide whether analytics and crash consent should start off (they start on in #26).
+- Decide whether analytics and crash consent should start off (they start on, set in #26).
 
 ## Known follow-ups and decisions taken
 
@@ -119,4 +118,4 @@ Status: ✅ covered by automated tests, 📱 needs a device check, ⬜ missing, 
 | Date | Change |
 |------|--------|
 | 2026-11-24 | Phase 0 foundations and spikes (#2–#11); design system T-1.1 (#12–#15) |
-| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 opened as #26; this progress file added |
+| 2026-11-25 | D-26 docs (#16); engines T-1.2 (#17, #18); packs T-1.3 (#19); conversation T-1.5 (#20, #21); history T-1.8 (#22); onboarding T-1.4 (#23); phrasebook T-1.9 (#24); quick phrases T-1.10 (#25); settings T-1.11 (#26); this progress file added (#27) |
