@@ -496,5 +496,7 @@
   "usageReached": "Đã hết thời lượng Tiêu chuẩn đến {time}; chuyển sang Ngoại tuyến.",
   "usageSee": "Xem mức dùng",
   "planFree": "Gói Miễn phí",
-  "planStandardWeek": "Tiêu chuẩn tuần này"
+  "planStandardWeek": "Tiêu chuẩn tuần này",
+  "liveQuotaFallback": "Đã hết thời lượng Live; đang dùng Tiêu chuẩn.",
+  "liveUnavailableFallback": "Live hiện không dùng được; đang dùng Tiêu chuẩn."
 }

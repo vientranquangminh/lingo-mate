@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,11 +43,12 @@ final privacyPolicyUrlProvider = Provider<String>(
   (ref) => ref.watch(engineRemoteConfigProvider).privacyPolicyUrl,
 );
 
-/// Whether Live may be offered: dev flavor with `ff_live_enabled` on; never in other flavors in P1 (AC-05.6).
+/// Whether Live may be offered: `ff_live_enabled` on, in dev with its API key or where Firebase can issue tokens (AC-05.6, F-05).
 final liveAvailableProvider = Provider<bool>(
   (ref) =>
-      FlavorConfig.instance.appFlavor == Flavor.development &&
-      ref.watch(engineRemoteConfigProvider).liveEnabled,
+      ref.watch(engineRemoteConfigProvider).liveEnabled &&
+      (FlavorConfig.instance.appFlavor == Flavor.development ||
+          Firebase.apps.isNotEmpty),
 );
 
 /// Engine pinned by the user for this session (or by devtools); null means automatic.

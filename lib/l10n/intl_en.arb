@@ -921,5 +921,7 @@
   },
   "usageSee": "See usage",
   "planFree": "Free plan",
-  "planStandardWeek": "Standard this week"
+  "planStandardWeek": "Standard this week",
+  "liveQuotaFallback": "Live time is used up for now; using Standard.",
+  "liveUnavailableFallback": "Live isn't available right now; using Standard."
 }

@@ -24,9 +24,14 @@ import '../../../../common/widgets/explainer_sheet.dart';
 import '../../../../common/widgets/mic_permission_gate.dart';
 import '../../../../common/widgets/save_phrase_action.dart';
 import '../../../../common/widgets/source_language_pill.dart';
+import '../../../../common/widgets/usage_sheet.dart';
+import '../../../../common/widgets/require_sign_in.dart';
 import '../../../../common/widgets/app_toast.dart';
 import '../../../../common/widgets/suggested_replies_sheet.dart';
 import '../../../../core/background/background_capture.dart';
+import '../../../../core/engines/live/live_access.dart';
+import '../../../../core/engines/engines.dart';
+import '../../../../core/auth/auth_models.dart';
 import '../../../../core/config/feature_switches.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/learning/learning_models.dart';
@@ -107,6 +112,13 @@ class _MeetingPageState extends ConsumerState<MeetingPage> {
     if (!await ensureMicAccess(context, ref)) {
       return;
     }
+    if (!mounted) {
+      return;
+    }
+    final live = ref.read(meetingProvider).engine == EngineKind.live;
+    if (live && !await requireSignIn(context, ref, SignInReason.live)) {
+      _notifier.skipLive();
+    }
     final overlay = await _overlayAllowed();
     if (mounted) {
       await _notifier.start(overlay: overlay);
@@ -140,11 +152,24 @@ class _MeetingPageState extends ConsumerState<MeetingPage> {
     final dismissed = ref.watch(meetingSetupDismissedProvider);
     final l10n = context.localization;
     final scheme = Theme.of(context).colorScheme;
-    ref.listen(meetingProvider.select((s) => s.lines.length), (previous, next) {
-      if (next > (previous ?? 0)) {
-        _scrollToEnd();
-      }
-    });
+    ref
+      ..listen(meetingProvider.select((s) => s.lines.length), (previous, next) {
+        if (next > (previous ?? 0)) {
+          _scrollToEnd();
+        }
+      })
+      ..listen(meetingProvider.select((s) => s.liveStops), (_, _) {
+        final denial = ref.read(meetingProvider).liveDenial;
+        showAppToast(
+          context,
+          denial == LiveDenial.quota
+              ? l10n.liveQuotaFallback
+              : l10n.liveUnavailableFallback,
+        );
+        if (denial == LiveDenial.quota) {
+          showUsageSheet(context);
+        }
+      });
     return AppPlatformScaffold(
       backgroundColor: scheme.surface,
       body: SafeArea(

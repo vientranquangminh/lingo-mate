@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../model/listen_models.dart';
 
@@ -17,6 +18,8 @@ class ListenState extends Equatable {
     this.block,
     this.switchedTo,
     this.switchCount = 0,
+    this.liveDenial,
+    this.liveStops = 0,
   });
 
   final String source;
@@ -29,6 +32,8 @@ class ListenState extends Equatable {
   final ListenBlock? block;
   final EngineKind? switchedTo;
   final int switchCount;
+  final LiveDenial? liveDenial;
+  final int liveStops;
 
   /// Whether a started session is paused: mic off, nothing counted (AC-03.6).
   bool get paused => started && !listening;
@@ -43,6 +48,8 @@ class ListenState extends Equatable {
     ListenBlock? Function()? block,
     EngineKind? switchedTo,
     int? switchCount,
+    LiveDenial? liveDenial,
+    int? liveStops,
   }) {
     return ListenState(
       source: source ?? this.source,
@@ -55,6 +62,8 @@ class ListenState extends Equatable {
       block: block != null ? block() : this.block,
       switchedTo: switchedTo ?? this.switchedTo,
       switchCount: switchCount ?? this.switchCount,
+      liveDenial: liveDenial ?? this.liveDenial,
+      liveStops: liveStops ?? this.liveStops,
     );
   }
 
@@ -70,5 +79,7 @@ class ListenState extends Equatable {
     block,
     switchedTo,
     switchCount,
+    liveDenial,
+    liveStops,
   ];
 }
