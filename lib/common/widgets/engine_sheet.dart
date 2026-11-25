@@ -112,11 +112,18 @@ class EngineSheet extends StatelessWidget {
                     EngineKind.standard => l10n.engineStandard,
                     EngineKind.live => l10n.engineLive,
                   },
-                  subtitle: switch (blocked[engine]) {
-                    null when engine == current => l10n.engineSheetInUse,
-                    null => null,
-                    final block => blockReason(context, block),
-                  },
+                  subtitle: [
+                    switch (engine) {
+                      EngineKind.offline => l10n.engineOfflineHint,
+                      EngineKind.standard => l10n.engineStandardHint,
+                      EngineKind.live => l10n.engineLiveHint,
+                    },
+                    ?switch (blocked[engine]) {
+                      null when engine == current => l10n.engineSheetInUse,
+                      null => null,
+                      final block => blockReason(context, block),
+                    },
+                  ].join(' · '),
                   selected: pinned == engine,
                   onTap: blocked.containsKey(engine)
                       ? null

@@ -273,6 +273,8 @@ class ListenNotifier extends Notifier<ListenState> {
           _liveCaptions.remove(turn);
           _record(id, startMs, now);
         }
+      case LiveCaptionAudio():
+        break;
       case LiveCaptionStopped(:final denial):
         unawaited(_fallBackFromLive(denial));
     }

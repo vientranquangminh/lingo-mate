@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,9 +7,12 @@ import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/audio/audio_frame.dart';
 import '../../../../core/audio/audio_pipeline.dart';
 import '../../../../core/audio/echo_gate.dart';
+import '../../../../core/audio/pcm_player.dart';
 import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/engines/engine_instances.dart';
 import '../../../../core/engines/engines.dart';
+import '../../../../core/engines/live/live_access.dart';
+import '../../../../core/engines/live/live_captioner.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
 import '../../../../core/engines/translate/gemini_text_translator.dart';
@@ -50,6 +54,14 @@ class ConversationNotifier extends Notifier<ConversationState> {
   StreamSubscription<AudioSegment>? _segments;
   Future<void> _queue = Future.value();
   int _nextId = 0;
+  EngineSelection? _lastSelection;
+  bool _liveOff = false;
+  final _live = <LiveCaptioner>[];
+  final _liveSubscriptions = <StreamSubscription<Object>>[];
+  final _liveTurns = <(Speaker, int), (int id, int startMs)>{};
+  PcmPlayer? _player;
+  int _playbackEndsAtMs = 0;
+  Timer? _gateTimer;
 
   EngineRequest get _request =>
       EngineRequest(mode: SessionMode.conversation, pair: pair);
@@ -69,15 +81,35 @@ class ConversationNotifier extends Notifier<ConversationState> {
         )
         .read()
         .value;
+    _lastSelection = current;
     return ConversationState(
       pair: pair,
-      engine: current?.conversationEngine,
+      engine: current == null ? null : _engineOf(current),
       blocked: current?.blocked ?? const {},
     );
   }
 
-  /// Starts listening for [speaker], or stops when that side is already listening; leaves auto mode.
+  /// The engine Conversation uses: Live (two-way, one open mic) while it works, else the text engines.
+  EngineKind? _engineOf(EngineSelection selection) =>
+      selection.engine == EngineKind.live && !_liveOff
+      ? EngineKind.live
+      : selection.conversationEngine;
+
+  /// Uses the text engines from now on, e.g. after declining sign-in for Live (AC-13.6).
+  void skipLive() {
+    _liveOff = true;
+    final selection = _lastSelection;
+    if (selection != null) {
+      _onSelection(selection);
+    }
+  }
+
+  /// Starts listening for [speaker], or stops when that side is already listening; leaves auto mode. On Live, starts or stops two-way Live.
   Future<void> toggleMic(Speaker speaker) async {
+    if (state.engine == EngineKind.live) {
+      await _toggleLive();
+      return;
+    }
     final current = state.listening;
     await _stopListening();
     if (current == speaker || !ref.mounted) {
@@ -94,6 +126,10 @@ class ConversationNotifier extends Notifier<ConversationState> {
 
   /// Turns auto mode on (one open mic, each utterance assigned to A or B by language, AC-02.5) or off.
   Future<void> toggleAuto() async {
+    if (state.engine == EngineKind.live) {
+      await _toggleLive();
+      return;
+    }
     final wasAuto = state.auto;
     await _stopListening();
     if (wasAuto || !ref.mounted) {
@@ -104,6 +140,203 @@ class ConversationNotifier extends Notifier<ConversationState> {
           _queue = _queue.then((_) => _onAutoSegment(recognizer, segment)),
       onOpen: () => state = state.copyWith(auto: true),
     );
+  }
+
+  /// Starts or stops two-way Live: one Live Translate session into each language on the same mic, spoken aloud with the mic gated (F-05, OQ-4).
+  Future<void> _toggleLive() async {
+    if (state.liveListening) {
+      await _stopLive();
+      if (ref.mounted) {
+        state = state.copyWith(auto: false);
+      }
+      return;
+    }
+    final access = ref.read(liveAccessProvider);
+    final open = ref.read(liveSessionOpenerProvider);
+    final model = ref.read(engineRemoteConfigProvider).modelLiveTranslate;
+    final captioners = [
+      for (final speaker in Speaker.values)
+        LiveCaptioner(
+          access: access,
+          openSession: open,
+          model: model,
+          target: state.languageOf(speaker.other),
+          mode: SessionMode.conversation,
+        ),
+    ];
+    for (final captioner in captioners) {
+      if (!await captioner.start()) {
+        final denial = captioner.denial;
+        for (final c in captioners) {
+          await c.stop();
+        }
+        if (ref.mounted) {
+          state = state.copyWith(
+            liveDenial: denial,
+            liveStops: state.liveStops + 1,
+          );
+          skipLive();
+          await toggleAuto();
+        }
+        return;
+      }
+    }
+    final pipeline = AudioPipeline(
+      capture: ref.read(audioCaptureProvider),
+      vad: EnergyVoiceActivityDetector(),
+      echoGate: _gate,
+    );
+    if (!await pipeline.start()) {
+      for (final c in captioners) {
+        await c.stop();
+      }
+      await pipeline.dispose();
+      if (ref.mounted) {
+        state = state.copyWith(paused: () => PauseReason.micDenied);
+      }
+      return;
+    }
+    if (!ref.mounted) {
+      for (final c in captioners) {
+        await c.stop();
+      }
+      await pipeline.dispose();
+      return;
+    }
+    final player = ref.read(livePlayerProvider);
+    await player.start().catchError((Object _) {});
+    _player = player;
+    _pipeline = pipeline;
+    _live.addAll(captioners);
+    _liveSubscriptions.add(
+      pipeline.liveChunks.listen((chunk) {
+        for (final c in _live) {
+          c.send(chunk);
+        }
+      }),
+    );
+    for (final (i, speaker) in Speaker.values.indexed) {
+      _liveSubscriptions.add(
+        captioners[i].events.listen((e) => _onLiveEvent(speaker, e)),
+      );
+    }
+    state = state.copyWith(auto: true, paused: () => null);
+  }
+
+  /// Shows a Live turn for [speaker] as it grows and plays its speech; a stop falls back to the text engines.
+  void _onLiveEvent(Speaker speaker, LiveCaptionEvent event) {
+    if (!ref.mounted) {
+      return;
+    }
+    switch (event) {
+      case LiveCaptionUpdate(
+        :final turn,
+        :final original,
+        :final translation,
+        :final done,
+      ):
+        if (translation.isEmpty) {
+          return;
+        }
+        final now = _clock();
+        var entry = _liveTurns[(speaker, turn)];
+        if (entry == null) {
+          _ensureSession();
+          final created = ConversationTurn(
+            id: _nextId++,
+            speaker: speaker,
+            from: state.languageOf(speaker),
+            to: state.languageOf(speaker.other),
+            original: original,
+            engine: EngineKind.live,
+          );
+          entry = (created.id, now);
+          _liveTurns[(speaker, turn)] = entry;
+          state = state.copyWith(turns: [...state.turns, created]);
+        }
+        final (id, startMs) = entry;
+        _updateTurn(
+          id,
+          (t) => t.copyWith(
+            original: original,
+            translation: translation,
+            engine: EngineKind.live,
+            status: done ? TurnStatus.translated : TurnStatus.translating,
+          ),
+        );
+        if (done) {
+          _liveTurns.remove((speaker, turn));
+          _record(id, startMs, now);
+        }
+      case LiveCaptionAudio(:final pcm24k):
+        if (state.speakOn) {
+          unawaited(_player?.write(pcm24k).catchError((Object _) {}));
+          _holdGate(pcm24k);
+        }
+      case LiveCaptionStopped(:final denial):
+        unawaited(_fallBackFromLive(denial));
+    }
+  }
+
+  /// Keeps the mic gated until the queued Live speech has played.
+  void _holdGate(Uint8List pcm24k) {
+    final now = _clock();
+    final durationMs = pcm24k.length ~/ 2 * 1000 ~/ 24000;
+    _playbackEndsAtMs =
+        (_playbackEndsAtMs > now ? _playbackEndsAtMs : now) + durationMs;
+    _gate.setSpeaking(true);
+    state = state.copyWith(speaking: true);
+    _gateTimer?.cancel();
+    _gateTimer = Timer(Duration(milliseconds: _playbackEndsAtMs - now), () {
+      _gate.setSpeaking(false);
+      if (ref.mounted) {
+        state = state.copyWith(speaking: false);
+      }
+    });
+  }
+
+  /// Leaves Live for the text engines and keeps listening in auto mode (AC-14.2).
+  Future<void> _fallBackFromLive(LiveDenial? denial) async {
+    final wasListening = state.liveListening;
+    await _stopLive();
+    if (!ref.mounted) {
+      return;
+    }
+    state = state.copyWith(
+      auto: false,
+      liveDenial: denial,
+      liveStops: state.liveStops + 1,
+    );
+    skipLive();
+    if (wasListening) {
+      await toggleAuto();
+    }
+  }
+
+  /// Stops the Live sessions, the mic and playback.
+  Future<void> _stopLive() async {
+    _gateTimer?.cancel();
+    _gateTimer = null;
+    _gate.setSpeaking(false);
+    for (final s in _liveSubscriptions) {
+      await s.cancel();
+    }
+    _liveSubscriptions.clear();
+    final live = [..._live];
+    _live.clear();
+    for (final c in live) {
+      await c.stop();
+    }
+    _liveTurns.clear();
+    final pipeline = _pipeline;
+    _pipeline = null;
+    await pipeline?.dispose();
+    final player = _player;
+    _player = null;
+    await player?.stop().catchError((Object _) {});
+    if (ref.mounted && state.speaking) {
+      state = state.copyWith(speaking: false);
+    }
   }
 
   /// Opens the mic and routes each segment to [onSegment]; [onOpen] runs once the mic is live.
@@ -194,7 +427,8 @@ class ConversationNotifier extends Notifier<ConversationState> {
 
   /// Tracks the engine; a change mid-session raises the switched notice (AC-02.7).
   void _onSelection(EngineSelection selection) {
-    final engine = selection.conversationEngine;
+    _lastSelection = selection;
+    final engine = _engineOf(selection);
     final previous = state.engine;
     final switched = previous != null && engine != null && engine != previous;
     if (switched && _sessionId != null) {
@@ -433,6 +667,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
 
   /// Releases the mic, stops speech and saves the session with its duration and engine summary (AC-02.10).
   void _dispose() {
+    unawaited(_stopLive());
     unawaited(_segments?.cancel());
     unawaited(_pipeline?.dispose());
     unawaited(_tts.stop().catchError((Object _) {}));

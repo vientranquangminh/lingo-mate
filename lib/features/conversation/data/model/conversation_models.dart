@@ -39,6 +39,7 @@ class ConversationTurn extends Equatable {
   final TurnStatus status;
 
   ConversationTurn copyWith({
+    String? original,
     String? translation,
     EngineKind? engine,
     bool? fallback,
@@ -49,7 +50,7 @@ class ConversationTurn extends Equatable {
       speaker: speaker,
       from: from,
       to: to,
-      original: original,
+      original: original ?? this.original,
       translation: translation ?? this.translation,
       engine: engine ?? this.engine,
       fallback: fallback ?? this.fallback,

@@ -923,5 +923,9 @@
   "planFree": "Free plan",
   "planStandardWeek": "Standard this week",
   "liveQuotaFallback": "Live time is used up for now; using Standard.",
-  "liveUnavailableFallback": "Live isn't available right now; using Standard."
+  "liveUnavailableFallback": "Live isn't available right now; using Standard.",
+  "conversationLiveOn": "Live: speak naturally in either language. Translations play as you talk.",
+  "engineLiveHint": "Realtime, translates while people talk",
+  "engineStandardHint": "Online, after each sentence",
+  "engineOfflineHint": "On this phone, no internet needed"
 }

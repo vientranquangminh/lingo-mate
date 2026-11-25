@@ -235,16 +235,21 @@ void main() {
     },
   );
 
-  test('Live maps to Standard until two-way Live is settled (OQ-4)', () async {
-    final c = await build();
+  test(
+    'Live is used when picked, and skipping it falls back to Standard',
+    () async {
+      final c = await build();
 
-    c
-        .read(fakeSelectionProvider.notifier)
-        .set(const EngineSelection(engine: EngineKind.live, blocked: {}));
-    await pumpEventQueue();
+      c
+          .read(fakeSelectionProvider.notifier)
+          .set(const EngineSelection(engine: EngineKind.live, blocked: {}));
+      await pumpEventQueue();
+      expect(c.read(conversationProvider(pair)).engine, EngineKind.live);
 
-    expect(c.read(conversationProvider(pair)).engine, EngineKind.standard);
-  });
+      notifier(c).skipLive();
+      expect(c.read(conversationProvider(pair)).engine, EngineKind.standard);
+    },
+  );
 
   test('pauses with a hint when no speech model is installed', () async {
     fakes.hasRecognizer = false;
