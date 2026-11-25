@@ -15,6 +15,7 @@ enum EngineBlock {
   liveQuota,
   standardQuota,
   standardFailing,
+  standardDisabled,
   packsMissing,
 }
 
@@ -47,6 +48,7 @@ class EngineSelectionInput extends Equatable {
     this.liveQuotaOk = true,
     this.standardQuotaOk = true,
     this.standardFailing = false,
+    this.standardEnabled = true,
     this.packsInstalled = false,
   });
 
@@ -61,6 +63,7 @@ class EngineSelectionInput extends Equatable {
   final bool liveQuotaOk;
   final bool standardQuotaOk;
   final bool standardFailing;
+  final bool standardEnabled;
   final bool packsInstalled;
 
   @override
@@ -76,6 +79,7 @@ class EngineSelectionInput extends Equatable {
     liveQuotaOk,
     standardQuotaOk,
     standardFailing,
+    standardEnabled,
     packsInstalled,
   ];
 }
@@ -146,6 +150,8 @@ abstract final class EngineSelector {
     return switch (engine) {
       EngineKind.live when !input.liveEnabled => EngineBlock.liveDisabled,
       EngineKind.live when !input.liveQuotaOk => EngineBlock.liveQuota,
+      EngineKind.standard when !input.standardEnabled =>
+        EngineBlock.standardDisabled,
       EngineKind.standard when !input.standardQuotaOk =>
         EngineBlock.standardQuota,
       EngineKind.standard when input.standardFailing =>

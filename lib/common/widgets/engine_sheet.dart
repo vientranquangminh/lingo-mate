@@ -142,6 +142,7 @@ class EngineSheet extends StatelessWidget {
       EngineBlock.liveQuota => l10n.engineBlockLiveQuota,
       EngineBlock.standardQuota => l10n.engineBlockStandardQuota,
       EngineBlock.standardFailing => l10n.engineBlockStandardFailing,
+      EngineBlock.standardDisabled => l10n.engineBlockStandardDisabled,
       EngineBlock.packsMissing => l10n.engineBlockPacksMissing,
     };
   }

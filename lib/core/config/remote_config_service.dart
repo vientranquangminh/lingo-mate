@@ -54,6 +54,17 @@ class RemoteConfigService {
     );
   }
 
+  /// Fires after values published in the console are activated, so kill switches apply without a restart.
+  Stream<void> get updates {
+    final remoteConfig = _remoteConfig;
+    if (remoteConfig == null) {
+      return const Stream.empty();
+    }
+    return remoteConfig.onConfigUpdated.asyncMap(
+      (_) => remoteConfig.activate(),
+    );
+  }
+
   String get modelTextTranslate => _string(RemoteDefaults.modelTextTranslate);
   String get modelTextReview => _string(RemoteDefaults.modelTextReview);
   String get privacyPolicyUrl => _string(RemoteDefaults.privacyPolicyUrl);
@@ -65,6 +76,10 @@ class RemoteConfigService {
   bool get meetingOverlayEnabled => _bool(RemoteDefaults.ffMeetingOverlay);
   bool get postSessionReviewEnabled =>
       _bool(RemoteDefaults.ffPostSessionReview);
+  bool get standardEnabled => _bool(RemoteDefaults.ffStandardEnabled);
+  bool get summaryEnabled => _bool(RemoteDefaults.ffSummary);
+  bool get suggestReplyEnabled => _bool(RemoteDefaults.ffSuggestReply);
+  bool get glossaryEnabled => _bool(RemoteDefaults.ffGlossary);
   bool get paywallEnabled => _bool(RemoteDefaults.ffPaywall);
   bool get emailLinkSigninEnabled => _bool(RemoteDefaults.ffEmailLinkSignin);
   bool get manageSubscriptionEnabled =>

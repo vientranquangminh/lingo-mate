@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/common/resources/app_config.dart';
 import 'package:lingo_mate/core/background/background_capture.dart';
+import 'package:lingo_mate/core/config/feature_switches.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/platform/system_settings.dart';
 import 'package:lingo_mate/features/meeting/data/notifier/meeting_notifier.dart';
@@ -204,6 +205,18 @@ void main() {
     await tester.pumpAndSettle();
     expect(copied, ['Could you say that again?']);
     await tester.pump(const Duration(seconds: 4));
+  });
+
+  testWidgets('the Suggest reply kill switch hides the button', (tester) async {
+    fakes.switches = const FeatureSwitches(suggestReply: false);
+    fakes.recognizer.texts.add('so we can ship by Friday');
+    await pumpPage(tester);
+    await tester.tap(find.text('Start'));
+    await settle(tester);
+    await speak(tester);
+
+    expect(find.text('[vi] so we can ship by Friday'), findsOneWidget);
+    expect(find.bySemanticsLabel('Suggest reply'), findsNothing);
   });
 
   testWidgets('without the overlay permission, Meeting runs in the app only '

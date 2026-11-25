@@ -9,6 +9,7 @@ import '../../../../common/widgets/app_circle_icon_button.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_outlined_button.dart';
 import '../../../../common/widgets/app_toast.dart';
+import '../../../../core/config/feature_switches.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/learning/learning_assistant.dart';
 import '../../../../core/learning/learning_models.dart';
@@ -44,13 +45,12 @@ class _SessionLearningSectionState
     final session = widget.detail.session;
     final online = ref.watch(onlineProvider).value ?? true;
     final recap = SessionRecap.decode(session.summary);
-    final canSummarize = LearningRules.canSummarize(
-      session.mode,
-      session.durationSec,
-    );
+    final canSummarize =
+        LearningRules.canSummarize(session.mode, session.durationSec) &&
+        ref.watch(featureSwitchesProvider.select((s) => s.summary));
     final canReview =
         LearningRules.canReview(widget.detail.utterances) &&
-        ref.watch(postSessionReviewEnabledProvider);
+        ref.watch(featureSwitchesProvider.select((s) => s.postSessionReview));
     if (recap == null && !canSummarize && !canReview) {
       return const SizedBox.shrink();
     }

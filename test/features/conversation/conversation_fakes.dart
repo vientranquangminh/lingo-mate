@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:lingo_mate/core/audio/audio_capture.dart';
 import 'package:lingo_mate/core/audio/audio_frame.dart';
 import 'package:lingo_mate/core/audio/voice_activity_detector.dart';
+import 'package:lingo_mate/core/config/feature_switches.dart';
 import 'package:lingo_mate/core/database/app_database.dart';
 import 'package:lingo_mate/core/engines/engine_instances.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
@@ -175,6 +176,7 @@ class ConversationFakes {
   bool hasRecognizer = true;
   bool online = true;
   final learning = FakeLearningAssistant();
+  FeatureSwitches? switches;
   int nowMs = 0;
   final db = AppDatabase(NativeDatabase.memory());
   late SharedPreferences prefs;
@@ -198,7 +200,9 @@ class ConversationFakes {
     ),
     onlineProvider.overrideWith((ref) => Stream.value(online)),
     learningAssistantProvider.overrideWithValue(learning),
-    postSessionReviewEnabledProvider.overrideWithValue(reviewEnabled),
+    featureSwitchesProvider.overrideWithValue(
+      switches ?? FeatureSwitches(postSessionReview: reviewEnabled),
+    ),
     appDatabaseProvider.overrideWithValue(db),
     micPermissionProvider.overrideWithValue(FakeMicPermission()),
     sharedPreferencesProvider.overrideWithValue(prefs),

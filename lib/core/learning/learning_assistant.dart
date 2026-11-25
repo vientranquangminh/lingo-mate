@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../ai/generative_model_factory.dart';
 import '../di/di.dart';
-import '../engines/selection/engine_providers.dart';
 import 'learning_models.dart';
 import 'learning_prompts.dart';
 
@@ -179,9 +178,4 @@ class GeminiLearningAssistant implements LearningAssistant {
 /// The learning assistant.
 final learningAssistantProvider = Provider<LearningAssistant>(
   (ref) => GeminiLearningAssistant.firebase(getIt<GenerativeModelFactory>()),
-);
-
-/// Whether the post-session review is switched on in Remote Config (`ff_post_session_review`).
-final postSessionReviewEnabledProvider = Provider<bool>(
-  (ref) => ref.watch(engineRemoteConfigProvider).postSessionReviewEnabled,
 );
