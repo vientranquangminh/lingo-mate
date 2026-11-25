@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../database/app_database.dart';
 import '../engines/selection/engine_selector.dart';
+import '../review/review_repository.dart';
 import '../sessions/session_repository.dart';
 
 /// Which phrases a list shows (AC-08.4).
@@ -95,7 +96,7 @@ class PhraseRepository {
     (_) => _random.nextInt(256).toRadixString(16).padLeft(2, '0'),
   ).join();
 
-  /// Saves a phrase unless one with the same source text and language pair exists (AC-08.1, AC-08.2).
+  /// Saves a phrase with its review cards unless one with the same source text and language pair exists (AC-08.1, AC-08.2).
   Future<SaveResult> save({
     required String sourceLang,
     required String sourceText,
@@ -137,6 +138,7 @@ class PhraseRepository {
             updatedAt: now,
           ),
         );
+    await ReviewRepository(_db, now: _now).addCards(id);
     return SaveResult(SaveOutcome.saved, id);
   }
 

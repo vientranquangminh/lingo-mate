@@ -8,4 +8,5 @@
     <string name="overlay_collapse">Show fewer lines</string>
     <string name="overlay_stop">Stop translating</string>
     <string name="overlay_saved">Saved to phrasebook</string>
+    <string name="notification_channel_review">Review reminders</string>
 </resources>

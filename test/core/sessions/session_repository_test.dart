@@ -239,6 +239,7 @@ void main() {
       await v1.customStatement('DROP TRIGGER $name');
     }
     await v1.customStatement('DROP TABLE utterances_fts');
+    await v1.customStatement('DROP TABLE srs_cards');
     await v1.customStatement('PRAGMA user_version = 1');
     await v1.close();
 

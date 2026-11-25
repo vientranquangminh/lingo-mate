@@ -4,6 +4,7 @@ import android.view.WindowManager
 import com.lingomate.app.channels.AppLocaleChannel
 import com.lingomate.app.channels.BackgroundChannel
 import com.lingomate.app.channels.PcmPlayerChannel
+import com.lingomate.app.channels.ReviewReminderChannel
 import com.lingomate.app.channels.SystemSettingsChannel
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -14,6 +15,7 @@ class MainActivity : FlutterActivity() {
     private var background: BackgroundChannel? = null
     private var systemSettings: SystemSettingsChannel? = null
     private var appLocale: AppLocaleChannel? = null
+    private var reviewReminder: ReviewReminderChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -21,6 +23,7 @@ class MainActivity : FlutterActivity() {
         pcmPlayer = PcmPlayerChannel(messenger)
         appLocale = AppLocaleChannel(messenger, applicationContext)
         background = BackgroundChannel(messenger, applicationContext)
+        reviewReminder = ReviewReminderChannel(messenger, applicationContext)
         systemSettings = SystemSettingsChannel(messenger, applicationContext) { on ->
             runOnUiThread {
                 if (on) {
@@ -41,6 +44,8 @@ class MainActivity : FlutterActivity() {
         systemSettings = null
         appLocale?.dispose()
         appLocale = null
+        reviewReminder?.dispose()
+        reviewReminder = null
         super.cleanUpFlutterEngine(flutterEngine)
     }
 }

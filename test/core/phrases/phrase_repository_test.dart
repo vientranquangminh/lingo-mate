@@ -226,6 +226,7 @@ void main() {
       await old.customStatement('DROP TRIGGER $name');
     }
     await old.customStatement('DROP TABLE phrases_fts');
+    await old.customStatement('DROP TABLE srs_cards');
     await old.customStatement('PRAGMA user_version = 2');
     await old.close();
 
