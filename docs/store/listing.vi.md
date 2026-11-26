@@ -23,6 +23,9 @@ Bài giảng, tour du lịch, thông báo: phụ đề trực tiếp bằng ngô
 HỌP
 Vào Zoom, Meet hay Teams trên laptop và đặt điện thoại cạnh loa. Phụ đề nổi hiện trên các ứng dụng khác, và Gợi ý trả lời đưa ra ba câu đáp lịch sự để bạn sao chép. Sau cuộc họp, xem bản tóm tắt cùng thuật ngữ chính và việc cần làm.
 
+ĐA PHƯƠNG TIỆN
+Phụ đề cho video và podcast đang phát trên điện thoại.
+
 DÙNG ĐƯỢC KHI OFFLINE
 Tải gói ngôn ngữ và dịch không cần kết nối: ở nước ngoài, trên máy bay, khi sóng yếu. Nhận dạng giọng nói chạy ngay trên điện thoại.
 
@@ -33,7 +36,7 @@ CỤM TỪ NHANH
 Nhà hàng, taxi, khách sạn, sân bay, mua sắm, sức khoẻ và hơn thế: chạm vào một câu, điện thoại sẽ nói giúp bạn.
 
 HỌC TRONG KHI DÙNG
-Xem người bản xứ sẽ nói câu của bạn thế nào, và lưu bảng thuật ngữ cho tên riêng, từ chuyên môn để bản dịch dùng đúng từ bạn muốn.
+Xem người bản xứ sẽ nói câu của bạn thế nào, luyện hội thoại theo tình huống, và lưu bảng thuật ngữ cho tên riêng, từ chuyên môn để bản dịch dùng đúng từ bạn muốn.
 
 RIÊNG TƯ NGAY TỪ THIẾT KẾ
 Âm thanh không bao giờ được lưu; với công cụ Ngoại tuyến, âm thanh không rời khỏi điện thoại. Bản ghi và cụm từ ở lại trên điện thoại. Chọn công cụ Ngoại tuyến cho cuộc trò chuyện bí mật. Không quảng cáo, không cần tài khoản.

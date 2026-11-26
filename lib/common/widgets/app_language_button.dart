@@ -10,7 +10,18 @@ import 'app_action_sheet.dart';
 import 'app_icon.dart';
 
 /// Endonyms of the app's UI languages (F-11).
-const appLanguageEndonyms = {'en': 'English', 'vi': 'Tiếng Việt'};
+const appLanguageEndonyms = {
+  'en': 'English',
+  'vi': 'Tiếng Việt',
+  'ja': '日本語',
+  'ko': '한국어',
+  'zh': '中文',
+  'th': 'ไทย',
+  'id': 'Bahasa Indonesia',
+  'es': 'Español',
+  'fr': 'Français',
+  'de': 'Deutsch',
+};
 
 /// Opens the app language choices: phone language, then each UI language by its endonym (AC-11.4, AC-11.5).
 Future<void> showAppLanguageSheet(BuildContext context, WidgetRef ref) {
@@ -65,10 +76,14 @@ class AppLanguageButton extends ConsumerWidget {
                 children: [
                   AppIcon(AppIcons.language, size: 20, color: scheme.onSurface),
                   SizedBox(width: AppParams.spacing8.w),
-                  Text(
-                    label,
-                    style: context.textTheme.labelLarge?.copyWith(
-                      color: scheme.onSurface,
+                  Flexible(
+                    child: Text(
+                      label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textTheme.labelLarge?.copyWith(
+                        color: scheme.onSurface,
+                      ),
                     ),
                   ),
                   SizedBox(width: AppParams.spacing4.w),

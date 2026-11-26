@@ -23,6 +23,9 @@ Lectures, tours, announcements: live captions in your language, large and easy t
 MEETING
 Join Zoom, Meet or Teams on your laptop and put your phone next to the speaker. Floating captions sit over your other apps, and Suggest reply offers three polite answers you can copy. After the meeting, get a summary with key terms and action items.
 
+MEDIA
+Captions for videos and podcasts playing on your phone.
+
 WORKS OFFLINE
 Download a language pack and translate with no connection at all: abroad, on a plane, with poor signal. Speech recognition runs on your phone.
 
@@ -33,7 +36,7 @@ QUICK PHRASES
 Restaurant, taxi, hotel, airport, shopping, health and more: tap a phrase and the phone says it for you.
 
 LEARN AS YOU GO
-See how a native speaker would have said your sentences, and keep a glossary of names and terms so translations use the words you prefer.
+See how a native speaker would have said your sentences, practise conversations by situation, and keep a glossary of names and terms so translations use the words you prefer.
 
 PRIVATE BY DESIGN
 Audio is never saved; with the Offline engine it never leaves your phone. Transcripts and phrases stay on your phone. Choose the Offline engine for confidential conversations. No ads, no account needed.

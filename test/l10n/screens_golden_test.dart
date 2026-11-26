@@ -126,8 +126,11 @@ Future<void> _seed(ConversationFakes fakes) async {
 void main() {
   setUpAll(_loadFonts);
 
-  for (final locale in ['en', 'vi']) {
-    for (final scale in [1.0, 2.0]) {
+  const goldenLocales = ['en', 'vi'];
+  const otherLocales = ['ja', 'ko', 'zh', 'th', 'id', 'es', 'fr', 'de'];
+  for (final locale in [...goldenLocales, ...otherLocales]) {
+    final golden = goldenLocales.contains(locale);
+    for (final scale in golden ? [1.0, 2.0] : [2.0]) {
       for (final build in _screens) {
         final name = build().name;
         testWidgets(
@@ -183,7 +186,7 @@ void main() {
                 .go(target.location, extra: target.extra);
             await settle(tester);
 
-            if (Platform.isLinux) {
+            if (golden && Platform.isLinux) {
               await expectLater(
                 find.byType(MyApp),
                 matchesGoldenFile('goldens/$name.$locale.${scale}x.png'),
