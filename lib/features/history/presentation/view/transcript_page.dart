@@ -1,3 +1,5 @@
+import '../../../../common/widgets/app_skeleton.dart';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +12,6 @@ import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/app_action_sheet.dart';
 import '../../../../common/widgets/app_circle_icon_button.dart';
-import '../../../../common/widgets/app_circular_progress_indicator.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_dialog.dart';
 import '../../../../common/widgets/app_scaffold.dart';
@@ -35,14 +36,11 @@ class TranscriptPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.localization;
-    final scheme = Theme.of(context).colorScheme;
     final detail = ref.watch(transcriptProvider(sessionId));
     return AppPlatformScaffold(
       body: SafeArea(
         child: detail.when(
-          loading: () => Center(
-            child: AppCircularProgressIndicator(color: scheme.primary),
-          ),
+          loading: () => const AppSkeletonList(),
           error: (_, _) => _Missing(text: l10n.transcriptMissing),
           data: (value) => value == null
               ? _Missing(text: l10n.transcriptMissing)

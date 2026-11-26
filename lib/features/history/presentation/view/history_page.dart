@@ -1,3 +1,5 @@
+import '../../../../common/widgets/app_skeleton.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +8,6 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_colors.dart';
 import '../../../../common/resources/app_params.dart';
-import '../../../../common/widgets/app_circular_progress_indicator.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_app_bar.dart';
 import '../../../../common/widgets/app_scaffold.dart';
@@ -78,11 +79,7 @@ class _SessionList extends ConsumerWidget {
     final locale = Localizations.localeOf(context).toLanguageTag();
     final sessions = ref.watch(historySessionsProvider);
     return sessions.when(
-      loading: () => Center(
-        child: AppCircularProgressIndicator(
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
+      loading: () => const AppSkeletonList(),
       error: (_, _) => _Message(l10n.historyEmpty),
       data: (items) {
         if (items.isEmpty) {

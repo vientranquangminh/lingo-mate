@@ -1,3 +1,5 @@
+import '../../../../common/widgets/app_motion.dart';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -101,11 +103,21 @@ class PackRow extends StatelessWidget {
               ),
               if (status == PackStatus.downloading) ...[
                 SizedBox(height: AppParams.spacing12.h),
-                LinearProgressIndicator(
-                  value: pack.speechSpec == null ? null : pack.speechProgress,
-                  color: scheme.primary,
-                  backgroundColor: scheme.surfaceContainerHigh,
-                ),
+                if (pack.speechSpec == null)
+                  LinearProgressIndicator(
+                    color: scheme.primary,
+                    backgroundColor: scheme.surfaceContainerHigh,
+                  )
+                else
+                  TweenAnimationBuilder<double>(
+                    tween: Tween(end: pack.speechProgress),
+                    duration: AppMotion.of(context),
+                    builder: (context, value, _) => LinearProgressIndicator(
+                      value: value,
+                      color: scheme.primary,
+                      backgroundColor: scheme.surfaceContainerHigh,
+                    ),
+                  ),
               ],
               if (status == PackStatus.ready && pack.voiceMissing)
                 Padding(

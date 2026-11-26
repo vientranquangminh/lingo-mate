@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/auth/auth_models.dart';
 import '../../../../core/engines/live/live_access.dart';
+import '../../../../common/widgets/app_motion.dart';
 import '../../../../common/widgets/draft_line.dart';
 import '../../../../common/widgets/usage_sheet.dart';
 import '../../../../common/widgets/require_sign_in.dart';
@@ -411,7 +412,7 @@ class _Captions extends StatelessWidget {
             (state.paused ? 1 : 0),
         itemBuilder: (context, index) {
           if (index == state.captions.length && draft != null) {
-            return DraftLine(text: draft);
+            return AppFadeSlideIn(child: DraftLine(text: draft));
           }
           if (index >= state.captions.length) {
             return Padding(
@@ -425,7 +426,10 @@ class _Captions extends StatelessWidget {
             );
           }
           final caption = state.captions[index];
-          return CaptionTile(key: ValueKey(caption.id), caption: caption);
+          return AppFadeSlideIn(
+            key: ValueKey(caption.id),
+            child: CaptionTile(caption: caption),
+          );
         },
       ),
     );

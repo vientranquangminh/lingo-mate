@@ -1,3 +1,5 @@
+import '../../../../common/widgets/app_skeleton.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
@@ -6,7 +8,6 @@ import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/app_circle_icon_button.dart';
-import '../../../../common/widgets/app_circular_progress_indicator.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_elevated_button.dart';
 import '../../../../common/widgets/app_platform_outlined_button.dart';
@@ -73,9 +74,7 @@ class ReviewPage extends ConsumerWidget {
             ),
             Expanded(
               child: switch (state.status) {
-                ReviewStatus.loading => Center(
-                  child: AppCircularProgressIndicator(color: scheme.primary),
-                ),
+                ReviewStatus.loading => const AppSkeletonList(rows: 2),
                 ReviewStatus.active => _Session(state: state),
                 ReviewStatus.done => _Done(state: state),
               },

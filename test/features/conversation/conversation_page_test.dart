@@ -348,7 +348,7 @@ void main() {
       ..add(pcm(1000, amplitude: 4000))
       ..add(pcm(700));
     await settle(tester);
-    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
 
     await tester.longPress(find.text('[en] Xin chào'));
     await tester.pumpAndSettle();

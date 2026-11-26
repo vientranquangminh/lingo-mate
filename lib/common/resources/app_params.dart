@@ -18,6 +18,10 @@ class AppParams {
   static const toastDuration = Duration(seconds: 3);
   static const undoDuration = Duration(seconds: 5);
   static const standardDuration = Duration(milliseconds: 200);
+  static const enterDuration = Duration(milliseconds: 260);
+  static const shimmerDuration = Duration(milliseconds: 1300);
+  static const enterOffset = 0.08;
+  static const skeletonLineHeight = 14.0;
 
   static const buttonHeight = 48.0;
   static const timePickerHeight = 280.0;

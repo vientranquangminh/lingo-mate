@@ -1,3 +1,5 @@
+import '../../../../common/widgets/app_skeleton.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
@@ -5,7 +7,6 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
-import '../../../../common/widgets/app_circular_progress_indicator.dart';
 import '../../../../common/widgets/app_platform_app_bar.dart';
 import '../../../../common/widgets/app_platform_dialog.dart';
 import '../../../../common/widgets/app_platform_switch.dart';
@@ -108,7 +109,7 @@ class _LanguagePacksPageState extends ConsumerState<LanguagePacksPage> {
     return AppPlatformScaffold(
       appBar: AppPlatformAppBar(title: Text(l10n.packsTitle)),
       body: state.loading
-          ? const Center(child: AppCircularProgressIndicator())
+          ? const AppSkeletonList()
           : ListView(
               padding: EdgeInsets.symmetric(
                 horizontal: AppParams.spacing16.w,

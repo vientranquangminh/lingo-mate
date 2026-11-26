@@ -1,3 +1,5 @@
+import '../../../../common/widgets/app_skeleton.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
@@ -5,7 +7,6 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/app_circle_icon_button.dart';
-import '../../../../common/widgets/app_circular_progress_indicator.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_outlined_button.dart';
 import '../../../../common/widgets/app_scaffold.dart';
@@ -59,9 +60,7 @@ class PhrasingReviewPage extends ConsumerWidget {
             ),
             Expanded(
               child: review.when(
-                loading: () => Center(
-                  child: AppCircularProgressIndicator(color: scheme.primary),
-                ),
+                loading: () => const AppSkeletonList(rows: 3),
                 error: (_, _) => _Message(
                   text: l10n.learningFailed,
                   action: l10n.learningRetry,

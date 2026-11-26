@@ -2,12 +2,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../common/widgets/app_motion.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/app_banner.dart';
 import '../../../../common/widgets/app_circle_icon_button.dart';
-import '../../../../common/widgets/app_circular_progress_indicator.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_platform_app_bar.dart';
 import '../../../../common/widgets/app_scaffold.dart';
@@ -134,20 +134,21 @@ class _RoleplayPageState extends ConsumerState<RoleplayPage> {
                 controller: _scroll,
                 padding: EdgeInsets.all(AppParams.spacing16.r),
                 children: [
-                  for (final message in state.messages)
-                    RoleplayBubble(
-                      message: message,
-                      targetLang: widget.scene.targetLang,
-                      userLang: widget.scene.userLang,
+                  for (final (index, message) in state.messages.indexed)
+                    AppFadeSlideIn(
+                      key: ValueKey(index),
+                      child: RoleplayBubble(
+                        message: message,
+                        targetLang: widget.scene.targetLang,
+                        userLang: widget.scene.userLang,
+                      ),
                     ),
                   if (state.waiting)
                     Align(
                       alignment: AlignmentDirectional.centerStart,
                       child: Padding(
                         padding: EdgeInsets.all(AppParams.spacing12.r),
-                        child: AppCircularProgressIndicator(
-                          color: scheme.primary,
-                        ),
+                        child: AppTypingDots(color: scheme.primary),
                       ),
                     ),
                 ],

@@ -1,3 +1,5 @@
+import 'app_motion.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -158,9 +160,15 @@ class UsageBar extends StatelessWidget {
                 height: AppParams.progressBarHeight.h,
                 color: scheme.surfaceContainerHigh,
                 alignment: AlignmentDirectional.centerStart,
-                child: FractionallySizedBox(
-                  widthFactor: fraction.clamp(0, 1).toDouble(),
-                  heightFactor: 1,
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(end: fraction.clamp(0, 1).toDouble()),
+                  duration: AppMotion.of(context, AppParams.enterDuration),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, child) => FractionallySizedBox(
+                    widthFactor: value,
+                    heightFactor: 1,
+                    child: child,
+                  ),
                   child: ColoredBox(
                     color: full ? scheme.error : scheme.primary,
                   ),

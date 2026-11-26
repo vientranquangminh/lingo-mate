@@ -14,4 +14,8 @@
     <string name="widget_description">Start a conversation and say your favourite quick phrases.</string>
     <string name="tile_meeting">Meeting captions</string>
     <string name="notification_translating_media">Translating media</string>
+    <string name="overlay_minimize">Minimize captions</string>
+    <string name="overlay_restore">Show captions</string>
+    <string name="overlay_stop_confirm">Tap again to stop</string>
+    <string name="overlay_waiting">Listening…</string>
 </resources>

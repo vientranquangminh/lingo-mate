@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/app_motion.dart';
 import '../../data/model/listen_models.dart';
 
 /// One caption: time from the start, the translation large and the original small below (S-06).
@@ -44,15 +45,22 @@ class CaptionTile extends StatelessWidget {
                 color: scheme.onSurfaceVariant,
               ),
             ),
-            if (translation != null) ...[
-              SizedBox(height: AppParams.spacing4.h),
-              Text(
-                translation,
-                style: context.textTheme.headlineSmall?.copyWith(
-                  color: muted ? scheme.onSurfaceVariant : scheme.onSurface,
-                ),
-              ),
-            ],
+            AppSwitcher(
+              child: translation == null
+                  ? const SizedBox(key: ValueKey('none'))
+                  : Padding(
+                      key: ValueKey(caption.status),
+                      padding: EdgeInsets.only(top: AppParams.spacing4.h),
+                      child: Text(
+                        translation,
+                        style: context.textTheme.headlineSmall?.copyWith(
+                          color: muted
+                              ? scheme.onSurfaceVariant
+                              : scheme.onSurface,
+                        ),
+                      ),
+                    ),
+            ),
             SizedBox(height: AppParams.spacing4.h),
             Text(
               caption.original,

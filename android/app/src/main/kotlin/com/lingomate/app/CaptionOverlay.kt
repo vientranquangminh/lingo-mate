@@ -1,44 +1,65 @@
 package com.lingomate.app
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.PixelFormat
-import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
+import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.util.TypedValue
-import android.view.GestureDetector
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.WindowManager
+import android.view.animation.DecelerateInterpolator
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import kotlin.math.abs
 
 /** One caption in the bubble: what was said and its translation. */
 data class OverlayLine(val original: String, val translation: String)
 
-/** Floating caption bubble drawn over other apps: engine, expand and stop on top, the latest lines below (S-08, AC-04.4/AC-04.5/AC-04.8). */
+/** Floating caption bubble drawn over other apps: drag by its header, minimise to a pill, expand to scroll back, stop with a confirming second tap (S-08, AC-04.4/AC-04.5/AC-04.8). */
 class CaptionOverlay(private val context: Context) {
     private val windowManager = context.getSystemService(WindowManager::class.java)
     private val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-    private var container: LinearLayout? = null
+    private val handler = Handler(Looper.getMainLooper())
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private var root: FrameLayout? = null
+    private var card: LinearLayout? = null
+    private var pill: ImageView? = null
     private var engineView: TextView? = null
-    private var expandView: TextView? = null
+    private var expandView: ImageView? = null
     private var stopView: TextView? = null
+    private var scroll: ScrollView? = null
     private var body: LinearLayout? = null
     private var params: WindowManager.LayoutParams? = null
     private var lines: List<OverlayLine> = emptyList()
+    private var shownLast: OverlayLine? = null
     private var engineLabel = ""
     private var engineKind = ""
-    private var expanded = false
+    private var expanded = prefs.getBoolean(KEY_EXPANDED, false)
+    private var minimized = prefs.getBoolean(KEY_MINIMIZED, false)
+    private var confirmingStop = false
+    private val endConfirm = Runnable {
+        confirmingStop = false
+        renderStop()
+    }
 
     /** Whether the app may draw over other apps. */
     fun canDraw(): Boolean = Settings.canDrawOverlays(context)
@@ -54,41 +75,16 @@ class CaptionOverlay(private val context: Context) {
     }
 
     /** Shows the bubble at its last position; returns false without permission. */
-    @SuppressLint("ClickableViewAccessibility")
     fun show(): Boolean {
         if (!canDraw()) return false
-        if (container != null) return true
-        val layout = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            background = GradientDrawable().apply {
-                setColor(color(R.color.blue_kuroi_black_a95))
-                cornerRadius = dp(16).toFloat()
-            }
-            val pad = dp(12)
-            setPadding(pad, dp(8), pad, pad)
-        }
-        val header = LinearLayout(context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        val engine = text(12f, R.color.orange_bit_of_sugar)
-        val expand = text(18f, R.color.orange_bit_of_sugar).apply {
-            text = "⤢"
-            setPadding(dp(12), dp(4), dp(12), dp(4))
-        }
-        val stop = text(18f, R.color.red_forbidden_fruit).apply {
-            text = "■"
-            contentDescription = context.getString(R.string.overlay_stop)
-            setPadding(dp(12), dp(4), dp(4), dp(4))
-        }
-        header.addView(engine, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-        header.addView(expand)
-        header.addView(stop)
-        val lineList = LinearLayout(context).apply { orientation = LinearLayout.VERTICAL }
-        layout.addView(header)
-        layout.addView(lineList)
+        if (root != null) return true
+        val frame = FrameLayout(context)
+        val cardView = buildCard()
+        val pillView = buildPill()
+        frame.addView(cardView)
+        frame.addView(pillView)
         val lp = WindowManager.LayoutParams(
-            dp(300),
+            WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
@@ -98,15 +94,14 @@ class CaptionOverlay(private val context: Context) {
             x = prefs.getInt(KEY_X, dp(16))
             y = prefs.getInt(KEY_Y, dp(120))
         }
-        layout.setOnTouchListener(TouchListener(layout, lp))
-        windowManager.addView(layout, lp)
-        container = layout
-        engineView = engine
-        expandView = expand
-        stopView = stop
-        body = lineList
+        windowManager.addView(frame, lp)
+        root = frame
+        card = cardView
+        pill = pillView
         params = lp
+        applyMode()
         render()
+        frame.post { settle(animate = false) }
         return true
     }
 
@@ -120,40 +115,247 @@ class CaptionOverlay(private val context: Context) {
 
     /** Removes the bubble. */
     fun hide() {
-        container?.let { windowManager.removeView(it) }
-        container = null
+        handler.removeCallbacks(endConfirm)
+        root?.let { windowManager.removeView(it) }
+        root = null
+        card = null
+        pill = null
         engineView = null
         expandView = null
         stopView = null
+        scroll = null
         body = null
         params = null
+        shownLast = null
+        confirmingStop = false
     }
 
-    /** Draws the header and the last 3 lines, or 8 when expanded. */
+    /** Builds the full bubble: header with engine, minimise, expand and stop, then the scrollable lines. */
+    @SuppressLint("ClickableViewAccessibility")
+    private fun buildCard(): LinearLayout {
+        val layout = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            background = rounded(R.color.blue_kuroi_black_a95, dp(16).toFloat())
+            setPadding(dp(12), dp(4), dp(4), dp(12))
+            layoutParams = FrameLayout.LayoutParams(dp(WIDTH_DP), FrameLayout.LayoutParams.WRAP_CONTENT)
+        }
+        val header = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        val engine = text(12f, R.color.orange_bit_of_sugar).apply {
+            maxLines = 1
+            ellipsize = TextUtils.TruncateAt.END
+        }
+        val minimize = iconButton(R.drawable.ic_overlay_minimize, R.color.orange_bit_of_sugar, R.string.overlay_minimize) {
+            setMinimized(true)
+        }
+        val expand = iconButton(R.drawable.ic_overlay_expand, R.color.orange_bit_of_sugar, R.string.overlay_expand) {
+            expanded = !expanded
+            prefs.edit().putBoolean(KEY_EXPANDED, expanded).apply()
+            render()
+            root?.post { settle(animate = true) }
+        }
+        val stop = text(13f, R.color.red_forbidden_fruit).apply {
+            gravity = Gravity.CENTER
+            minWidth = dp(TOUCH_DP)
+            minHeight = dp(TOUCH_DP)
+            setPadding(dp(8), 0, dp(8), 0)
+            setOnClickListener { onStopTapped() }
+        }
+        header.addView(engine, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        header.addView(minimize)
+        header.addView(expand)
+        header.addView(stop)
+        header.setOnTouchListener(DragListener(onTap = null))
+        val lineList = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(0, 0, dp(8), 0)
+        }
+        val scrollView = object : ScrollView(context) {
+            override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+                val limit = (context.resources.displayMetrics.heightPixels * MAX_HEIGHT_SHARE).toInt()
+                super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(limit, MeasureSpec.AT_MOST))
+            }
+        }.apply {
+            isVerticalScrollBarEnabled = true
+            addView(lineList)
+        }
+        layout.addView(header)
+        layout.addView(scrollView)
+        engineView = engine
+        expandView = expand
+        stopView = stop
+        scroll = scrollView
+        body = lineList
+        return layout
+    }
+
+    /** Builds the minimised pill that restores the bubble on tap and can be dragged. */
+    @SuppressLint("ClickableViewAccessibility")
+    private fun buildPill(): ImageView = ImageView(context).apply {
+        setImageResource(R.drawable.ic_overlay_captions)
+        imageTintList = ColorStateList.valueOf(color(R.color.orange_bit_of_sugar))
+        background = rounded(R.color.blue_kuroi_black_a95, dp(PILL_DP).toFloat())
+        val pad = dp(14)
+        setPadding(pad, pad, pad, pad)
+        contentDescription = context.getString(R.string.overlay_restore)
+        layoutParams = FrameLayout.LayoutParams(dp(PILL_DP), dp(PILL_DP))
+        setOnTouchListener(DragListener(onTap = { setMinimized(false) }))
+    }
+
+    /** Switches between the pill and the full bubble and remembers the choice. */
+    private fun setMinimized(value: Boolean) {
+        minimized = value
+        prefs.edit().putBoolean(KEY_MINIMIZED, value).apply()
+        applyMode()
+        root?.post { settle(animate = true) }
+    }
+
+    /** Shows either the pill or the full bubble. */
+    private fun applyMode() {
+        card?.visibility = if (minimized) View.GONE else View.VISIBLE
+        pill?.visibility = if (minimized) View.VISIBLE else View.GONE
+    }
+
+    /** First tap arms stop for a few seconds; a second tap stops translating. */
+    private fun onStopTapped() {
+        if (confirmingStop) {
+            handler.removeCallbacks(endConfirm)
+            confirmingStop = false
+            BackgroundEvents.emit("stop")
+            return
+        }
+        confirmingStop = true
+        renderStop()
+        handler.postDelayed(endConfirm, CONFIRM_MS)
+    }
+
+    /** Draws the stop control: a square, or the confirmation prompt while armed. */
+    private fun renderStop() {
+        val stop = stopView ?: return
+        if (confirmingStop) {
+            stop.text = context.getString(R.string.overlay_stop_confirm)
+            stop.background = rounded(R.color.red_rustic, dp(12).toFloat())
+            stop.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+        } else {
+            stop.text = ""
+            stop.background = null
+            val icon = ContextCompat.getDrawable(context, R.drawable.ic_overlay_stop)?.mutate()
+            icon?.setTint(color(R.color.red_forbidden_fruit))
+            stop.setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, null, null)
+        }
+        stop.contentDescription = context.getString(
+            if (confirmingStop) R.string.overlay_stop_confirm else R.string.overlay_stop,
+        )
+    }
+
+    /** Draws the header and the lines: the last 2, or all of them in a scrolling list when expanded. */
     private fun render() {
         val lineList = body ?: return
         engineView?.text = SpannableString("● $engineLabel").apply {
             setSpan(ForegroundColorSpan(color(dotColor())), 0, 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
-        expandView?.contentDescription = context.getString(
-            if (expanded) R.string.overlay_collapse else R.string.overlay_expand,
-        )
+        expandView?.apply {
+            setImageResource(if (expanded) R.drawable.ic_overlay_collapse else R.drawable.ic_overlay_expand)
+            contentDescription = context.getString(
+                if (expanded) R.string.overlay_collapse else R.string.overlay_expand,
+            )
+        }
+        renderStop()
         lineList.removeAllViews()
-        for (line in visibleLines()) {
-            val item = LinearLayout(context).apply {
-                orientation = LinearLayout.VERTICAL
-                setPadding(0, dp(6), 0, 0)
-            }
-            if (line.original.isNotEmpty()) {
-                item.addView(text(12f, R.color.blue_jacaranda_light).apply { text = line.original })
-            }
-            item.addView(text(15f, R.color.orange_bit_of_sugar).apply { text = line.translation })
+        val shown = visibleLines()
+        if (shown.isEmpty()) {
+            lineList.addView(text(14f, R.color.blue_jacaranda_light).apply {
+                text = context.getString(R.string.overlay_waiting)
+                setPadding(0, dp(4), 0, 0)
+            })
+        }
+        val offset = lines.size - shown.size
+        val newest = shown.lastOrNull()
+        val isNew = newest != null && newest != shownLast
+        shown.forEachIndexed { i, line ->
+            val item = lineItem(line, offset + i)
             lineList.addView(item)
+            if (isNew && i == shown.lastIndex && animatorsEnabled()) {
+                item.alpha = 0f
+                item.translationY = dp(6).toFloat()
+                item.animate().alpha(1f).translationY(0f).setDuration(ENTER_MS)
+                    .setInterpolator(DecelerateInterpolator()).start()
+            }
+        }
+        shownLast = newest
+        scroll?.post { scroll?.fullScroll(View.FOCUS_DOWN) }
+    }
+
+    /** Builds one caption: the original small, the translation large or a waiting mark; long-press saves it. */
+    private fun lineItem(line: OverlayLine, index: Int): LinearLayout =
+        LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(0, dp(6), 0, dp(2))
+            if (line.original.isNotEmpty()) {
+                addView(text(12f, R.color.blue_jacaranda_light).apply { text = line.original })
+            }
+            val pending = line.translation.isEmpty()
+            addView(
+                text(16f, if (pending) R.color.blue_mysterious_night else R.color.orange_bit_of_sugar).apply {
+                    text = if (pending) "…" else line.translation
+                },
+            )
+            if (!pending) {
+                setOnLongClickListener {
+                    BackgroundEvents.emit("longPress", line.translation, index)
+                    Toast.makeText(context, R.string.overlay_saved, Toast.LENGTH_SHORT).show()
+                    true
+                }
+            }
+        }
+
+    /** The lines on screen: the last 2, or all when expanded. */
+    private fun visibleLines(): List<OverlayLine> = if (expanded) lines else lines.takeLast(COLLAPSED_LINES)
+
+    /** Keeps the bubble on screen and snaps it to the nearest side edge. */
+    private fun settle(animate: Boolean) {
+        val view = root ?: return
+        val lp = params ?: return
+        val metrics = context.resources.displayMetrics
+        val margin = dp(8)
+        val maxX = (metrics.widthPixels - view.width - margin).coerceAtLeast(margin)
+        val maxY = (metrics.heightPixels - view.height - margin).coerceAtLeast(margin)
+        val targetX = if (lp.x + view.width / 2 < metrics.widthPixels / 2) margin else maxX
+        val targetY = lp.y.coerceIn(margin, maxY)
+        if (!animate || !animatorsEnabled()) {
+            moveTo(targetX, targetY)
+            return
+        }
+        val startX = lp.x
+        val startY = lp.y
+        ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = SNAP_MS
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                val t = it.animatedValue as Float
+                moveTo(
+                    (startX + (targetX - startX) * t).toInt(),
+                    (startY + (targetY - startY) * t).toInt(),
+                )
+            }
+            start()
         }
     }
 
-    /** The lines on screen: the last 3, or 8 when expanded. */
-    private fun visibleLines(): List<OverlayLine> = lines.takeLast(if (expanded) 8 else 3)
+    /** Moves the window to ([x], [y]) and remembers the position. */
+    private fun moveTo(x: Int, y: Int) {
+        val view = root ?: return
+        val lp = params ?: return
+        lp.x = x
+        lp.y = y
+        windowManager.updateViewLayout(view, lp)
+        prefs.edit().putInt(KEY_X, x).putInt(KEY_Y, y).apply()
+    }
+
+    /** Whether the system lets animations run (they are off when the user removed them). */
+    private fun animatorsEnabled(): Boolean = ValueAnimator.areAnimatorsEnabled()
 
     /** The colour of the engine dot. */
     private fun dotColor(): Int = when (engineKind) {
@@ -162,10 +364,28 @@ class CaptionOverlay(private val context: Context) {
         else -> R.color.cyan_exquisite_turquoise
     }
 
+    /** Builds a 48 dp icon button tinted with [colorRes]. */
+    private fun iconButton(icon: Int, colorRes: Int, label: Int, onClick: () -> Unit): ImageView =
+        ImageView(context).apply {
+            setImageResource(icon)
+            imageTintList = ColorStateList.valueOf(color(colorRes))
+            val pad = dp(12)
+            setPadding(pad, pad, pad, pad)
+            contentDescription = context.getString(label)
+            layoutParams = LinearLayout.LayoutParams(dp(TOUCH_DP), dp(TOUCH_DP))
+            setOnClickListener { onClick() }
+        }
+
     /** Builds a text view of [sizeSp] in [colorRes]. */
     private fun text(sizeSp: Float, colorRes: Int): TextView = TextView(context).apply {
         setTextColor(color(colorRes))
         setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeSp)
+    }
+
+    /** Returns a rounded background in [colorRes]. */
+    private fun rounded(colorRes: Int, radius: Float): GradientDrawable = GradientDrawable().apply {
+        setColor(color(colorRes))
+        cornerRadius = radius
     }
 
     /** Resolves a colour resource. */
@@ -179,70 +399,46 @@ class CaptionOverlay(private val context: Context) {
             context.resources.displayMetrics,
         ).toInt()
 
-    /** Returns whether ([x], [y]) in [root] coordinates falls inside [view]. */
-    private fun hits(root: View, view: View?, x: Float, y: Float): Boolean {
-        if (view == null) return false
-        val rect = Rect()
-        view.getDrawingRect(rect)
-        (root as android.view.ViewGroup).offsetDescendantRectToMyCoords(view, rect)
-        return rect.contains(x.toInt(), y.toInt())
-    }
-
-    /** Drags the bubble; a tap expands, collapses or stops; a long-press saves the line under the finger. */
-    private inner class TouchListener(
-        private val view: LinearLayout,
-        private val lp: WindowManager.LayoutParams,
-    ) : View.OnTouchListener {
+    /** Drags the window once the finger moves past the touch slop; a tap without movement calls [onTap]. */
+    private inner class DragListener(private val onTap: (() -> Unit)?) : View.OnTouchListener {
         private var startX = 0
         private var startY = 0
         private var touchX = 0f
         private var touchY = 0f
-        private val gestures = GestureDetector(
-            context,
-            object : GestureDetector.SimpleOnGestureListener() {
-                override fun onSingleTapUp(e: MotionEvent): Boolean {
-                    if (hits(view, stopView, e.x, e.y)) {
-                        BackgroundEvents.emit("stop")
-                    } else {
-                        expanded = !expanded
-                        render()
-                    }
-                    return true
-                }
+        private var dragging = false
 
-                override fun onLongPress(e: MotionEvent) {
-                    val lineList = body ?: return
-                    val shown = visibleLines()
-                    val offset = lines.size - shown.size
-                    for (i in 0 until lineList.childCount) {
-                        if (hits(view, lineList.getChildAt(i), e.x, e.y)) {
-                            val line = shown[i]
-                            BackgroundEvents.emit("longPress", line.translation, offset + i)
-                            Toast.makeText(context, R.string.overlay_saved, Toast.LENGTH_SHORT).show()
-                            return
-                        }
-                    }
-                }
-            },
-        )
-
+        @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
-            gestures.onTouchEvent(event)
-            when (event.action) {
+            val lp = params ?: return false
+            when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     startX = lp.x
                     startY = lp.y
                     touchX = event.rawX
                     touchY = event.rawY
+                    dragging = false
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    lp.x = startX + (event.rawX - touchX).toInt()
-                    lp.y = startY + (event.rawY - touchY).toInt()
-                    windowManager.updateViewLayout(view, lp)
+                    val dx = event.rawX - touchX
+                    val dy = event.rawY - touchY
+                    if (!dragging && (abs(dx) > touchSlop || abs(dy) > touchSlop)) {
+                        dragging = true
+                    }
+                    if (dragging) {
+                        lp.x = startX + dx.toInt()
+                        lp.y = startY + dy.toInt()
+                        root?.let { windowManager.updateViewLayout(it, lp) }
+                    }
                 }
                 MotionEvent.ACTION_UP -> {
-                    prefs.edit().putInt(KEY_X, lp.x).putInt(KEY_Y, lp.y).apply()
+                    if (dragging) {
+                        settle(animate = true)
+                    } else {
+                        onTap?.invoke()
+                        if (onTap != null) v.performClick()
+                    }
                 }
+                MotionEvent.ACTION_CANCEL -> if (dragging) settle(animate = true)
             }
             return true
         }
@@ -252,5 +448,15 @@ class CaptionOverlay(private val context: Context) {
         private const val PREFS = "caption_overlay"
         private const val KEY_X = "x"
         private const val KEY_Y = "y"
+        private const val KEY_EXPANDED = "expanded"
+        private const val KEY_MINIMIZED = "minimized"
+        private const val WIDTH_DP = 300
+        private const val PILL_DP = 52
+        private const val TOUCH_DP = 44
+        private const val COLLAPSED_LINES = 2
+        private const val MAX_HEIGHT_SHARE = 0.45
+        private const val CONFIRM_MS = 3000L
+        private const val ENTER_MS = 220L
+        private const val SNAP_MS = 220L
     }
 }
