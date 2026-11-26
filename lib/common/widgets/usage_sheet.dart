@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../core/quota/quota_engine.dart';
 import '../../core/quota/quota_providers.dart';
+import '../../core/review/review_reminder.dart';
 import '../extensions/build_context_ext.dart';
 import '../resources/app_params.dart';
 
@@ -64,7 +65,7 @@ class UsageSheet extends ConsumerWidget {
     final l10n = context.localization;
     final scheme = Theme.of(context).colorScheme;
     final status = ref.watch(standardQuotaProvider).value;
-    final now = DateTime.now();
+    final now = ref.watch(reviewClockProvider)();
     return SafeArea(
       top: false,
       child: Padding(
