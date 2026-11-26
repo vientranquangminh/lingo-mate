@@ -503,5 +503,12 @@
   "engineLiveHint": "Thời gian thực, dịch ngay khi đang nói",
   "engineStandardHint": "Trực tuyến, dịch sau mỗi câu",
   "engineOfflineHint": "Trên máy, không cần mạng",
-  "draftHearing": "Đang nghe…"
+  "draftHearing": "Đang nghe…",
+  "roleplayTitle": "Luyện tập: {situation}",
+  "roleplayStart": "Luyện tình huống này",
+  "roleplayIntro": "Bạn diễn nói {language}. Trả lời bằng cách gõ hoặc dùng micro; bạn sẽ nhận góp ý về cách nói.",
+  "roleplayAnswerHint": "Câu trả lời bằng {language}",
+  "roleplaySpeak": "Trả lời bằng giọng nói",
+  "roleplaySend": "Gửi",
+  "roleplayListen": "Nghe"
 }

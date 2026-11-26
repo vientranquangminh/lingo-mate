@@ -26,6 +26,7 @@ abstract class AppRouteName {
   static const emailLink = 'email-link';
   static const account = 'account';
   static const deleteAccount = 'delete-account';
+  static const roleplay = 'roleplay';
 }
 
 abstract class AppRoutePath {
@@ -56,4 +57,5 @@ abstract class AppRoutePath {
   static const emailLink = '/email-link';
   static const account = 'account';
   static const deleteAccount = 'delete';
+  static const roleplay = 'practice';
 }

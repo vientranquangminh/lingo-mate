@@ -2,6 +2,7 @@ import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../common/extensions/build_context_ext.dart';
 import '../core/auth/auth_models.dart';
 import '../core/engines/selection/engine_selector.dart';
 import '../core/settings/user_settings.dart';
@@ -32,6 +33,9 @@ import '../features/phrasebook/presentation/view/add_phrase_page.dart';
 import '../features/phrasebook/presentation/view/phrase_detail_page.dart';
 import '../features/phrasebook/presentation/view/phrases_page.dart';
 import '../features/phrasebook/presentation/view/situation_page.dart';
+import '../features/phrasebook/presentation/widget/situation_names.dart';
+import '../features/roleplay/data/notifier/roleplay_notifier.dart';
+import '../features/roleplay/presentation/view/roleplay_page.dart';
 import '../features/review/presentation/view/review_page.dart';
 import '../features/show_mode/presentation/view/show_mode_page.dart';
 import 'route_const.dart';
@@ -127,6 +131,30 @@ final goRouterProvider = Provider((ref) {
                         situationKey: state.pathParameters['key']!,
                       ),
                     ),
+                    routes: [
+                      GoRoute(
+                        name: AppRouteName.roleplay,
+                        path: AppRoutePath.roleplay,
+                        parentNavigatorKey: rootNavigatorKey,
+                        pageBuilder: (context, state) {
+                          final key = state.pathParameters['key']!;
+                          final query = state.uri.queryParameters;
+                          final l10n = context.localization;
+                          return CupertinoPage(
+                            child: RoleplayPage(
+                              scene: RoleplayScene(
+                                situation: key,
+                                targetLang: query['to'] ?? 'en',
+                                userLang: query['from'] ?? 'vi',
+                              ),
+                              title: l10n.roleplayTitle(
+                                SituationNames.name(l10n, key),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   GoRoute(
                     name: AppRouteName.review,

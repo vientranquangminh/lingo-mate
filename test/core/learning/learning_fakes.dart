@@ -30,6 +30,23 @@ class FakeLearningAssistant implements LearningAssistant {
     actionItems: ['Minh gửi bản thử trước thứ Sáu'],
   );
   Object? error;
+  final roleplayTurns = <RoleplayTurn>[
+    const RoleplayTurn(
+      reply: 'Good evening! Table for two?',
+      replyTranslation: 'Chào buổi tối! Bàn cho hai người ạ?',
+    ),
+    const RoleplayTurn(
+      reply: 'Of course, follow me.',
+      replyTranslation: 'Vâng, mời đi theo tôi.',
+      feedback: PhrasingTip(
+        original: 'Yes two people table',
+        improved: 'Yes, a table for two, please.',
+        reason: 'Thêm "please" cho lịch sự.',
+        meaning: 'Vâng, cho một bàn hai người.',
+      ),
+    ),
+  ];
+  final roleplayAsked = <List<RoleplayMessage>>[];
   final List<List<LearningLine>> asked = [];
   String? lastReplyLang;
   String? lastSummaryLang;
@@ -66,6 +83,18 @@ class FakeLearningAssistant implements LearningAssistant {
     lastSummaryLang = userLang;
     _throwIfFailing();
     return recap;
+  }
+
+  @override
+  Future<RoleplayTurn> roleplay({
+    required String situation,
+    required List<RoleplayMessage> messages,
+    required String targetLang,
+    required String userLang,
+  }) async {
+    roleplayAsked.add(messages);
+    _throwIfFailing();
+    return roleplayTurns.removeAt(0);
   }
 
   /// Throws [error] when set.

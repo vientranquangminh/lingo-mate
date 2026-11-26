@@ -22,6 +22,7 @@ abstract final class RemoteDefaults {
   static const ffGlossary = 'ff_glossary';
   static const ffCloudSpeech = 'ff_cloud_speech';
   static const modelSpeechTranslate = 'model_speech_translate';
+  static const ffRoleplay = 'ff_roleplay';
 
   static const _quotaLimitsJson =
       '{"free":{"standard":{"win5hSec":1800,"weekSec":3600},'
@@ -53,5 +54,6 @@ abstract final class RemoteDefaults {
     ffSummary: true,
     ffSuggestReply: true,
     ffGlossary: true,
+    ffRoleplay: true,
   };
 }

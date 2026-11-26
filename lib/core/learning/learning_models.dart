@@ -45,14 +45,16 @@ class PhrasingTip extends Equatable {
     required this.original,
     required this.improved,
     required this.reason,
+    this.meaning = '',
   });
 
   final String original;
   final String improved;
   final String reason;
+  final String meaning;
 
   @override
-  List<Object?> get props => [original, improved, reason];
+  List<Object?> get props => [original, improved, reason, meaning];
 }
 
 /// A short reply in the partner's language with its back-translation (F-19).
@@ -118,6 +120,48 @@ class SessionRecap extends Equatable {
 
   @override
   List<Object?> get props => [lang, summary, keyTerms, actionItems];
+}
+
+/// One message of a roleplay: from the learner or the AI partner, with feedback on learner messages (F-22).
+class RoleplayMessage extends Equatable {
+  const RoleplayMessage({
+    required this.fromLearner,
+    required this.text,
+    this.translation,
+    this.feedback,
+  });
+
+  final bool fromLearner;
+  final String text;
+  final String? translation;
+  final PhrasingTip? feedback;
+
+  /// Returns a copy with [feedback].
+  RoleplayMessage withFeedback(PhrasingTip? feedback) => RoleplayMessage(
+    fromLearner: fromLearner,
+    text: text,
+    translation: translation,
+    feedback: feedback,
+  );
+
+  @override
+  List<Object?> get props => [fromLearner, text, translation, feedback];
+}
+
+/// The partner's next line and feedback on the learner's last one.
+class RoleplayTurn extends Equatable {
+  const RoleplayTurn({
+    required this.reply,
+    required this.replyTranslation,
+    this.feedback,
+  });
+
+  final String reply;
+  final String replyTranslation;
+  final PhrasingTip? feedback;
+
+  @override
+  List<Object?> get props => [reply, replyTranslation, feedback];
 }
 
 /// Rules for when the learning features are offered on a session.

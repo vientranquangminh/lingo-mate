@@ -39,6 +39,36 @@ abstract final class LearningPrompts {
       'said (empty when there are none). Answer with JSON only: '
       '{"summary":"...","keyTerms":["..."],"actionItems":["..."]}';
 
+  /// System instruction for a roleplay partner in [situation] (F-22).
+  static String roleplaySystem({
+    required String situation,
+    required String targetLang,
+    required String userLang,
+  }) =>
+      'You play the other person in a "$situation" situation (for example the '
+      'waiter, the driver, the receptionist or a colleague). Speak only '
+      '$targetLang in short, natural sentences (one or two). The learner is a '
+      '$userLang speaker practising $targetLang. If there are no lines yet, '
+      'open the conversation. Otherwise answer the learner\'s last line and keep '
+      'the scene going. When the learner\'s last line is wrong or unnatural, '
+      'give feedback: how a native speaker would say it in $targetLang and one '
+      'short note in $userLang; when it is fine, feedback is null. Answer with '
+      'JSON only: {"reply":"<your line in $targetLang>",'
+      '"replyTranslation":"<your line in $userLang>",'
+      '"feedback":null or {"improved":"<in $targetLang>","meaning":"<what '
+      'it means, in $userLang>","note":"<one line in $userLang>"}}';
+
+  /// The roleplay so far, one line per message.
+  static String roleplay(List<RoleplayMessage> messages) {
+    if (messages.isEmpty) {
+      return '(no lines yet)';
+    }
+    return [
+      for (final m in messages)
+        '${m.fromLearner ? 'Learner' : 'Partner'}: ${_oneLine(m.text)}',
+    ].join('\n');
+  }
+
   /// One numbered line per transcript line: speaker, original and translation.
   static String transcript(List<LearningLine> lines) {
     final buffer = StringBuffer();

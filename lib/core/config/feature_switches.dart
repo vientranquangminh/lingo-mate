@@ -11,6 +11,7 @@ class FeatureSwitches extends Equatable {
     this.summary = true,
     this.suggestReply = true,
     this.glossary = true,
+    this.roleplay = true,
     this.postSessionReview = false,
     this.cloudSpeech = true,
   });
@@ -21,6 +22,7 @@ class FeatureSwitches extends Equatable {
     summary: config.summaryEnabled,
     suggestReply: config.suggestReplyEnabled,
     glossary: config.glossaryEnabled,
+    roleplay: config.roleplayEnabled,
     postSessionReview: config.postSessionReviewEnabled,
     cloudSpeech: config.cloudSpeechEnabled,
   );
@@ -29,6 +31,7 @@ class FeatureSwitches extends Equatable {
   final bool summary;
   final bool suggestReply;
   final bool glossary;
+  final bool roleplay;
   final bool postSessionReview;
   final bool cloudSpeech;
 
@@ -38,6 +41,7 @@ class FeatureSwitches extends Equatable {
     summary,
     suggestReply,
     glossary,
+    roleplay,
     postSessionReview,
     cloudSpeech,
   ];
