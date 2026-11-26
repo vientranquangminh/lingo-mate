@@ -40,3 +40,46 @@ Future<CloudHearing> hearOnCloud(
     return (handled: false, heard: null);
   }
 }
+
+/// Returns the on-device recognizer, or a [CloudOnlyRecognizer] when no speech model is installed but Standard hears speech on Gemini; null when neither works.
+Future<SpeechRecognizerEngine?> recognizerFor(
+  Ref ref, {
+  required EngineKind? engine,
+}) async {
+  final local = await ref
+      .read(speechRecognizerProvider.future)
+      .catchError((Object _) => null);
+  if (local != null) {
+    return local;
+  }
+  final cloud = engine == EngineKind.standard
+      ? ref.read(speechTranslatorProvider)
+      : null;
+  return cloud == null ? null : const CloudOnlyRecognizer();
+}
+
+/// Stands in for on-device recognition when no speech model is installed, so Standard runs on Gemini alone; it recognizes nothing itself.
+class CloudOnlyRecognizer implements SpeechRecognizerEngine {
+  const CloudOnlyRecognizer();
+
+  @override
+  String get id => 'cloud-only';
+
+  @override
+  bool get supportsPartials => false;
+
+  @override
+  Future<void> ensureReady(String lang) async {}
+
+  @override
+  Future<AsrResult> transcribe(
+    AudioSegment segment, {
+    String? hintLang,
+  }) async => AsrResult(text: '', lang: hintLang ?? '');
+
+  @override
+  Future<String?> detectLanguage(
+    AudioSegment segment, {
+    required List<String> candidates,
+  }) async => null;
+}

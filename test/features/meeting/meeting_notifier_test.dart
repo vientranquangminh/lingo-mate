@@ -252,6 +252,23 @@ void main() {
     expect(background.overlayLines.single.translation, 'hello');
   });
 
+  test('on Standard, lines run on Gemini without a speech model', () async {
+    fakes
+      ..hasRecognizer = false
+      ..speech = GeminiSpeechTranslator(
+        ({required system, required wav, required user}) async =>
+            '{"lang": "en", "original": "ship it", "translation": "giao đi"}',
+      );
+    final c = await build();
+    await notifier(c).start(overlay: false);
+
+    await speak();
+
+    final state = c.read(meetingProvider);
+    expect(state.block, isNull);
+    expect(state.lines.single.translation, 'giao đi');
+  });
+
   test('no speech model blocks Start without starting the service', () async {
     fakes.hasRecognizer = false;
     final c = await build();

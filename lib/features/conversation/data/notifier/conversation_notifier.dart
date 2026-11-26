@@ -356,9 +356,7 @@ class ConversationNotifier extends Notifier<ConversationState> {
     required void Function() onOpen,
     String? partialLang,
   }) async {
-    final recognizer = await ref
-        .read(speechRecognizerProvider.future)
-        .catchError((Object _) => null);
+    final recognizer = await recognizerFor(ref, engine: state.engine);
     if (!ref.mounted) {
       return;
     }

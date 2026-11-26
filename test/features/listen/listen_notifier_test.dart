@@ -247,6 +247,23 @@ void main() {
     expect(state.captions.single.status, CaptionStatus.paused);
   });
 
+  test('on Standard, captions run on Gemini without a speech model', () async {
+    fakes
+      ..hasRecognizer = false
+      ..speech = GeminiSpeechTranslator(
+        ({required system, required wav, required user}) async =>
+            '{"lang": "ja", "original": "こんにちは", "translation": "Xin chào"}',
+      );
+    final c = await build();
+    await notifier(c).start();
+
+    await speak();
+
+    final state = c.read(listenProvider(languages));
+    expect(state.block, isNull);
+    expect(state.captions.single.translation, 'Xin chào');
+  });
+
   test('no speech model blocks Start', () async {
     fakes.hasRecognizer = false;
     final c = await build();
