@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -124,7 +125,12 @@ class _MicButtonState extends State<MicButton>
                   shape: const CircleBorder(),
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(
-                    onTap: enabled ? widget.onPressed : null,
+                    onTap: enabled
+                        ? () {
+                            HapticFeedback.mediumImpact();
+                            widget.onPressed?.call();
+                          }
+                        : null,
                     child: SizedBox.square(
                       dimension: size,
                       child: Center(child: _icon(foreground, size)),

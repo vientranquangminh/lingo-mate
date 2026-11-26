@@ -56,6 +56,8 @@ class SettingsRow extends StatelessWidget {
                     child: Text(
                       value,
                       textAlign: TextAlign.end,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: context.textTheme.bodyMedium?.copyWith(
                         color: scheme.onSurfaceVariant,
                       ),

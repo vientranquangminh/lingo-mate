@@ -181,3 +181,60 @@ class _AppTypingDotsState extends State<AppTypingDots>
         : Curves.easeIn.transform(2 - phase * 2);
   }
 }
+
+/// Fades and lifts [child] in again whenever [index] changes, for switching tabs without losing their state.
+class AppTabFade extends StatefulWidget {
+  const AppTabFade({super.key, required this.index, required this.child});
+
+  final int index;
+  final Widget child;
+
+  @override
+  State<AppTabFade> createState() => _AppTabFadeState();
+}
+
+class _AppTabFadeState extends State<AppTabFade>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: AppParams.enterDuration,
+    value: 1,
+  );
+  late final Animation<double> _curve = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeOutCubic,
+  );
+
+  @override
+  void didUpdateWidget(AppTabFade oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.index == widget.index) {
+      return;
+    }
+    final duration = AppMotion.of(context, AppParams.enterDuration);
+    if (duration == Duration.zero) {
+      _controller.value = 1;
+      return;
+    }
+    _controller
+      ..duration = duration
+      ..forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _curve,
+      child: ScaleTransition(
+        scale: Tween(begin: AppParams.tabFadeScale, end: 1.0).animate(_curve),
+        child: widget.child,
+      ),
+    );
+  }
+}

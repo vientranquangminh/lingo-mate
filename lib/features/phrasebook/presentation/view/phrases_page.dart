@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../common/widgets/app_empty_state.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/resources/app_params.dart';
 import '../../../../common/widgets/app_icon.dart';
@@ -217,7 +218,10 @@ class _Mine extends ConsumerWidget {
           child: items == null
               ? const SizedBox.shrink()
               : items.isEmpty
-              ? _Message(unfiltered ? l10n.phrasesEmpty : l10n.phrasesNoMatch)
+              ? _Message(
+                  unfiltered ? l10n.phrasesEmpty : l10n.phrasesNoMatch,
+                  icon: unfiltered ? AppIcons.bookmark : AppIcons.search,
+                )
               : ListView.separated(
                   padding: EdgeInsets.only(bottom: 96.h),
                   itemCount: items.length,
@@ -256,20 +260,29 @@ class _AddButton extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       child: Material(
-        color: scheme.inverseSurface,
-        elevation: 4,
-        borderRadius: BorderRadius.circular(AppParams.radiusCard.r),
+        color: scheme.primary,
+        elevation: 1,
+        shape: const StadiumBorder(),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(AppParams.radiusCard.r),
-          child: SizedBox.square(
-            dimension: 64.r,
-            child: Center(
-              child: AppIcon(
-                AppIcons.add,
-                size: 28,
-                color: scheme.onInverseSurface,
-              ),
+          customBorder: const StadiumBorder(),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppParams.spacing20.w,
+              vertical: AppParams.spacing16.h,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppIcon(AppIcons.add, size: 22, color: scheme.onPrimary),
+                SizedBox(width: AppParams.spacing8.w),
+                Text(
+                  label,
+                  style: context.textTheme.labelLarge?.copyWith(
+                    color: scheme.onPrimary,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -278,25 +291,14 @@ class _AddButton extends StatelessWidget {
   }
 }
 
-/// Centered note for empty states.
+/// A calm empty state with [icon] above [text].
 class _Message extends StatelessWidget {
-  const _Message(this.text);
+  const _Message(this.text, {this.icon = AppIcons.bookmark});
 
   final String text;
+  final AppIcons icon;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(AppParams.spacing24.r),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: context.textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      AppEmptyState(icon: icon, message: text);
 }

@@ -21,7 +21,11 @@ class AppParams {
   static const enterDuration = Duration(milliseconds: 260);
   static const shimmerDuration = Duration(milliseconds: 1300);
   static const enterOffset = 0.08;
+  static const tabFadeScale = 0.985;
   static const skeletonLineHeight = 14.0;
+  static const emptyStateCircle = 88.0;
+  static const situationCardMinHeight = 136.0;
+  static const emptyStateIcon = 36.0;
 
   static const buttonHeight = 48.0;
   static const timePickerHeight = 280.0;

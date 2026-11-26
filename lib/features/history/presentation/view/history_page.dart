@@ -1,3 +1,4 @@
+import '../../../../common/widgets/app_empty_state.dart';
 import '../../../../common/widgets/app_skeleton.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -126,7 +127,7 @@ class _SearchResults extends ConsumerWidget {
       return const SizedBox.shrink();
     }
     if (items.isEmpty) {
-      return _Message(l10n.historyNoResults(query));
+      return _Message(l10n.historyNoResults(query), icon: AppIcons.search);
     }
     return ListView.separated(
       itemCount: items.length,
@@ -307,25 +308,14 @@ class _SessionRow extends StatelessWidget {
   }
 }
 
-/// Centered note for empty states.
+/// A calm empty state with [icon] above [text].
 class _Message extends StatelessWidget {
-  const _Message(this.text);
+  const _Message(this.text, {this.icon = AppIcons.navHistory});
 
   final String text;
+  final AppIcons icon;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(AppParams.spacing24.r),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: context.textTheme.bodyLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      AppEmptyState(icon: icon, message: text);
 }

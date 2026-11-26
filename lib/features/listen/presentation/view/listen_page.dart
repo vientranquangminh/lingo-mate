@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/auth/auth_models.dart';
 import '../../../../core/engines/live/live_access.dart';
+import '../../../../common/widgets/app_empty_state.dart';
 import '../../../../common/widgets/app_motion.dart';
 import '../../../../common/widgets/draft_line.dart';
 import '../../../../common/widgets/usage_sheet.dart';
@@ -389,17 +390,13 @@ class _Captions extends StatelessWidget {
           : state.listening
           ? l10n.listenWaiting
           : l10n.listenPausedNote;
-      return Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppParams.spacing32.w),
-          child: Text(
-            hint,
-            textAlign: TextAlign.center,
-            style: context.textTheme.bodyLarge?.copyWith(
-              color: scheme.onSurfaceVariant,
-            ),
-          ),
-        ),
+      return AppEmptyState(
+        icon: !state.started
+            ? AppIcons.modeListen
+            : state.listening
+            ? AppIcons.waveform
+            : AppIcons.pause,
+        message: hint,
       );
     }
     return CaptionScale(

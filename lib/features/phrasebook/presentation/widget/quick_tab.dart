@@ -82,18 +82,23 @@ class QuickTab extends ConsumerWidget {
               AppParams.spacing20.w,
               AppParams.spacing12.h,
             ),
-            child: IntrinsicHeight(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Expanded(child: _SituationCard(situation: situations[i])),
-                  SizedBox(width: AppParams.spacing12.w),
-                  Expanded(
-                    child: i + 1 < situations.length
-                        ? _SituationCard(situation: situations[i + 1])
-                        : const SizedBox.shrink(),
-                  ),
-                ],
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: AppParams.situationCardMinHeight.h,
+              ),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: _SituationCard(situation: situations[i])),
+                    SizedBox(width: AppParams.spacing12.w),
+                    Expanded(
+                      child: i + 1 < situations.length
+                          ? _SituationCard(situation: situations[i + 1])
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

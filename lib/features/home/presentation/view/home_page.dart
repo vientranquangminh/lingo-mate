@@ -132,6 +132,7 @@ class HomePage extends ConsumerWidget {
             ),
             SizedBox(height: AppParams.spacing12.h),
             _ModeCard(
+              horizontal: true,
               icon: AppIcons.modeMedia,
               title: l10n.homeMediaTitle,
               body: l10n.homeMediaBody,
@@ -338,16 +339,48 @@ class _ModeCard extends StatelessWidget {
     required this.title,
     required this.body,
     required this.onTap,
+    this.horizontal = false,
   });
 
   final AppIcons icon;
   final String title;
   final String body;
   final VoidCallback onTap;
+  final bool horizontal;
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final badge = Container(
+      width: AppParams.buttonHeight.r,
+      height: AppParams.buttonHeight.r,
+      decoration: BoxDecoration(
+        color: scheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(AppParams.radiusCard.r),
+      ),
+      child: Center(child: AppIcon(icon, color: scheme.onSurface)),
+    );
+    final texts = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
+          style: context.textTheme.titleLarge?.copyWith(
+            color: scheme.onSurface,
+          ),
+        ),
+        SizedBox(
+          height: horizontal ? AppParams.spacing4.h : AppParams.spacing8.h,
+        ),
+        Text(
+          body,
+          style: context.textTheme.bodyMedium?.copyWith(
+            color: scheme.onSurfaceVariant,
+          ),
+        ),
+      ],
+    );
     return Semantics(
       button: true,
       label: '$title. $body',
@@ -363,34 +396,27 @@ class _ModeCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppParams.radiusCard.r),
           child: Padding(
             padding: EdgeInsets.all(AppParams.spacing20.r),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: AppParams.buttonHeight.r,
-                  height: AppParams.buttonHeight.r,
-                  decoration: BoxDecoration(
-                    color: scheme.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(AppParams.radiusCard.r),
+            child: horizontal
+                ? Row(
+                    children: [
+                      badge,
+                      SizedBox(width: AppParams.spacing16.w),
+                      Expanded(child: texts),
+                      AppIcon(
+                        AppIcons.chevronRight,
+                        size: 20,
+                        color: scheme.onSurfaceVariant,
+                      ),
+                    ],
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      badge,
+                      SizedBox(height: AppParams.spacing16.h),
+                      texts,
+                    ],
                   ),
-                  child: Center(child: AppIcon(icon, color: scheme.onSurface)),
-                ),
-                SizedBox(height: AppParams.spacing16.h),
-                Text(
-                  title,
-                  style: context.textTheme.titleLarge?.copyWith(
-                    color: scheme.onSurface,
-                  ),
-                ),
-                SizedBox(height: AppParams.spacing8.h),
-                Text(
-                  body,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: scheme.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
           ),
         ),
       ),
