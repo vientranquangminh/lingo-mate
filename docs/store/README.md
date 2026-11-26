@@ -7,6 +7,7 @@ changes with it.
 |---|---|
 | `listing.en.md` | Master listing (D-22): name, short and full description, category |
 | `listing.vi.md` | Vietnamese listing |
+| `listing.{ja,ko,zh,th,id,es,fr,de}.md` | Wave-1 listings (T-3.1), machine-drafted from the master; have a native speaker review each before publishing |
 | `data-safety.md` | Answers for App content → Data safety |
 | `screenshots/en`, `screenshots/vi` | Phone screenshots, 1080 × 2340 |
 | `../../hosting/public/` | Privacy policy pages (`/privacy`, `/privacy-vi`) for Firebase Hosting |
