@@ -148,9 +148,7 @@ class ListenNotifier extends Notifier<ListenState> {
         return;
       }
     }
-    final recognizer = await ref
-        .read(speechRecognizerProvider.future)
-        .catchError((Object _) => null);
+    final recognizer = await recognizerFor(ref, engine: state.engine);
     if (!ref.mounted) {
       return;
     }

@@ -292,6 +292,23 @@ void main() {
     },
   );
 
+  test('on Standard, turns run on Gemini without a speech model', () async {
+    fakes
+      ..hasRecognizer = false
+      ..speech = GeminiSpeechTranslator(
+        ({required system, required wav, required user}) async =>
+            '{"lang": "vi", "original": "Xin chào", "translation": "Hello"}',
+      );
+    final c = await build();
+
+    await notifier(c).toggleMic(Speaker.a);
+    await speak();
+
+    final state = c.read(conversationProvider(pair));
+    expect(state.paused, isNull);
+    expect(state.lastBy(Speaker.a)?.translation, 'Hello');
+  });
+
   test('pauses with a hint when no speech model is installed', () async {
     fakes.hasRecognizer = false;
     final c = await build();
