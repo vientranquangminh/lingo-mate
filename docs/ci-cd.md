@@ -21,9 +21,17 @@ git push origin origin/main:staging
 Testers get an email from App Distribution (first time: accept the invite and install the
 App Tester app or open the link), then install the new build from there.
 
-Until any of the secrets below exist, the workflow skips the build and reports a notice instead of failing, so merges send no failure emails. Once some are set, it fails within seconds if the rest are missing.
+Until `FIREBASE_SERVICE_ACCOUNT` or `FIREBASE_DISTRIBUTION_GROUPS` exists, the workflow skips the build and reports a notice instead of failing, so merges send no failure emails. Once one is set, it fails within seconds if the other is missing.
 
-## 1. Release keystore (once)
+The release keystore (§1) is optional for test builds. Without the four `ANDROID_*` secrets,
+the APK is signed with a debug key that the workflow keeps in the Actions cache
+(`android-debug-keystore-v1`), so testers can update over the previous build. GitHub drops a
+cache that is unused for 7 days; after such a gap the key changes and testers uninstall once.
+The run summary prints the key's SHA-1: add it to the Android app in Firebase (Project
+settings → Your apps) so Google sign-in works. Set all four `ANDROID_*` secrets to switch to
+the release keystore (testers uninstall once when the key changes).
+
+## 1. Release keystore (optional for test builds)
 
 Create it on your machine and keep a backup outside the repo: every build must be signed
 with the same key, or testers cannot update over the previous install.
