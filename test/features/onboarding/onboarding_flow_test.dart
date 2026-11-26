@@ -178,6 +178,8 @@ void main() {
         200,
         scrollable: find.byType(Scrollable).last,
       );
+      await tester.drag(find.byType(Scrollable).last, const Offset(0, -200));
+      await settle(tester);
       await tester.tap(find.text('Run setup again'));
       await settle(tester);
 

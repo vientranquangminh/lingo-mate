@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/app_grouped_section.dart';
 import '../../../../common/widgets/app_icon.dart';
 import '../../../../common/widgets/app_language_button.dart';
 import '../../../../common/widgets/app_license_page.dart';
@@ -75,64 +76,74 @@ class MePage extends ConsumerWidget {
               ),
             ),
           ),
-          SettingsRow(
-            icon: AppIcons.language,
-            label: l10n.appLanguage,
-            value: locale == null
-                ? l10n.appLanguagePhone
-                : appLanguageEndonyms[locale] ?? locale,
-            onTap: () => showAppLanguageSheet(context, ref),
+          AppGroupedSection(
+            children: [
+              SettingsRow(
+                icon: AppIcons.language,
+                label: l10n.appLanguage,
+                value: locale == null
+                    ? l10n.appLanguagePhone
+                    : appLanguageEndonyms[locale] ?? locale,
+                onTap: () => showAppLanguageSheet(context, ref),
+              ),
+              SettingsRow(
+                icon: AppIcons.navTranslate,
+                label: l10n.meMyLanguages,
+                value: [
+                  if (mine != null) l10n.languageName(mine),
+                  ...settings.partnerLanguages.map(l10n.languageName),
+                ].join(', '),
+                onTap: () => _runSetup(ref),
+              ),
+              SettingsRow(
+                icon: AppIcons.download,
+                label: l10n.meOfflinePacks,
+                onTap: () => context.pushNamed(AppRouteName.languagePacks),
+              ),
+              SettingsRow(
+                icon: AppIcons.speaker,
+                label: l10n.meTranslationVoice,
+                value: SettingLabels.engine(l10n, engine),
+                onTap: () => context.pushNamed(AppRouteName.translationVoice),
+              ),
+              SettingsRow(
+                icon: AppIcons.glossary,
+                label: l10n.meGlossary,
+                onTap: () => context.pushNamed(AppRouteName.glossary),
+              ),
+            ],
           ),
-          SettingsRow(
-            icon: AppIcons.navTranslate,
-            label: l10n.meMyLanguages,
-            value: [
-              if (mine != null) l10n.languageName(mine),
-              ...settings.partnerLanguages.map(l10n.languageName),
-            ].join(', '),
-            onTap: () => _runSetup(ref),
+          SizedBox(height: AppParams.spacing16.h),
+          AppGroupedSection(
+            children: [
+              SettingsRow(
+                icon: AppIcons.privacy,
+                label: l10n.mePrivacy,
+                onTap: () => context.pushNamed(AppRouteName.privacy),
+              ),
+              SettingsRow(
+                icon: AppIcons.info,
+                label: l10n.meLicenses,
+                onTap: () => showAppLicensePage(
+                  context,
+                  appName: l10n.appName,
+                  legalese: l10n.aboutLegalese,
+                ),
+              ),
+              SettingsRow(
+                icon: AppIcons.replay,
+                label: l10n.meRunSetupAgain,
+                onTap: () => _runSetup(ref),
+              ),
+              if (Env.devtoolsEnabled)
+                SettingsRow(
+                  icon: AppIcons.settings,
+                  label: l10n.meDevtools,
+                  onTap: () => context.pushNamed(AppRouteName.devtools),
+                ),
+            ],
           ),
-          SettingsRow(
-            icon: AppIcons.download,
-            label: l10n.meOfflinePacks,
-            onTap: () => context.pushNamed(AppRouteName.languagePacks),
-          ),
-          SettingsRow(
-            icon: AppIcons.speaker,
-            label: l10n.meTranslationVoice,
-            value: SettingLabels.engine(l10n, engine),
-            onTap: () => context.pushNamed(AppRouteName.translationVoice),
-          ),
-          SettingsRow(
-            icon: AppIcons.glossary,
-            label: l10n.meGlossary,
-            onTap: () => context.pushNamed(AppRouteName.glossary),
-          ),
-          SettingsRow(
-            icon: AppIcons.privacy,
-            label: l10n.mePrivacy,
-            onTap: () => context.pushNamed(AppRouteName.privacy),
-          ),
-          SettingsRow(
-            icon: AppIcons.info,
-            label: l10n.meLicenses,
-            onTap: () => showAppLicensePage(
-              context,
-              appName: l10n.appName,
-              legalese: l10n.aboutLegalese,
-            ),
-          ),
-          SettingsRow(
-            icon: AppIcons.replay,
-            label: l10n.meRunSetupAgain,
-            onTap: () => _runSetup(ref),
-          ),
-          if (Env.devtoolsEnabled)
-            SettingsRow(
-              icon: AppIcons.settings,
-              label: l10n.meDevtools,
-              onTap: () => context.pushNamed(AppRouteName.devtools),
-            ),
+          SizedBox(height: AppParams.spacing24.h),
         ],
       ),
     );

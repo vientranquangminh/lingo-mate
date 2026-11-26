@@ -1,8 +1,10 @@
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/widgets/app_icon.dart';
+import '../../../../common/widgets/app_motion.dart';
 import '../../../../common/widgets/app_platform_nav_bar.dart';
 import '../../../../common/widgets/app_scaffold.dart';
 
@@ -23,11 +25,15 @@ class HomeShell extends StatelessWidget {
           label: label,
         );
     return AppPlatformScaffold(
-      body: shell,
+      body: AppTabFade(index: shell.currentIndex, child: shell),
       bottomNavigationBar: AppPlatformNavBar(
         currentIndex: shell.currentIndex,
-        onSelected: (i) =>
-            shell.goBranch(i, initialLocation: i == shell.currentIndex),
+        onSelected: (i) {
+          if (i != shell.currentIndex) {
+            HapticFeedback.selectionClick();
+          }
+          shell.goBranch(i, initialLocation: i == shell.currentIndex);
+        },
         items: [
           item(AppIcons.navTranslate, l10n.navTranslate),
           item(AppIcons.navPhrases, l10n.navPhrases),

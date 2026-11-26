@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../../../../common/widgets/app_empty_state.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
@@ -461,10 +462,10 @@ class _Empty extends ConsumerWidget {
     final l10n = context.localization;
     final scheme = Theme.of(context).colorScheme;
     if (state.running) {
-      return _Hint(text: l10n.meetingWaiting);
+      return _Hint(text: l10n.meetingWaiting, icon: AppIcons.waveform);
     }
     if (setupDismissed) {
-      return _Hint(text: l10n.meetingIdle);
+      return _Hint(text: l10n.meetingIdle, icon: AppIcons.modeMeeting);
     }
     return SingleChildScrollView(
       padding: EdgeInsets.all(AppParams.spacing20.r),
@@ -541,28 +542,16 @@ class _Empty extends ConsumerWidget {
   }
 }
 
-/// A centred hint line.
+/// A calm idle state with [icon] above [text].
 class _Hint extends StatelessWidget {
-  const _Hint({required this.text});
+  const _Hint({required this.text, required this.icon});
 
   final String text;
+  final AppIcons icon;
 
   @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: AppParams.spacing32.w),
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: context.textTheme.bodyLarge?.copyWith(
-            color: scheme.onSurfaceVariant,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      AppEmptyState(icon: icon, message: text);
 }
 
 /// Explains why captions stopped, with the action that fixes it.
