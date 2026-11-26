@@ -91,7 +91,7 @@ void main() {
     expect(
       find.descendant(
         of: find.byType(EngineChip),
-        matching: find.byType(FadeTransition),
+        matching: _onAirDot,
       ),
       findsNothing,
     );
@@ -100,7 +100,7 @@ void main() {
     final fade = tester.widget<FadeTransition>(
       find.descendant(
         of: find.byType(EngineChip),
-        matching: find.byType(FadeTransition),
+        matching: _onAirDot,
       ),
     );
     final start = fade.opacity.value;
@@ -117,7 +117,7 @@ void main() {
     final fade = tester.widget<FadeTransition>(
       find.descendant(
         of: find.byType(EngineChip),
-        matching: find.byType(FadeTransition),
+        matching: _onAirDot,
       ),
     );
     final start = fade.opacity.value;
@@ -149,3 +149,8 @@ void main() {
     );
   });
 }
+
+/// The on-air dot's fade; the label switcher's fades carry the label as key.
+final _onAirDot = find.byWidgetPredicate(
+  (w) => w is FadeTransition && w.key == null,
+);

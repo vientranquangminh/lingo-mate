@@ -9,6 +9,7 @@ import 'package:material_ui/material_ui.dart';
 import '../../../../common/extensions/build_context_ext.dart';
 import '../../../../common/extensions/language_name_ext.dart';
 import '../../../../common/resources/app_params.dart';
+import '../../../../common/widgets/app_motion.dart';
 import '../../../../common/widgets/draft_line.dart';
 import '../../../../common/widgets/app_action_sheet.dart';
 import '../../../../common/widgets/app_banner.dart';
@@ -215,24 +216,28 @@ class _MeetingPageState extends ConsumerState<MeetingPage> {
                             state.lines.length + (state.draft != null ? 1 : 0),
                         itemBuilder: (context, index) {
                           if (index == state.lines.length) {
-                            return DraftLine(text: state.draft ?? '');
+                            return AppFadeSlideIn(
+                              child: DraftLine(text: state.draft ?? ''),
+                            );
                           }
                           final line = state.lines[index];
                           final translation = line.translation;
-                          return MeetingLineTile(
+                          return AppFadeSlideIn(
                             key: ValueKey(line.id),
-                            line: line,
-                            onLongPress: translation == null
-                                ? null
-                                : () => saveToPhrasebook(
-                                    context,
-                                    ref,
-                                    source: 'meeting',
-                                    sourceLang: line.from,
-                                    sourceText: line.original,
-                                    targetLang: line.to,
-                                    targetText: translation,
-                                  ),
+                            child: MeetingLineTile(
+                              line: line,
+                              onLongPress: translation == null
+                                  ? null
+                                  : () => saveToPhrasebook(
+                                      context,
+                                      ref,
+                                      source: 'meeting',
+                                      sourceLang: line.from,
+                                      sourceText: line.original,
+                                      targetLang: line.to,
+                                      targetText: translation,
+                                    ),
+                            ),
                           );
                         },
                       ),

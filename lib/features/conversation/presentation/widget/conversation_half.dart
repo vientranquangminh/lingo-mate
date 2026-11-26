@@ -1,3 +1,5 @@
+import '../../../../common/widgets/app_motion.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -85,20 +87,27 @@ class ConversationHalf extends StatelessWidget {
                           ? null
                           : () => onLongPressIncoming!(incoming!),
                       child: CaptionScale(
-                        child: draft != null
-                            ? Text(
-                                draft!,
-                                style: context.textTheme.bodyLarge?.copyWith(
-                                  color: mutedForeground,
-                                  fontStyle: FontStyle.italic,
+                        child: AppSwitcher(
+                          child: draft != null
+                              ? Text(
+                                  draft!,
+                                  key: const ValueKey('draft'),
+                                  style: context.textTheme.bodyLarge?.copyWith(
+                                    color: mutedForeground,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                )
+                              : _Incoming(
+                                  key: ValueKey((
+                                    incoming?.id,
+                                    incoming?.status,
+                                  )),
+                                  turn: incoming,
+                                  strings: strings,
+                                  foreground: foreground,
+                                  mutedForeground: mutedForeground,
                                 ),
-                              )
-                            : _Incoming(
-                                turn: incoming,
-                                strings: strings,
-                                foreground: foreground,
-                                mutedForeground: mutedForeground,
-                              ),
+                        ),
                       ),
                     ),
                   ],
@@ -140,6 +149,7 @@ class ConversationHalf extends StatelessWidget {
 /// The original (small) and translation (large) of the latest line said to this person.
 class _Incoming extends StatelessWidget {
   const _Incoming({
+    super.key,
     required this.turn,
     required this.strings,
     required this.foreground,

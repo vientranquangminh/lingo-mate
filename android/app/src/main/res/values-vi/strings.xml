@@ -14,4 +14,8 @@
     <string name="widget_description">Bắt đầu trò chuyện và nói nhanh các cụm từ yêu thích.</string>
     <string name="tile_meeting">Phụ đề cuộc họp</string>
     <string name="notification_translating_media">Đang dịch âm thanh</string>
+    <string name="overlay_minimize">Thu nhỏ phụ đề</string>
+    <string name="overlay_restore">Hiện phụ đề</string>
+    <string name="overlay_stop_confirm">Chạm lần nữa để dừng</string>
+    <string name="overlay_waiting">Đang nghe…</string>
 </resources>

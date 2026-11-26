@@ -1,3 +1,5 @@
+import 'app_skeleton.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:material_ui/material_ui.dart';
@@ -6,7 +8,6 @@ import '../../core/learning/learning_assistant.dart';
 import '../../core/learning/learning_models.dart';
 import '../extensions/build_context_ext.dart';
 import '../resources/app_params.dart';
-import 'app_circular_progress_indicator.dart';
 import 'app_platform_outlined_button.dart';
 
 /// Shows three suggested replies in [replyLang] with back-translations; [onPick] runs for the tapped one (F-19).
@@ -104,12 +105,10 @@ class _SuggestedRepliesSheetState extends ConsumerState<SuggestedRepliesSheet> {
               future: _replies,
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
-                  return Padding(
-                    padding: EdgeInsets.all(AppParams.spacing24.r),
-                    child: Center(
-                      child: AppCircularProgressIndicator(
-                        color: scheme.primary,
-                      ),
+                  return AppSkeletonList(
+                    rows: 3,
+                    padding: EdgeInsets.symmetric(
+                      vertical: AppParams.spacing8.h,
                     ),
                   );
                 }

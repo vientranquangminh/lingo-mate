@@ -1,3 +1,5 @@
+import 'app_motion.dart';
+
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -68,10 +70,14 @@ class EngineChip extends StatelessWidget {
                   ),
                   SizedBox(width: AppParams.spacing4.w),
                   Flexible(
-                    child: Text(
-                      label,
-                      style: context.textTheme.labelLarge?.copyWith(
-                        color: chip.foreground,
+                    child: AppSwitcher(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: Text(
+                        label,
+                        key: ValueKey(label),
+                        style: context.textTheme.labelLarge?.copyWith(
+                          color: chip.foreground,
+                        ),
                       ),
                     ),
                   ),
