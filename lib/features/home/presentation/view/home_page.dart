@@ -130,6 +130,16 @@ class HomePage extends ConsumerWidget {
                 ],
               ),
             ),
+            SizedBox(height: AppParams.spacing12.h),
+            _ModeCard(
+              icon: AppIcons.modeMedia,
+              title: l10n.homeMediaTitle,
+              body: l10n.homeMediaBody,
+              onTap: () => context.pushNamed(
+                AppRouteName.listen,
+                queryParameters: {'from': pair.b, 'to': pair.a, 'media': '1'},
+              ),
+            ),
             SizedBox(height: AppParams.spacing20.h),
             QuickFavoritesRow(
               pair: LanguagePair(

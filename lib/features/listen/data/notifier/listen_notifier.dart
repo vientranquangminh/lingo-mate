@@ -4,9 +4,11 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/analytics/analytics_service.dart';
+import '../../../../core/audio/audio_capture.dart';
 import '../../../../core/audio/audio_frame.dart';
 import '../../../../core/audio/audio_pipeline.dart';
 import '../../../../core/audio/echo_gate.dart';
+import '../../../../core/audio/playback_audio_capture.dart';
 import '../../../../core/audio/voice_activity_detector.dart';
 import '../../../../core/engines/engine_instances.dart';
 import '../../../../core/engines/asr/partial_transcriber.dart';
@@ -32,13 +34,22 @@ final listenClockProvider = Provider<int Function()>((ref) {
 final listenProvider = NotifierProvider.autoDispose
     .family<ListenNotifier, ListenState, LanguagePair>(ListenNotifier.new);
 
+/// Listen over audio playing on the phone (videos, podcasts) instead of the mic (F-21).
+final mediaListenProvider = NotifierProvider.autoDispose
+    .family<ListenNotifier, ListenState, LanguagePair>(
+      (languages) => ListenNotifier(languages, media: true),
+    );
+
 /// Runs Listen: one open mic → segments → on-device ASR in the source language → translation into the user's language, as a caption list (F-03).
 class ListenNotifier extends Notifier<ListenState> {
-  ListenNotifier(this.languages);
+  ListenNotifier(this.languages, {this.media = false});
 
   static const contextCaptions = 3;
+  static const silenceDbfs = -60.0;
+  static const silentFor = Duration(seconds: 10);
 
   final LanguagePair languages;
+  final bool media;
 
   late final SessionRepository _sessions;
   late final AnalyticsService _analytics;
@@ -60,6 +71,9 @@ class ListenNotifier extends Notifier<ListenState> {
   StreamSubscription<Uint8List>? _liveChunks;
   StreamSubscription<LiveCaptionEvent>? _liveEvents;
   final _liveCaptions = <int, (int id, int startMs)>{};
+  StreamSubscription<double>? _levels;
+  int _lastSoundMs = 0;
+  Timer? _silenceTimer;
 
   @override
   ListenState build() {
@@ -120,6 +134,45 @@ class ListenNotifier extends Notifier<ListenState> {
     }
   }
 
+  /// The microphone, or the phone's own playback in media mode.
+  AudioCapture get _capture =>
+      ref.read(media ? mediaCaptureProvider : audioCaptureProvider);
+
+  /// In media mode, raises [ListenState.mediaSilent] when the captured audio stays silent for 10 s (AC-21.2).
+  void _watchSilence(AudioPipeline pipeline) {
+    if (!media) {
+      return;
+    }
+    _lastSoundMs = _clock();
+    unawaited(_levels?.cancel());
+    _levels = pipeline.levels.listen((db) {
+      if (db > silenceDbfs) {
+        _lastSoundMs = _clock();
+        if (state.mediaSilent && ref.mounted) {
+          state = state.copyWith(mediaSilent: false);
+        }
+      }
+    });
+    _silenceTimer?.cancel();
+    _silenceTimer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!ref.mounted || !state.listening) {
+        return;
+      }
+      final silent = _clock() - _lastSoundMs >= silentFor.inMilliseconds;
+      if (silent != state.mediaSilent) {
+        state = state.copyWith(mediaSilent: silent);
+      }
+    });
+  }
+
+  /// Stops watching for silence.
+  void _stopSilence() {
+    unawaited(_levels?.cancel());
+    _levels = null;
+    _silenceTimer?.cancel();
+    _silenceTimer = null;
+  }
+
   /// The engine Listen uses: Live while it works, else the text engines.
   EngineKind? _engineOf(EngineSelection selection) =>
       selection.engine == EngineKind.live && !_liveOff
@@ -160,7 +213,7 @@ class ListenNotifier extends Notifier<ListenState> {
         .read(vadFactoryProvider.future)
         .catchError((Object _) => EnergyVoiceActivityDetector.new);
     final pipeline = AudioPipeline(
-      capture: ref.read(audioCaptureProvider),
+      capture: _capture,
       vad: vadFactory(),
       echoGate: EchoGate(nowMs: _clock),
     );
@@ -176,6 +229,7 @@ class ListenNotifier extends Notifier<ListenState> {
       return;
     }
     _pipeline = pipeline;
+    _watchSilence(pipeline);
     final partialAsr = PartialTranscriber(
       recognizer,
       onText: (text) => state = state.copyWith(draft: () => text),
@@ -233,7 +287,7 @@ class ListenNotifier extends Notifier<ListenState> {
     }
     _liveEvents = captioner.events.listen(_onLiveEvent);
     final pipeline = AudioPipeline(
-      capture: ref.read(audioCaptureProvider),
+      capture: _capture,
       vad: EnergyVoiceActivityDetector(),
       echoGate: EchoGate(nowMs: _clock),
     );
@@ -253,6 +307,7 @@ class ListenNotifier extends Notifier<ListenState> {
     }
     _live = captioner;
     _pipeline = pipeline;
+    _watchSilence(pipeline);
     state = state.copyWith(started: true, listening: true);
     return true;
   }
@@ -340,6 +395,7 @@ class ListenNotifier extends Notifier<ListenState> {
 
   /// Stops the mic and keeps the captions; nothing is heard or counted until [start] (AC-03.6).
   Future<void> pause() async {
+    _stopSilence();
     if (_live != null) {
       await _stopLive(pipeline: _pipeline);
       _pipeline = null;
@@ -595,7 +651,7 @@ class ListenNotifier extends Notifier<ListenState> {
     _sessionStartMs = _clock();
     final pair = LanguagePair(_engineSource(state.source), languages.b);
     _sessionId = _sessions.start(
-      mode: SessionMode.listen,
+      mode: media ? SessionMode.media : SessionMode.listen,
       engine: state.engine,
       pair: pair,
     );
@@ -646,6 +702,7 @@ class ListenNotifier extends Notifier<ListenState> {
 
   /// Releases the mic and saves the session.
   void _dispose() {
+    _stopSilence();
     _selection?.close();
     unawaited(_stopLive());
     unawaited(_segments?.cancel());

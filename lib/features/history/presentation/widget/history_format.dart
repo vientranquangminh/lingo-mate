@@ -41,6 +41,7 @@ abstract final class HistoryFormat {
   static AppIcons modeIcon(String mode) => switch (mode) {
     'listen' => AppIcons.modeListen,
     'meeting' => AppIcons.modeMeeting,
+    'media' => AppIcons.modeMedia,
     _ => AppIcons.modeConversation,
   };
 
@@ -48,6 +49,7 @@ abstract final class HistoryFormat {
   static String modeName(AppLocalizations l10n, String mode) => switch (mode) {
     'listen' => l10n.modeListen,
     'meeting' => l10n.modeMeeting,
+    'media' => l10n.modeMedia,
     _ => l10n.modeConversation,
   };
 

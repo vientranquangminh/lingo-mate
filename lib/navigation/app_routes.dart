@@ -344,6 +344,7 @@ final goRouterProvider = Provider((ref) {
                 query['from'] ?? 'en',
                 query['to'] ?? 'vi',
               ),
+              media: query['media'] == '1',
             ),
           );
         },

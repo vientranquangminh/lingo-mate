@@ -181,7 +181,8 @@ abstract final class LearningRules {
 
   /// Whether a session may be summarised: Meeting or Listen, 3 minutes or longer (AC-20.1).
   static bool canSummarize(String mode, int durationSec) =>
-      (mode == 'meeting' || mode == 'listen') && durationSec >= minSummarySec;
+      (mode == 'meeting' || mode == 'listen' || mode == 'media') &&
+      durationSec >= minSummarySec;
 
   /// The summary as plain text for sharing (AC-20.2).
   static String summaryText(

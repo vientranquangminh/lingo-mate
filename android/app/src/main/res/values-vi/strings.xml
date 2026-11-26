@@ -13,4 +13,5 @@
     <string name="widget_empty">Đánh dấu sao cụm từ nhanh để thấy chúng ở đây.</string>
     <string name="widget_description">Bắt đầu trò chuyện và nói nhanh các cụm từ yêu thích.</string>
     <string name="tile_meeting">Phụ đề cuộc họp</string>
+    <string name="notification_translating_media">Đang dịch âm thanh</string>
 </resources>

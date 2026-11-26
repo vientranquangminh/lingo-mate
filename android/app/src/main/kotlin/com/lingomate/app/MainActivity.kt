@@ -1,9 +1,11 @@
 package com.lingomate.app
 
+import android.content.Intent
 import android.view.WindowManager
 import com.lingomate.app.channels.AppLocaleChannel
 import com.lingomate.app.channels.BackgroundChannel
 import com.lingomate.app.channels.HomeWidgetChannel
+import com.lingomate.app.channels.MediaCaptureChannel
 import com.lingomate.app.channels.PcmPlayerChannel
 import com.lingomate.app.channels.ReviewReminderChannel
 import com.lingomate.app.channels.SystemSettingsChannel
@@ -18,6 +20,7 @@ class MainActivity : FlutterActivity() {
     private var appLocale: AppLocaleChannel? = null
     private var reviewReminder: ReviewReminderChannel? = null
     private var homeWidget: HomeWidgetChannel? = null
+    private var mediaCapture: MediaCaptureChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -27,6 +30,7 @@ class MainActivity : FlutterActivity() {
         background = BackgroundChannel(messenger, applicationContext)
         reviewReminder = ReviewReminderChannel(messenger, applicationContext)
         homeWidget = HomeWidgetChannel(messenger, applicationContext)
+        mediaCapture = MediaCaptureChannel(messenger, this)
         systemSettings = SystemSettingsChannel(messenger, applicationContext) { on ->
             runOnUiThread {
                 if (on) {
@@ -51,6 +55,16 @@ class MainActivity : FlutterActivity() {
         reviewReminder = null
         homeWidget?.dispose()
         homeWidget = null
+        mediaCapture?.dispose()
+        mediaCapture = null
         super.cleanUpFlutterEngine(flutterEngine)
+    }
+
+    @Deprecated("Still the way FlutterActivity receives activity results")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (mediaCapture?.onActivityResult(requestCode, resultCode, data) != true) {
+            @Suppress("DEPRECATION")
+            super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 }
