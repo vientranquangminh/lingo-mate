@@ -140,6 +140,8 @@ class _MicButtonState extends State<MicButton>
             child: Text(
               widget.label,
               textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: context.textTheme.labelLarge?.copyWith(
                 color: widget.labelColor ?? scheme.primary,
               ),

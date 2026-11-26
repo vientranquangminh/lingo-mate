@@ -86,7 +86,7 @@ void main() {
   });
 
   test('an unsupported system language leaves the app setting alone', () async {
-    final system = _FakeSystemAppLocale('fr');
+    final system = _FakeSystemAppLocale('sw');
     final container = await build(system, {
       AppLocaleSync.syncedKey: true,
       'app_locale': 'vi',
