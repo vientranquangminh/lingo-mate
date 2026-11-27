@@ -17,6 +17,7 @@ class MeetingLine extends Equatable {
     required this.original,
     required this.atMs,
     this.newTurn = false,
+    this.speaker,
     this.translation,
     this.engine,
     this.fallback = false,
@@ -29,6 +30,7 @@ class MeetingLine extends Equatable {
   final String original;
   final int atMs;
   final bool newTurn;
+  final int? speaker;
   final String? translation;
   final EngineKind? engine;
   final bool fallback;
@@ -51,6 +53,7 @@ class MeetingLine extends Equatable {
       original: original ?? this.original,
       atMs: atMs,
       newTurn: newTurn,
+      speaker: speaker,
       translation: translation ?? this.translation,
       engine: engine ?? this.engine,
       fallback: fallback ?? this.fallback,
@@ -66,6 +69,7 @@ class MeetingLine extends Equatable {
     original,
     atMs,
     newTurn,
+    speaker,
     translation,
     engine,
     fallback,

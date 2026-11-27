@@ -1,3 +1,8 @@
+import 'package:lingo_mate/core/engines/speaker/speaker_embedder.dart';
+import 'package:lingo_mate/core/audio/audio_frame.dart';
+
+import 'dart:typed_data';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lingo_mate/core/background/background_capture.dart';
@@ -68,6 +73,31 @@ void main() {
     expect(state.target, 'vi');
     expect(state.engine, EngineKind.standard);
   });
+
+  test(
+    'tells speakers apart and marks a new turn when the speaker changes',
+    () async {
+      final voices = [0, 3, 0];
+      fakes
+        ..recognizer.texts.addAll(['hello', 'hi there', 'how are you'])
+        ..embedder = _FakeEmbedder(voices);
+      final c = await build();
+      await notifier(c).start(overlay: true);
+
+      await speak(ms: 2000);
+      await speak(ms: 2000);
+      await speak(ms: 2000);
+
+      final lines = c.read(meetingProvider).lines;
+      expect(lines.map((l) => l.speaker), [1, 2, 1]);
+      expect(lines.map((l) => l.newTurn), [false, true, true]);
+      expect(background.overlayLines.map((l) => l.speakerLabel), [
+        'Speaker 1',
+        'Speaker 2',
+        'Speaker 1',
+      ]);
+    },
+  );
 
   test('on Standard, Gemini hears and translates the line', () async {
     fakes.speech = GeminiSpeechTranslator(
@@ -285,4 +315,19 @@ void main() {
     expect(c.read(meetingSetupDismissedProvider), isTrue);
     expect(fakes.prefs.getBool('meeting_setup_dismissed'), isTrue);
   });
+}
+
+/// Embedder that returns a unit voice along the next queued axis for each segment.
+class _FakeEmbedder implements SpeakerEmbedder {
+  _FakeEmbedder(this.axes);
+
+  final List<int> axes;
+  int _next = 0;
+
+  @override
+  Future<Float32List?> embed(AudioSegment segment) async {
+    final v = Float32List(8);
+    v[axes[_next++ % axes.length]] = 1;
+    return v;
+  }
 }

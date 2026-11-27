@@ -16,6 +16,7 @@ import 'asr/asr_models.dart';
 import 'asr/language_routed_recognizer.dart';
 import 'asr/sherpa_transducer_engine.dart';
 import 'asr/sherpa_whisper_engine.dart';
+import 'speaker/speaker_embedder.dart';
 import 'asr/whisper_cpp_engine.dart';
 import 'engines.dart';
 import 'live/live_models.dart';
@@ -116,6 +117,12 @@ final speechRecognizerProvider = FutureProvider<SpeechRecognizerEngine?>((
     },
     fallback: whisper,
   );
+});
+
+/// Voice embeddings that tell meeting speakers apart; null until the speaker model is downloaded.
+final speakerEmbedderProvider = FutureProvider<SpeakerEmbedder?>((ref) async {
+  final path = (await ref.watch(asrModelCatalogProvider.future)).speakerModel;
+  return path == null ? null : SherpaSpeakerEmbedder(path);
 });
 
 /// Text-to-speech for spoken translations.

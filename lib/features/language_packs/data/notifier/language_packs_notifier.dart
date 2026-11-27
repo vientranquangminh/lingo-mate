@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/engines/asr/asr_models.dart';
+import '../../../../core/engines/engine_instances.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../model/pack_models.dart';
 import '../repository/pack_repository.dart';
@@ -163,7 +164,9 @@ class LanguagePacksNotifier extends Notifier<LanguagePacksState> {
         voiceMissing: false,
       ),
     );
-    ref.invalidate(packsInstalledProvider);
+    ref
+      ..invalidate(packsInstalledProvider)
+      ..invalidate(asrModelCatalogProvider);
   }
 
   /// Removes every downloaded translation and speech model, English last.
@@ -190,6 +193,7 @@ class LanguagePacksNotifier extends Notifier<LanguagePacksState> {
     }
     ref
       ..invalidate(packsInstalledProvider)
+      ..invalidate(asrModelCatalogProvider)
       ..invalidateSelf();
   }
 
@@ -214,7 +218,10 @@ class LanguagePacksNotifier extends Notifier<LanguagePacksState> {
       for (final l in langs) _downloadTranslation(l, allowMobileData),
       _downloadSpeech(lang),
     ]);
-    ref.invalidate(packsInstalledProvider);
+    await _downloadSpeakerModel();
+    ref
+      ..invalidate(packsInstalledProvider)
+      ..invalidate(asrModelCatalogProvider);
     final voice = await ref.read(voiceCheckerProvider).hasVoice(lang);
     _update(lang, (p) => p.copyWith(voiceMissing: !voice));
   }
@@ -260,6 +267,19 @@ class LanguagePacksNotifier extends Notifier<LanguagePacksState> {
     } catch (_) {
       _update(lang, (p) => p.copyWith(speech: ComponentStatus.failed));
     }
+  }
+
+  /// Downloads the speaker model that tells meeting speakers apart, once, alongside the first speech pack; failures are ignored.
+  Future<void> _downloadSpeakerModel() async {
+    final spec = AsrModelSpec.fromJson(
+      ref.read(engineRemoteConfigProvider).speakerModel,
+    );
+    final files = ref.read(speechModelFilesProvider);
+    if (spec == null ||
+        await files.exists(spec).catchError((Object _) => true)) {
+      return;
+    }
+    await files.download(spec, (_) {}).catchError((Object _) {});
   }
 
   /// Starts every pack that was waiting for Wi-Fi.

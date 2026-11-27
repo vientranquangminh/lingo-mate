@@ -515,5 +515,6 @@
   "homeMediaBody": "Untertitel für Videos und Podcasts, die auf diesem Handy laufen",
   "modeMedia": "Medien",
   "mediaIntro": "Tippe auf Start, erlaube die Bildschirm- und Audioaufnahme und spiele dann ein Video oder einen Podcast ab. Anrufe können nicht aufgenommen werden, und manche Apps blockieren die Aufnahme.",
-  "mediaSilent": "Seit 10 Sekunden wurde kein Ton aufgenommen. Wenn etwas läuft, blockiert diese App möglicherweise die Audioaufnahme."
+  "mediaSilent": "Seit 10 Sekunden wurde kein Ton aufgenommen. Wenn etwas läuft, blockiert diese App möglicherweise die Audioaufnahme.",
+  "meetingSpeaker": "Sprecher {number}"
 }

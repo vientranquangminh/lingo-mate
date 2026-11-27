@@ -964,5 +964,14 @@
   "homeMediaBody": "Captions for videos and podcasts playing on this phone",
   "modeMedia": "Media",
   "mediaIntro": "Start, allow screen and audio capture, then play a video or podcast. Calls can't be captured, and some apps block capture.",
-  "mediaSilent": "No sound captured for 10 seconds. If something is playing, that app may block audio capture."
+  "mediaSilent": "No sound captured for 10 seconds. If something is playing, that app may block audio capture.",
+  "meetingSpeaker": "Speaker {number}",
+  "@meetingSpeaker": {
+    "description": "Label of a voice told apart in Meeting, numbered in order of first speaking.",
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  }
 }

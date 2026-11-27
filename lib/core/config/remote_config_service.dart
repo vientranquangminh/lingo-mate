@@ -98,6 +98,10 @@ class RemoteConfigService {
   Map<String, dynamic> get asrModels =>
       _json(RemoteDefaults.asrModels) ?? const {};
 
+  /// Where to download the speaker model that tells meeting speakers apart (`{file, url, bytes, sha256}`).
+  Map<String, dynamic> get speakerModel =>
+      _json(RemoteDefaults.speakerModel) ?? const {};
+
   /// Returns the capability matrix override, or null when none is set or it is invalid.
   Map<String, dynamic>? get capabilityMatrix =>
       _json(RemoteDefaults.capabilityMatrix);

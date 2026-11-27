@@ -31,8 +31,13 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import kotlin.math.abs
 
-/** One caption in the bubble: what was said and its translation. */
-data class OverlayLine(val original: String, val translation: String)
+/** One caption in the bubble: what was said, its translation and its speaker (0 when not told apart). */
+data class OverlayLine(
+    val original: String,
+    val translation: String,
+    val speaker: Int = 0,
+    val speakerLabel: String = "",
+)
 
 /** Floating caption bubble drawn over other apps: drag by its header, minimise to a pill, expand to scroll back, stop with a confirming second tap (S-08, AC-04.4/AC-04.5/AC-04.8). */
 class CaptionOverlay(private val context: Context) {
@@ -293,6 +298,17 @@ class CaptionOverlay(private val context: Context) {
         LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(0, dp(6), 0, dp(2))
+            if (line.speaker > 0) {
+                val tint = color(SPEAKER_COLORS[(line.speaker - 1) % SPEAKER_COLORS.size])
+                setPadding(dp(10), dp(6), 0, dp(2))
+                foreground = SpeakerBar(tint, dp(3).toFloat())
+                if (line.speakerLabel.isNotEmpty() && line.speaker != previousSpeaker(index)) {
+                    addView(text(11f, R.color.orange_bit_of_sugar).apply {
+                        text = line.speakerLabel
+                        setTextColor(tint)
+                    })
+                }
+            }
             if (line.original.isNotEmpty()) {
                 addView(text(12f, R.color.blue_jacaranda_light).apply { text = line.original })
             }
@@ -310,6 +326,9 @@ class CaptionOverlay(private val context: Context) {
                 }
             }
         }
+
+    /** The speaker of the line before [index] in [lines], or 0 at the start. */
+    private fun previousSpeaker(index: Int): Int = lines.getOrNull(index - 1)?.speaker ?: 0
 
     /** The lines on screen: the last 2, or all when expanded. */
     private fun visibleLines(): List<OverlayLine> = if (expanded) lines else lines.takeLast(COLLAPSED_LINES)
@@ -458,5 +477,34 @@ class CaptionOverlay(private val context: Context) {
         private const val CONFIRM_MS = 3000L
         private const val ENTER_MS = 220L
         private const val SNAP_MS = 220L
+        private val SPEAKER_COLORS = intArrayOf(
+            R.color.cyan_exquisite_turquoise,
+            R.color.blue_ephemeral,
+            R.color.orange_not_yo_cheese,
+            R.color.red_forbidden_fruit,
+            R.color.green_shivering,
+            R.color.red_georgia_peach,
+        )
+    }
+
+    /** Draws a coloured bar down the start edge of a line, marking its speaker. */
+    private class SpeakerBar(color: Int, private val width: Float) : android.graphics.drawable.Drawable() {
+        private val paint = android.graphics.Paint().apply { this.color = color }
+
+        override fun draw(canvas: android.graphics.Canvas) {
+            val b = bounds
+            canvas.drawRect(b.left.toFloat(), b.top.toFloat() + width, b.left + width, b.bottom.toFloat(), paint)
+        }
+
+        override fun setAlpha(alpha: Int) {
+            paint.alpha = alpha
+        }
+
+        override fun setColorFilter(colorFilter: android.graphics.ColorFilter?) {
+            paint.colorFilter = colorFilter
+        }
+
+        @Deprecated("Deprecated in Java")
+        override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
     }
 }
