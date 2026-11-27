@@ -66,7 +66,11 @@ class GeminiSpeechTranslator implements SpeechTranslatorEngine {
   static String system({required List<String> from, required String to}) =>
       'You are a professional interpreter. The audio is one sentence spoken '
       'in ${from.length == 1 ? from.single : 'one of ${from.join(', ')}'} '
-      '(BCP-47 codes). Write down exactly what was said in that language, then '
+      '(BCP-47 codes). The speaker may have a strong regional accent or '
+      'dialect (for Vietnamese: Northern, Central such as Huế, Đà Nẵng or '
+      'Quảng Nam, or Southern); listen for what they mean and do not force it '
+      'into the standard accent. Write down exactly what was said in that '
+      'language with standard spelling, then '
       'translate it into $to. Keep names, numbers and units unchanged. Match '
       'the speaker\'s register. Use the glossary when a term appears. Reply '
       'with JSON only: {"lang": "<code of the spoken language>", '

@@ -89,19 +89,13 @@ void main() {
   testWidgets('only Live has the on-air dot, which pulses', (tester) async {
     await pump(tester, const EngineChip(engine: EngineKind.standard));
     expect(
-      find.descendant(
-        of: find.byType(EngineChip),
-        matching: _onAirDot,
-      ),
+      find.descendant(of: find.byType(EngineChip), matching: _onAirDot),
       findsNothing,
     );
 
     await pump(tester, const EngineChip(engine: EngineKind.live));
     final fade = tester.widget<FadeTransition>(
-      find.descendant(
-        of: find.byType(EngineChip),
-        matching: _onAirDot,
-      ),
+      find.descendant(of: find.byType(EngineChip), matching: _onAirDot),
     );
     final start = fade.opacity.value;
     await tester.pump(const Duration(milliseconds: 500));
@@ -115,10 +109,7 @@ void main() {
       reduceMotion: true,
     );
     final fade = tester.widget<FadeTransition>(
-      find.descendant(
-        of: find.byType(EngineChip),
-        matching: _onAirDot,
-      ),
+      find.descendant(of: find.byType(EngineChip), matching: _onAirDot),
     );
     final start = fade.opacity.value;
 

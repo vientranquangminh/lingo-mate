@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:isolate';
 
+import 'package:archive/archive.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -77,8 +79,14 @@ class HttpSpeechModelFiles implements SpeechModelFiles {
   Future<File> _file(AsrModelSpec spec) async =>
       File('${(await _directory()).path}/${spec.fileName}');
 
+  /// Returns the folder a `.tar.bz2` model unpacks into.
+  Future<Directory> _folder(AsrModelSpec spec) async =>
+      Directory('${(await _directory()).path}/${spec.folderName}');
+
   @override
-  Future<bool> exists(AsrModelSpec spec) async => (await _file(spec)).exists();
+  Future<bool> exists(AsrModelSpec spec) async => spec.isArchive
+      ? (await _folder(spec)).exists()
+      : (await _file(spec)).exists();
 
   @override
   Future<void> download(
@@ -118,7 +126,13 @@ class HttpSpeechModelFiles implements SpeechModelFiles {
           digest.value.toString() != expected.toLowerCase()) {
         throw StateError('checksum mismatch for ${spec.fileName}');
       }
-      await partial.rename(target.path);
+      if (spec.isArchive) {
+        final root = (await _directory()).path;
+        final path = partial.path;
+        await Isolate.run(() => unpackTarBz2(path, root));
+      } else {
+        await partial.rename(target.path);
+      }
       onProgress(1);
     } finally {
       client.close(force: true);
@@ -130,9 +144,51 @@ class HttpSpeechModelFiles implements SpeechModelFiles {
 
   @override
   Future<void> delete(AsrModelSpec spec) async {
+    if (spec.isArchive) {
+      final folder = await _folder(spec);
+      if (await folder.exists()) {
+        await folder.delete(recursive: true);
+      }
+      return;
+    }
     final file = await _file(spec);
     if (await file.exists()) {
       await file.delete();
+    }
+  }
+
+  /// Unpacks the `.tar.bz2` at [archivePath] into [root], skipping sample audio; the folder appears only once complete.
+  static void unpackTarBz2(String archivePath, String root) {
+    final tar = TarDecoder().decodeBytes(
+      BZip2Decoder().decodeBytes(File(archivePath).readAsBytesSync()),
+    );
+    final staging = Directory('$root/.unpacking')..createSync(recursive: true);
+    final tops = <String>{};
+    try {
+      for (final entry in tar.files) {
+        final name = entry.name;
+        if (!entry.isFile ||
+            name.contains('..') ||
+            name.contains('/test_wavs/') ||
+            name.endsWith('.wav')) {
+          continue;
+        }
+        tops.add(name.split('/').first);
+        File('${staging.path}/$name')
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(entry.content);
+      }
+      for (final top in tops) {
+        final target = Directory('$root/$top');
+        if (target.existsSync()) {
+          target.deleteSync(recursive: true);
+        }
+        Directory('${staging.path}/$top').renameSync(target.path);
+      }
+    } finally {
+      if (staging.existsSync()) {
+        staging.deleteSync(recursive: true);
+      }
     }
   }
 }

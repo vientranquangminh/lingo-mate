@@ -22,6 +22,28 @@ class SherpaWhisperModel extends Equatable {
   List<Object?> get props => [name, encoder, decoder, tokens];
 }
 
+/// Files of a zipformer transducer exported for sherpa-onnx, trained for one language.
+class TransducerModel extends Equatable {
+  const TransducerModel({
+    required this.lang,
+    required this.name,
+    required this.encoder,
+    required this.decoder,
+    required this.joiner,
+    required this.tokens,
+  });
+
+  final String lang;
+  final String name;
+  final String encoder;
+  final String decoder;
+  final String joiner;
+  final String tokens;
+
+  @override
+  List<Object?> get props => [lang, name, encoder, decoder, joiner, tokens];
+}
+
 /// A whisper.cpp GGML model file.
 class WhisperCppModel extends Equatable {
   const WhisperCppModel({required this.name, required this.path});
@@ -38,17 +60,25 @@ class AsrModelCatalog extends Equatable {
   const AsrModelCatalog({
     this.sherpaWhisper = const [],
     this.whisperCpp = const [],
+    this.transducers = const [],
     this.sileroVad,
   });
 
   final List<SherpaWhisperModel> sherpaWhisper;
   final List<WhisperCppModel> whisperCpp;
+  final List<TransducerModel> transducers;
   final String? sileroVad;
 
-  bool get isEmpty => sherpaWhisper.isEmpty && whisperCpp.isEmpty;
+  bool get isEmpty =>
+      sherpaWhisper.isEmpty && whisperCpp.isEmpty && transducers.isEmpty;
 
   @override
-  List<Object?> get props => [sherpaWhisper, whisperCpp, sileroVad];
+  List<Object?> get props => [
+    sherpaWhisper,
+    whisperCpp,
+    transducers,
+    sileroVad,
+  ];
 }
 
 /// Finds speech models on disk.
@@ -81,13 +111,14 @@ class AsrModelStore {
     return file.path;
   }
 
-  /// Lists `ggml-*.bin` files, `sherpa-onnx-whisper-*` folders and `silero_vad.onnx`.
+  /// Lists `ggml-*.bin` files, `sherpa-onnx-whisper-*` and `sherpa-onnx-zipformer-<lang>-*` folders and `silero_vad.onnx`.
   Future<AsrModelCatalog> scan() async {
     if (!await directory.exists()) {
       return const AsrModelCatalog();
     }
     final sherpa = <SherpaWhisperModel>[];
     final ggml = <WhisperCppModel>[];
+    final transducers = <TransducerModel>[];
     String? silero;
     await for (final entity in directory.list()) {
       final name = entity.uri.pathSegments.where((s) => s.isNotEmpty).last;
@@ -108,6 +139,11 @@ class AsrModelStore {
         if (model != null) {
           sherpa.add(model);
         }
+      } else if (entity is Directory && name.startsWith(zipformerPrefix)) {
+        final model = await _transducerModel(entity, name);
+        if (model != null) {
+          transducers.add(model);
+        }
       }
     }
     sherpa.sort((a, b) => a.name.compareTo(b.name));
@@ -115,8 +151,49 @@ class AsrModelStore {
     return AsrModelCatalog(
       sherpaWhisper: sherpa,
       whisperCpp: ggml,
+      transducers: transducers,
       sileroVad: silero,
     );
+  }
+
+  static const zipformerPrefix = 'sherpa-onnx-zipformer-';
+
+  /// Returns the files of a transducer folder named `sherpa-onnx-zipformer-<lang>-…`, preferring int8 files.
+  Future<TransducerModel?> _transducerModel(Directory dir, String name) async {
+    final lang = name.substring(zipformerPrefix.length).split('-').first;
+    final files = await _files(dir);
+    final encoder = _pick(files, 'encoder');
+    final decoder = _pick(files, 'decoder');
+    final joiner = _pick(files, 'joiner');
+    final tokens = _pick(files, 'tokens.txt');
+    if (lang.isEmpty ||
+        encoder == null ||
+        decoder == null ||
+        joiner == null ||
+        tokens == null) {
+      return null;
+    }
+    return TransducerModel(
+      lang: lang,
+      name: name,
+      encoder: encoder,
+      decoder: decoder,
+      joiner: joiner,
+      tokens: tokens,
+    );
+  }
+
+  /// Lists the files directly in [dir].
+  static Future<List<String>> _files(Directory dir) =>
+      dir.list().where((e) => e is File).map((e) => e.path).toList();
+
+  /// Returns the file whose name contains [part], preferring an int8 one.
+  static String? _pick(List<String> files, String part) {
+    final matches =
+        files.where((f) => f.split('/').last.contains(part)).toList()..sort(
+          (a, b) => (b.contains('int8') ? 1 : 0) - (a.contains('int8') ? 1 : 0),
+        );
+    return matches.isEmpty ? null : matches.first;
   }
 
   /// Returns the encoder, decoder and tokens of a sherpa Whisper folder, preferring int8 files.
