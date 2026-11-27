@@ -13,6 +13,8 @@ import '../glossary/glossary_repository.dart';
 import '../glossary/glossary_translator.dart';
 import '../settings/app_preferences.dart';
 import 'asr/asr_models.dart';
+import 'asr/language_routed_recognizer.dart';
+import 'asr/sherpa_transducer_engine.dart';
 import 'asr/sherpa_whisper_engine.dart';
 import 'asr/whisper_cpp_engine.dart';
 import 'engines.dart';
@@ -92,17 +94,28 @@ final vadFactoryProvider = FutureProvider<VoiceActivityDetector Function()>((
   };
 });
 
-/// On-device speech recognizer for the modes: the first sherpa-onnx Whisper model, else whisper.cpp; null when no model is installed.
+/// On-device speech recognizer for the modes: a language's own transducer when installed (Vietnamese), else the first sherpa-onnx Whisper model, else whisper.cpp; null when no model is installed.
 final speechRecognizerProvider = FutureProvider<SpeechRecognizerEngine?>((
   ref,
 ) async {
   final catalog = await ref.watch(asrModelCatalogProvider.future);
   final sherpa = catalog.sherpaWhisper.firstOrNull;
-  if (sherpa != null) {
-    return SherpaWhisperEngine(sherpa);
-  }
   final cpp = catalog.whisperCpp.firstOrNull;
-  return cpp == null ? null : WhisperCppEngine(cpp);
+  final whisper = sherpa != null
+      ? SherpaWhisperEngine(sherpa) as SpeechRecognizerEngine
+      : cpp == null
+      ? null
+      : WhisperCppEngine(cpp);
+  if (catalog.transducers.isEmpty) {
+    return whisper;
+  }
+  return LanguageRoutedRecognizer(
+    byLanguage: {
+      for (final model in catalog.transducers)
+        model.lang: SherpaTransducerEngine(model),
+    },
+    fallback: whisper,
+  );
 });
 
 /// Text-to-speech for spoken translations.

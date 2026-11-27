@@ -12,14 +12,38 @@ speech model.
   `ggml-small-q5_1.bin` (https://huggingface.co/ggerganov/whisper.cpp/tree/main).
   The models are multilingual, so every language points at the same file and the phone
   keeps one copy (AC-06.6).
-- sherpa-onnx models are folders of three files, so they cannot be set through `asr_models`.
-  Push them with adb if needed (`docs/benchmark.md` §3). Silero VAD ships inside the app
+- A sherpa-onnx model folder packed as `.tar.bz2`. The phone checks the SHA-256 of the archive,
+  unpacks it into `models/` (sample audio is skipped) and deletes the archive. A folder named
+  `sherpa-onnx-zipformer-<lang>-…` is a transducer for that language and is used for it instead
+  of Whisper (`LanguageRoutedRecognizer`); every other language keeps Whisper.
+  sherpa-onnx Whisper folders can still be pushed with adb (`docs/benchmark.md` §3). Silero VAD ships inside the app
   (`assets/models/silero_vad.onnx`) and is copied into `models/` on first use.
 - For lower latency and a smaller download, prefer a quantized model such as
   `ggml-base-q5_1.bin` (~57 MB) over `ggml-base.bin` (148 MB).
 - Which model to ship is open question OQ-3. Start with `ggml-base.bin` (fast), and switch
   to `ggml-small-q5_1.bin` later if Vietnamese accuracy is too low: change the file in
   Storage and the value in Remote Config, nothing else.
+
+## Vietnamese: use the zipformer transducer (recommended)
+
+Whisper base recognises Vietnamese poorly outside the Hà Nội accent. The k2-fsa zipformer
+trained on about 70,000 hours of Vietnamese hears Central and Southern accents far better and
+decodes a sentence in well under a second. Point the `vi` entry of `asr_models` at it and keep
+the other languages on `ggml-base.bin`:
+
+```json
+"vi": {
+  "file": "sherpa-onnx-zipformer-vi-int8-2025-04-20.tar.bz2",
+  "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-zipformer-vi-int8-2025-04-20.tar.bz2",
+  "bytes": 60181038,
+  "sha256": "48d0fdc9b3515eb9b00c4dfec2883207ee5ebe5c95b1959e7afce87fc3391938"
+}
+```
+
+A smaller one (≈26 MB, trained on 6,000 hours) also works:
+`sherpa-onnx-zipformer-vi-30M-int8-2026-02-09.tar.bz2`, 26442384 bytes, SHA-256
+`da8b637947091829d7ee9eda23da2a4ec7caa399233a3f4e34eb719fb2ea6b9b`. To avoid depending on the
+k2-fsa release, copy the archive to the `lingomate-models` release and change `url`.
 
 ## Current setup (GitHub Releases, free)
 

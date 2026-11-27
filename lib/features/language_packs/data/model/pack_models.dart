@@ -32,6 +32,16 @@ class AsrModelSpec extends Equatable {
   final int bytes;
   final String? sha256;
 
+  static const _archiveSuffix = '.tar.bz2';
+
+  /// Whether the download is a `.tar.bz2` holding a model folder (sherpa-onnx models).
+  bool get isArchive => fileName.endsWith(_archiveSuffix);
+
+  /// The folder an archive unpacks into: the file name without `.tar.bz2`.
+  String get folderName => isArchive
+      ? fileName.substring(0, fileName.length - _archiveSuffix.length)
+      : fileName;
+
   @override
   List<Object?> get props => [fileName, url, bytes, sha256];
 }

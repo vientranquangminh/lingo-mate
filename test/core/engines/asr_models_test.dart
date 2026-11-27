@@ -40,6 +40,36 @@ void main() {
     expect(sherpa.tokens, endsWith('base-tokens.txt'));
   });
 
+  test('finds a language transducer folder', () async {
+    const folder = 'sherpa-onnx-zipformer-vi-int8-2025-04-20';
+    await touch('$folder/encoder-epoch-12-avg-8.int8.onnx');
+    await touch('$folder/decoder-epoch-12-avg-8.onnx');
+    await touch('$folder/joiner-epoch-12-avg-8.int8.onnx');
+    await touch('$folder/tokens.txt');
+    await touch('$folder/bpe.model');
+
+    final catalog = await AsrModelStore(dir).scan();
+
+    final model = catalog.transducers.single;
+    expect(model.lang, 'vi');
+    expect(model.name, folder);
+    expect(model.encoder, endsWith('encoder-epoch-12-avg-8.int8.onnx'));
+    expect(model.decoder, endsWith('decoder-epoch-12-avg-8.onnx'));
+    expect(model.joiner, endsWith('joiner-epoch-12-avg-8.int8.onnx'));
+    expect(model.tokens, endsWith('tokens.txt'));
+    expect(catalog.isEmpty, isFalse);
+  });
+
+  test('skips a transducer folder without a joiner', () async {
+    await touch('sherpa-onnx-zipformer-vi-x/encoder.onnx');
+    await touch('sherpa-onnx-zipformer-vi-x/decoder.onnx');
+    await touch('sherpa-onnx-zipformer-vi-x/tokens.txt');
+
+    final catalog = await AsrModelStore(dir).scan();
+
+    expect(catalog.transducers, isEmpty);
+  });
+
   test('skips a sherpa folder missing a file', () async {
     await touch('sherpa-onnx-whisper-tiny/tiny-encoder.int8.onnx');
     await touch('sherpa-onnx-whisper-tiny/tiny-tokens.txt');
