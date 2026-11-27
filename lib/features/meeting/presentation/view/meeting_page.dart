@@ -227,6 +227,10 @@ class _MeetingPageState extends ConsumerState<MeetingPage> {
                             key: ValueKey(line.id),
                             child: MeetingLineTile(
                               line: line,
+                              showSpeaker:
+                                  index == 0 ||
+                                  state.lines[index - 1].speaker !=
+                                      line.speaker,
                               onLongPress: translation == null
                                   ? null
                                   : () => saveToPhrasebook(

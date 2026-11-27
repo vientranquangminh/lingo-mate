@@ -12,6 +12,7 @@ import 'package:lingo_mate/core/config/feature_switches.dart';
 import 'package:lingo_mate/core/database/app_database.dart';
 import 'package:lingo_mate/core/engines/engine_instances.dart';
 import 'package:lingo_mate/core/engines/engines.dart';
+import 'package:lingo_mate/core/engines/speaker/speaker_embedder.dart';
 import 'package:lingo_mate/core/engines/selection/engine_providers.dart';
 import 'package:lingo_mate/core/engines/selection/engine_selector.dart';
 import 'package:lingo_mate/core/engines/tts/speech_synthesizer.dart';
@@ -182,6 +183,7 @@ class ConversationFakes {
   final offline = FakeTranslator(EngineKind.offline);
   final tts = FakeSynthesizer();
   SpeechTranslatorEngine? speech;
+  SpeakerEmbedder? embedder;
   bool hasRecognizer = true;
   bool online = true;
   final learning = FakeLearningAssistant();
@@ -207,6 +209,7 @@ class ConversationFakes {
     ),
     speechSynthesizerProvider.overrideWithValue(tts),
     speechTranslatorProvider.overrideWithValue(speech),
+    speakerEmbedderProvider.overrideWith((ref) async => embedder),
     conversationClockProvider.overrideWithValue(() => nowMs),
     engineSelectionProvider.overrideWith(
       (ref, request) async => ref.watch(fakeSelectionProvider),

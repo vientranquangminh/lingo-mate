@@ -25,6 +25,7 @@ class AppParams {
   static const skeletonLineHeight = 14.0;
   static const emptyStateCircle = 88.0;
   static const situationCardMinHeight = 136.0;
+  static const speakerBarWidth = 3.0;
   static const emptyStateIcon = 36.0;
 
   static const buttonHeight = 48.0;

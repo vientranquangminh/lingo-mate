@@ -515,5 +515,6 @@
   "homeMediaBody": "Phụ đề cho video và podcast đang phát trên điện thoại",
   "modeMedia": "Phương tiện",
   "mediaIntro": "Bấm Bắt đầu, cho phép ghi màn hình và âm thanh, rồi phát video hoặc podcast. Không thể thu âm cuộc gọi, và một số ứng dụng chặn việc thu âm.",
-  "mediaSilent": "Không thu được âm thanh trong 10 giây. Nếu đang có nội dung phát, ứng dụng đó có thể chặn việc thu âm."
+  "mediaSilent": "Không thu được âm thanh trong 10 giây. Nếu đang có nội dung phát, ứng dụng đó có thể chặn việc thu âm.",
+  "meetingSpeaker": "Người {number}"
 }

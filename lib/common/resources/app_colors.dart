@@ -29,6 +29,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.listening,
     required this.billingIssueBackground,
     required this.billingIssueForeground,
+    required this.speakers,
   });
 
   static const light = AppColors(
@@ -50,6 +51,14 @@ class AppColors extends ThemeExtension<AppColors> {
     listening: ColorName.cyanMermaidHarbour,
     billingIssueBackground: ColorName.yellowSilentIvory,
     billingIssueForeground: ColorName.orangeBeerGlazedBacon,
+    speakers: [
+      ColorName.cyanMermaidHarbour,
+      ColorName.blueSeljuk,
+      ColorName.orangeBloodhound,
+      ColorName.redMadder,
+      ColorName.greenWarpstoneGlow,
+      ColorName.blueInkjet,
+    ],
   );
 
   static const dark = AppColors(
@@ -70,6 +79,14 @@ class AppColors extends ThemeExtension<AppColors> {
     listening: ColorName.cyanExquisiteTurquoise,
     billingIssueBackground: ColorName.yellowSilentIvory,
     billingIssueForeground: ColorName.orangeBeerGlazedBacon,
+    speakers: [
+      ColorName.cyanExquisiteTurquoise,
+      ColorName.blueEphemeral,
+      ColorName.orangeNotYoCheese,
+      ColorName.redForbiddenFruit,
+      ColorName.greenShivering,
+      ColorName.redGeorgiaPeach,
+    ],
   );
 
   final EngineChipColors engineOffline;
@@ -87,6 +104,10 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color listening;
   final Color billingIssueBackground;
   final Color billingIssueForeground;
+  final List<Color> speakers;
+
+  /// Returns the colour of meeting speaker [number] (from 1).
+  Color speaker(int number) => speakers[(number - 1) % speakers.length];
 
   @override
   AppColors copyWith({
@@ -98,6 +119,7 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? listening,
     Color? billingIssueBackground,
     Color? billingIssueForeground,
+    List<Color>? speakers,
   }) {
     return AppColors(
       engineOffline: engineOffline ?? this.engineOffline,
@@ -110,6 +132,7 @@ class AppColors extends ThemeExtension<AppColors> {
           billingIssueBackground ?? this.billingIssueBackground,
       billingIssueForeground:
           billingIssueForeground ?? this.billingIssueForeground,
+      speakers: speakers ?? this.speakers,
     );
   }
 

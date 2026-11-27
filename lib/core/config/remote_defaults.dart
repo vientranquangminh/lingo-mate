@@ -23,6 +23,7 @@ abstract final class RemoteDefaults {
   static const ffCloudSpeech = 'ff_cloud_speech';
   static const modelSpeechTranslate = 'model_speech_translate';
   static const ffRoleplay = 'ff_roleplay';
+  static const speakerModel = 'speaker_model';
 
   static const _quotaLimitsJson =
       '{"free":{"standard":{"win5hSec":1800,"weekSec":3600},'
@@ -49,6 +50,13 @@ abstract final class RemoteDefaults {
     ffEmailLinkSignin: true,
     ffManageSubscription: false,
     asrModels: '{}',
+    speakerModel:
+        '{"file":"speaker_embedding.onnx",'
+        '"url":"https://github.com/k2-fsa/sherpa-onnx/releases/download/'
+        'speaker-recongition-models/'
+        '3dspeaker_speech_campplus_sv_zh_en_16k-common_advanced.onnx",'
+        '"bytes":28281165,'
+        '"sha256":"53cab20ba8f2eb2f6e2d89ecc18e88ef3222169b61b4419cbc13666744a4574b"}',
     privacyPolicyUrl: 'https://lingo-mate-4f38d.web.app/privacy',
     ffStandardEnabled: true,
     ffSummary: true,

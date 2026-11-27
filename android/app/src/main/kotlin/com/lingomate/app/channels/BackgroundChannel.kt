@@ -32,7 +32,12 @@ class BackgroundChannel(messenger: BinaryMessenger, private val context: Context
                 "showOverlay" -> result.success(overlay.show())
                 "updateOverlay" -> {
                     val lines = call.argument<List<Map<String, String>>>("lines").orEmpty().map {
-                        OverlayLine(it["original"].orEmpty(), it["translation"].orEmpty())
+                        OverlayLine(
+                            it["original"].orEmpty(),
+                            it["translation"].orEmpty(),
+                            it["speaker"]?.toIntOrNull() ?: 0,
+                            it["speakerLabel"].orEmpty(),
+                        )
                     }
                     overlay.update(
                         lines,

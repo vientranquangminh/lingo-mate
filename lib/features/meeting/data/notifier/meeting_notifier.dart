@@ -17,6 +17,8 @@ import '../../../../core/engines/live/live_captioner.dart';
 import '../../../../core/engines/live/live_access.dart';
 import '../../../../core/engines/selection/engine_providers.dart';
 import '../../../../core/engines/selection/engine_selector.dart';
+import '../../../../core/engines/speaker/speaker_embedder.dart';
+import '../../../../core/engines/speaker/speaker_tracker.dart';
 import '../../../../core/engines/translate/cloud_hearing.dart';
 import '../../../../core/engines/translate/gemini_text_translator.dart';
 import '../../../../core/phrases/phrase_repository.dart';
@@ -56,6 +58,8 @@ class MeetingNotifier extends Notifier<MeetingState> {
   Future<void> _writes = Future.value();
   int _sessionStartMs = 0;
   int? _lastSegmentEndMs;
+  final _speakers = SpeakerTracker();
+  SpeakerEmbedder? _embedder;
   int _nextId = 0;
   List<MeetingLine> _overlaySent = const [];
   EngineSelection? _lastSelection;
@@ -153,6 +157,13 @@ class MeetingNotifier extends Notifier<MeetingState> {
       _pipeline = pipeline;
       _lastSegmentEndMs = null;
       _recognizer = recognizer;
+      _speakers.reset();
+      _embedder = await ref
+          .read(speakerEmbedderProvider.future)
+          .catchError((Object _) => null);
+      if (!ref.mounted) {
+        return;
+      }
       if (state.engine != EngineKind.live || !await _startLive(pipeline)) {
         _listenToSegments(pipeline, recognizer);
       }
@@ -437,7 +448,22 @@ class MeetingNotifier extends Notifier<MeetingState> {
     _pushOverlay(force: true);
   }
 
-  /// Recognises one segment and adds its line, marking a new turn after a long pause.
+  /// Returns the number of the speaker of [segment], or null without a speaker model or for very short speech.
+  Future<int?> _speakerOf(AudioSegment segment) async {
+    final embedder = _embedder;
+    if (embedder == null) {
+      return null;
+    }
+    final embedding = await embedder
+        .embed(segment)
+        .catchError((Object _) => null);
+    if (embedding == null) {
+      return null;
+    }
+    return _speakers.assign(embedding, durationMs: segment.durationMs);
+  }
+
+  /// Recognises one segment and adds its line, marking a new turn when the speaker changes or after a long pause.
   Future<void> _onSegment(
     SpeechRecognizerEngine recognizer,
     AudioSegment segment,
@@ -447,6 +473,7 @@ class MeetingNotifier extends Notifier<MeetingState> {
     }
     final last = _lastSegmentEndMs;
     _lastSegmentEndMs = segment.endMs;
+    final voice = _speakerOf(segment);
     try {
       final (:handled, :heard) = await hearOnCloud(
         ref,
@@ -478,18 +505,25 @@ class MeetingNotifier extends Notifier<MeetingState> {
         state = state.copyWith(draft: () => null);
         return;
       }
+      final speaker = await voice;
+      if (!ref.mounted) {
+        return;
+      }
       final endMs = _clock();
       _ensureSession();
+      final previous = state.lines.lastOrNull;
       final line = MeetingLine(
         id: _nextId++,
         from: state.source,
         to: state.target,
         original: text,
         atMs: (endMs - segment.durationMs - _sessionStartMs).clamp(0, 1 << 31),
+        speaker: speaker,
         newTurn:
-            state.lines.isNotEmpty &&
-            last != null &&
-            segment.startMs - last >= turnGapMs,
+            previous != null &&
+            (speaker != null && previous.speaker != null
+                ? speaker != previous.speaker
+                : last != null && segment.startMs - last >= turnGapMs),
         translation: heard?.translation,
         engine: heard == null ? null : EngineKind.standard,
         status: heard == null
@@ -614,7 +648,14 @@ class MeetingNotifier extends Notifier<MeetingState> {
           .updateOverlay(
             [
               for (final line in lines)
-                OverlayLine(original: line.original, translation: line.shown),
+                OverlayLine(
+                  original: line.original,
+                  translation: line.shown,
+                  speaker: line.speaker,
+                  speakerLabel: line.speaker == null
+                      ? ''
+                      : _l10n().meetingSpeaker(line.speaker!),
+                ),
             ],
             engine: engine?.name ?? '',
             engineLabel: engine == null ? '' : _engineLabel(engine),
@@ -638,18 +679,23 @@ class MeetingNotifier extends Notifier<MeetingState> {
 
   /// Returns the engine name in the app language, for the overlay header.
   String _engineLabel(EngineKind engine) {
+    final l10n = _l10n();
+    return switch (engine) {
+      EngineKind.offline => l10n.engineOffline,
+      EngineKind.standard => l10n.engineStandard,
+      EngineKind.live => l10n.engineLive,
+    };
+  }
+
+  /// Returns the strings in the app language, for text drawn outside the widget tree.
+  AppLocalizations _l10n() {
     final code =
         ref.read(userSettingsProvider).appLocale ??
         PlatformDispatcher.instance.locale.languageCode;
     final supported = AppLocalizations.supportedLocales.any(
       (l) => l.languageCode == code,
     );
-    final l10n = lookupAppLocalizations(Locale(supported ? code : 'en'));
-    return switch (engine) {
-      EngineKind.offline => l10n.engineOffline,
-      EngineKind.standard => l10n.engineStandard,
-      EngineKind.live => l10n.engineLive,
-    };
+    return lookupAppLocalizations(Locale(supported ? code : 'en'));
   }
 
   /// Starts the saved session on the first line (F-07).

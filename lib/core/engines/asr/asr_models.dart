@@ -62,12 +62,14 @@ class AsrModelCatalog extends Equatable {
     this.whisperCpp = const [],
     this.transducers = const [],
     this.sileroVad,
+    this.speakerModel,
   });
 
   final List<SherpaWhisperModel> sherpaWhisper;
   final List<WhisperCppModel> whisperCpp;
   final List<TransducerModel> transducers;
   final String? sileroVad;
+  final String? speakerModel;
 
   bool get isEmpty =>
       sherpaWhisper.isEmpty && whisperCpp.isEmpty && transducers.isEmpty;
@@ -78,6 +80,7 @@ class AsrModelCatalog extends Equatable {
     whisperCpp,
     transducers,
     sileroVad,
+    speakerModel,
   ];
 }
 
@@ -120,10 +123,13 @@ class AsrModelStore {
     final ggml = <WhisperCppModel>[];
     final transducers = <TransducerModel>[];
     String? silero;
+    String? speaker;
     await for (final entity in directory.list()) {
       final name = entity.uri.pathSegments.where((s) => s.isNotEmpty).last;
       if (entity is File && name == 'silero_vad.onnx') {
         silero = entity.path;
+      } else if (entity is File && name == speakerModelFile) {
+        speaker = entity.path;
       } else if (entity is File &&
           name.startsWith('ggml-') &&
           name.endsWith('.bin')) {
@@ -153,8 +159,12 @@ class AsrModelStore {
       whisperCpp: ggml,
       transducers: transducers,
       sileroVad: silero,
+      speakerModel: speaker,
     );
   }
+
+  /// File name the speaker model is saved under.
+  static const speakerModelFile = 'speaker_embedding.onnx';
 
   static const zipformerPrefix = 'sherpa-onnx-zipformer-';
 

@@ -20,17 +20,26 @@ class OverlayLineLongPressed extends BackgroundEvent {
   final int? index;
 }
 
-/// One caption in the overlay: what was said and its translation.
+/// One caption in the overlay: what was said, its translation and, when told apart, its speaker.
 class OverlayLine {
-  const OverlayLine({required this.original, required this.translation});
+  const OverlayLine({
+    required this.original,
+    required this.translation,
+    this.speaker,
+    this.speakerLabel = '',
+  });
 
   final String original;
   final String translation;
+  final int? speaker;
+  final String speakerLabel;
 
   /// The channel form of this line.
   Map<String, String> toMap() => {
     'original': original,
     'translation': translation,
+    'speaker': '${speaker ?? 0}',
+    'speakerLabel': speakerLabel,
   };
 }
 

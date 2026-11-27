@@ -515,5 +515,6 @@
   "homeMediaBody": "Subtítulos para vídeos y pódcasts que se reproducen en este teléfono",
   "modeMedia": "Multimedia",
   "mediaIntro": "Toca Iniciar, permite la captura de pantalla y audio y reproduce un vídeo o pódcast. Las llamadas no se pueden capturar y algunas apps bloquean la captura.",
-  "mediaSilent": "No se ha captado sonido en 10 segundos. Si algo se está reproduciendo, puede que esa app bloquee la captura de audio."
+  "mediaSilent": "No se ha captado sonido en 10 segundos. Si algo se está reproduciendo, puede que esa app bloquee la captura de audio.",
+  "meetingSpeaker": "Hablante {number}"
 }
