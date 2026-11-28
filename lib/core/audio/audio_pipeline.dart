@@ -21,7 +21,7 @@ class AudioPipeline {
        ringBuffer = ringBuffer ?? AudioRingBuffer();
 
   static const liveChunkMs = 100;
-  static const partialEveryMs = 1000;
+  static const partialEveryMs = 700;
 
   final AudioCapture _capture;
   final VoiceActivityDetector _vad;
@@ -117,17 +117,27 @@ class AudioPipeline {
     _addLive(frame);
     final probability = _vad.speechProbability(frame);
     final finished = _segmenter.add(frame, probability)..forEach(_segments.add);
-    _addPartial(frame, finished.isNotEmpty);
+    _addPartial(
+      frame,
+      finished: finished.isNotEmpty,
+      speaking: probability >= _segmenter.config.speechThreshold,
+    );
   }
 
-  /// Emits a snapshot of the utterance in progress every [partialEveryMs].
-  void _addPartial(AudioFrame frame, bool finished) {
+  /// Emits a snapshot of the utterance in progress every [partialEveryMs], only while someone is speaking.
+  void _addPartial(
+    AudioFrame frame, {
+    required bool finished,
+    required bool speaking,
+  }) {
     if (finished || !_segmenter.isActive) {
       _sincePartialMs = 0;
       return;
     }
     _sincePartialMs += frame.samples.length ~/ AudioFormat.samplesPerMs;
-    if (_sincePartialMs < partialEveryMs || !_partials.hasListener) {
+    if (_sincePartialMs < partialEveryMs ||
+        !speaking ||
+        !_partials.hasListener) {
       return;
     }
     _sincePartialMs = 0;

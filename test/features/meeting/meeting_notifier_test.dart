@@ -113,7 +113,6 @@ void main() {
     expect(line.original, 'ship it');
     expect(line.translation, 'giao đi');
     expect(line.status, MeetingLineStatus.translated);
-    expect(fakes.recognizer.hints, isEmpty);
   });
 
   test('shows the words heard so far until the line is ready', () async {
@@ -123,7 +122,7 @@ void main() {
     final c = await build();
     await notifier(c).start(overlay: false);
 
-    fakes.capture.add(pcm(1200, amplitude: 4000));
+    fakes.capture.add(pcm(800, amplitude: 4000));
     await pumpEventQueue();
     expect(c.read(meetingProvider).draft, 'so we can');
 

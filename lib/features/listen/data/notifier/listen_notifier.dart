@@ -455,7 +455,7 @@ class ListenNotifier extends Notifier<ListenState> {
       return;
     }
     try {
-      if (await _cloudCaption(segment)) {
+      if (await _cloudCaption(recognizer, segment)) {
         return;
       }
       final from = await _languageOf(recognizer, segment);
@@ -499,29 +499,76 @@ class ListenNotifier extends Notifier<ListenState> {
     }
   }
 
-  /// On Standard, has Gemini hear and translate [segment]; false when it is off or fails, so the on-device path runs.
-  Future<bool> _cloudCaption(AudioSegment segment) async {
-    final (:handled, :heard) = await hearOnCloud(
-      ref,
-      engine: state.engine,
-      segment: segment,
-      from: state.source == listenAutoSource ? autoCandidates : [state.source],
-      to: languages.b,
-      context: [for (final c in state.captions) c.original].reversed
-          .take(contextCaptions)
-          .toList()
-          .reversed
-          .toList(),
-    );
-    if (!handled || !ref.mounted) {
-      return handled;
+  /// On Standard, has Gemini hear and translate [segment], showing a quick on-device caption first while Gemini works; false when Gemini is off or fails and nothing was shown, so the on-device path runs.
+  Future<bool> _cloudCaption(
+    SpeechRecognizerEngine recognizer,
+    AudioSegment segment,
+  ) async {
+    var cloudHeard = false;
+    final cloud =
+        hearOnCloud(
+          ref,
+          engine: state.engine,
+          segment: segment,
+          from: state.source == listenAutoSource
+              ? autoCandidates
+              : [state.source],
+          to: languages.b,
+          context: [for (final c in state.captions) c.original].reversed
+              .take(contextCaptions)
+              .toList()
+              .reversed
+              .toList(),
+        ).then((result) {
+          cloudHeard = result.handled;
+          return result;
+        });
+    final quick =
+        state.engine == EngineKind.standard &&
+            ref.read(speechTranslatorProvider) != null &&
+            state.source != listenAutoSource &&
+            recognizer is! CloudOnlyRecognizer
+        ? _quickCaption(recognizer, segment, isLate: () => cloudHeard)
+        : Future<int?>.value();
+    final (:handled, :heard) = await cloud;
+    final quickId = await quick.catchError((Object _) => null);
+    if (!ref.mounted) {
+      return true;
+    }
+    final endMs = _clock();
+    if (!handled) {
+      if (quickId == null) {
+        return false;
+      }
+      final caption = state.captions.where((c) => c.id == quickId).firstOrNull;
+      if (caption != null && caption.status != CaptionStatus.translated) {
+        await _translate(caption);
+      }
+      _record(quickId, endMs - segment.durationMs, endMs);
+      return true;
     }
     if (heard == null) {
+      if (quickId != null) {
+        _record(quickId, endMs - segment.durationMs, endMs);
+      }
       state = state.copyWith(draft: () => null);
       return true;
     }
     _lastFrom = heard.lang;
-    final endMs = _clock();
+    if (quickId != null) {
+      _update(
+        quickId,
+        (c) => c.copyWith(
+          original: heard.original,
+          translation: heard.translation,
+          engine: EngineKind.standard,
+          fallback: false,
+          status: CaptionStatus.translated,
+        ),
+      );
+      _record(quickId, endMs - segment.durationMs, endMs);
+      return true;
+    }
     _ensureSession();
     final caption = Caption(
       id: _nextId++,
@@ -539,6 +586,61 @@ class ListenNotifier extends Notifier<ListenState> {
     );
     _record(caption.id, endMs - segment.durationMs, endMs);
     return true;
+  }
+
+  /// Recognises [segment] on the phone and, unless Gemini already answered ([isLate]), shows it at once with an offline translation when one is installed; returns the caption id.
+  Future<int?> _quickCaption(
+    SpeechRecognizerEngine recognizer,
+    AudioSegment segment, {
+    required bool Function() isLate,
+  }) async {
+    final from = state.source;
+    await recognizer.ensureReady(from);
+    final text = (await recognizer.transcribe(
+      segment,
+      hintLang: from,
+    )).text.trim();
+    if (text.isEmpty || isLate() || !ref.mounted || !state.listening) {
+      return null;
+    }
+    final endMs = _clock();
+    _ensureSession();
+    final caption = Caption(
+      id: _nextId++,
+      from: from,
+      to: languages.b,
+      original: text,
+      atMs: (endMs - segment.durationMs - _sessionStartMs).clamp(0, 1 << 31),
+    );
+    state = state.copyWith(
+      captions: [...state.captions, caption],
+      draft: () => null,
+    );
+    final offline = ref.read(textTranslatorProvider(EngineKind.offline));
+    if (await offline
+            .isAvailable(from, languages.b)
+            .catchError((Object _) => false) &&
+        !isLate()) {
+      final quick = await offline
+          .translate(TranslateRequest(from: from, to: languages.b, text: text))
+          .catchError(
+            (Object _) =>
+                const Translation(text: '', engine: EngineKind.offline),
+          );
+      if (ref.mounted && !isLate() && quick.text.isNotEmpty) {
+        _update(
+          caption.id,
+          (c) => c.status == CaptionStatus.translated
+              ? c
+              : c.copyWith(
+                  translation: quick.text,
+                  engine: EngineKind.offline,
+                  status: CaptionStatus.translated,
+                ),
+        );
+      }
+    }
+    return caption.id;
   }
 
   /// Returns the picked source language, or the detected one in Auto.
