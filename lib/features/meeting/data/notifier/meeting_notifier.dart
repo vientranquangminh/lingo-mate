@@ -58,7 +58,9 @@ class MeetingNotifier extends Notifier<MeetingState> {
   Future<void> _writes = Future.value();
   int _sessionStartMs = 0;
   int? _lastSegmentEndMs;
-  final _speakers = SpeakerTracker();
+  var _speakers = SpeakerTracker();
+  final _lineOfVoice = <int, int>{};
+  int? _pendingVoice;
   SpeakerEmbedder? _embedder;
   int _nextId = 0;
   List<MeetingLine> _overlaySent = const [];
@@ -157,7 +159,9 @@ class MeetingNotifier extends Notifier<MeetingState> {
       _pipeline = pipeline;
       _lastSegmentEndMs = null;
       _recognizer = recognizer;
-      _speakers.reset();
+      _speakers = SpeakerTracker.fromJson(_speakerTuning());
+      _lineOfVoice.clear();
+      _pendingVoice = null;
       _embedder = await ref
           .read(speakerEmbedderProvider.future)
           .catchError((Object _) => null);
@@ -460,7 +464,51 @@ class MeetingNotifier extends Notifier<MeetingState> {
     if (embedding == null) {
       return null;
     }
+    _pendingVoice = _speakers.labels.length;
     return _speakers.assign(embedding, durationMs: segment.durationMs);
+  }
+
+  /// Returns Remote Config `speaker_tuning`, or nothing when Remote Config is not ready so the defaults apply.
+  Map<String, dynamic> _speakerTuning() {
+    try {
+      return ref.read(engineRemoteConfigProvider).speakerTuning;
+    } catch (_) {
+      return const {};
+    }
+  }
+
+  /// Applies the tracker's latest speaker numbers to every line, since re-clustering can correct earlier ones, and marks turns where the speaker changes.
+  void _applySpeakerLabels() {
+    if (_lineOfVoice.isEmpty) {
+      return;
+    }
+    final labels = _speakers.labels;
+    final speakerOfLine = <int, int?>{
+      for (final e in _lineOfVoice.entries)
+        if (e.key < labels.length) e.value: labels[e.key],
+    };
+    MeetingLine? previous;
+    var changed = false;
+    final lines = <MeetingLine>[];
+    for (final line in state.lines) {
+      final speaker = speakerOfLine.containsKey(line.id)
+          ? speakerOfLine[line.id]
+          : line.speaker;
+      final newTurn =
+          previous != null && speaker != null && previous.speaker != null
+          ? speaker != previous.speaker
+          : line.newTurn;
+      final next = speaker == line.speaker && newTurn == line.newTurn
+          ? line
+          : line.copyWith(speaker: () => speaker, newTurn: newTurn);
+      changed = changed || !identical(next, line);
+      lines.add(next);
+      previous = next;
+    }
+    if (changed) {
+      state = state.copyWith(lines: lines);
+      _pushOverlay();
+    }
   }
 
   /// Recognises one segment and adds its line, marking a new turn when the speaker changes or after a long pause.
@@ -594,6 +642,12 @@ class MeetingNotifier extends Notifier<MeetingState> {
           : MeetingLineStatus.translated,
     );
     state = state.copyWith(lines: [...state.lines, line], draft: () => null);
+    final voice = _pendingVoice;
+    _pendingVoice = null;
+    if (voice != null) {
+      _lineOfVoice[voice] = line.id;
+    }
+    _applySpeakerLabels();
     _pushOverlay();
     return line;
   }

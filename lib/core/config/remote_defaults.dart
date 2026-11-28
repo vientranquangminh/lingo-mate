@@ -24,6 +24,7 @@ abstract final class RemoteDefaults {
   static const modelSpeechTranslate = 'model_speech_translate';
   static const ffRoleplay = 'ff_roleplay';
   static const speakerModel = 'speaker_model';
+  static const speakerTuning = 'speaker_tuning';
 
   static const _quotaLimitsJson =
       '{"free":{"standard":{"win5hSec":1800,"weekSec":3600},'
@@ -50,6 +51,7 @@ abstract final class RemoteDefaults {
     ffEmailLinkSignin: true,
     ffManageSubscription: false,
     asrModels: '{}',
+    speakerTuning: '{"merge":0.35,"minNewMs":1500,"minLabelMs":800}',
     speakerModel:
         '{"file":"speaker_embedding.onnx",'
         '"url":"https://github.com/k2-fsa/sherpa-onnx/releases/download/'
