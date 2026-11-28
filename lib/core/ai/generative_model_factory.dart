@@ -18,6 +18,7 @@ class GenerativeModelFactory {
         generationConfig: GenerationConfig(
           temperature: 0.2,
           maxOutputTokens: 256,
+          thinkingConfig: ThinkingConfig.withThinkingBudget(0),
         ),
       );
 
@@ -30,6 +31,7 @@ class GenerativeModelFactory {
           temperature: 0,
           maxOutputTokens: 1024,
           responseMimeType: 'application/json',
+          thinkingConfig: ThinkingConfig.withThinkingBudget(0),
         ),
       );
 

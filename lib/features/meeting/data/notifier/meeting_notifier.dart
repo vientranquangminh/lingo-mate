@@ -475,18 +475,44 @@ class MeetingNotifier extends Notifier<MeetingState> {
     _lastSegmentEndMs = segment.endMs;
     final voice = _speakerOf(segment);
     try {
-      final (:handled, :heard) = await hearOnCloud(
-        ref,
-        engine: state.engine,
-        segment: segment,
-        from: [state.source],
-        to: state.target,
-        context: [for (final l in state.lines) l.original].reversed
-            .take(contextLines)
-            .toList()
-            .reversed
-            .toList(),
-      );
+      var cloudHeard = false;
+      final cloud =
+          hearOnCloud(
+            ref,
+            engine: state.engine,
+            segment: segment,
+            from: [state.source],
+            to: state.target,
+            context: [for (final l in state.lines) l.original].reversed
+                .take(contextLines)
+                .toList()
+                .reversed
+                .toList(),
+          ).then((result) {
+            cloudHeard = result.handled;
+            return result;
+          });
+      final quick =
+          state.engine == EngineKind.standard &&
+              ref.read(speechTranslatorProvider) != null &&
+              recognizer is! CloudOnlyRecognizer
+          ? _quickLine(
+              recognizer,
+              segment,
+              voice,
+              last,
+              isLate: () => cloudHeard,
+            )
+          : Future<int?>.value();
+      final (:handled, :heard) = await cloud;
+      final quickId = await quick.catchError((Object _) => null);
+      if (!ref.mounted) {
+        return;
+      }
+      if (quickId != null) {
+        await _settleQuickLine(quickId, segment, handled ? heard : null);
+        return;
+      }
       final String text;
       if (handled) {
         text = heard?.original ?? '';
@@ -510,28 +536,13 @@ class MeetingNotifier extends Notifier<MeetingState> {
         return;
       }
       final endMs = _clock();
-      _ensureSession();
-      final previous = state.lines.lastOrNull;
-      final line = MeetingLine(
-        id: _nextId++,
-        from: state.source,
-        to: state.target,
-        original: text,
-        atMs: (endMs - segment.durationMs - _sessionStartMs).clamp(0, 1 << 31),
+      final line = _addLine(
+        text: text,
+        segment: segment,
         speaker: speaker,
-        newTurn:
-            previous != null &&
-            (speaker != null && previous.speaker != null
-                ? speaker != previous.speaker
-                : last != null && segment.startMs - last >= turnGapMs),
-        translation: heard?.translation,
-        engine: heard == null ? null : EngineKind.standard,
-        status: heard == null
-            ? MeetingLineStatus.translating
-            : MeetingLineStatus.translated,
+        lastEndMs: last,
+        heard: heard,
       );
-      state = state.copyWith(lines: [...state.lines, line], draft: () => null);
-      _pushOverlay();
       if (heard != null) {
         _record(line.id, endMs - segment.durationMs, endMs);
         return;
@@ -551,6 +562,125 @@ class MeetingNotifier extends Notifier<MeetingState> {
         state = state.copyWith(draft: () => null);
       }
     }
+  }
+
+  /// Adds a line for [text] of [segment], with Gemini's translation when [heard] carries one, and shows it.
+  MeetingLine _addLine({
+    required String text,
+    required AudioSegment segment,
+    required int? speaker,
+    required int? lastEndMs,
+    SpeechTranslation? heard,
+  }) {
+    final endMs = _clock();
+    _ensureSession();
+    final previous = state.lines.lastOrNull;
+    final line = MeetingLine(
+      id: _nextId++,
+      from: state.source,
+      to: state.target,
+      original: text,
+      atMs: (endMs - segment.durationMs - _sessionStartMs).clamp(0, 1 << 31),
+      speaker: speaker,
+      newTurn:
+          previous != null &&
+          (speaker != null && previous.speaker != null
+              ? speaker != previous.speaker
+              : lastEndMs != null && segment.startMs - lastEndMs >= turnGapMs),
+      translation: heard?.translation,
+      engine: heard == null ? null : EngineKind.standard,
+      status: heard == null
+          ? MeetingLineStatus.translating
+          : MeetingLineStatus.translated,
+    );
+    state = state.copyWith(lines: [...state.lines, line], draft: () => null);
+    _pushOverlay();
+    return line;
+  }
+
+  /// Recognises [segment] on the phone and, unless Gemini already answered ([isLate]), shows the line at once with an offline translation when one is installed; returns its id.
+  Future<int?> _quickLine(
+    SpeechRecognizerEngine recognizer,
+    AudioSegment segment,
+    Future<int?> voice,
+    int? lastEndMs, {
+    required bool Function() isLate,
+  }) async {
+    await recognizer.ensureReady(state.source);
+    final text = (await recognizer.transcribe(
+      segment,
+      hintLang: state.source,
+    )).text.trim();
+    if (text.isEmpty || isLate() || !ref.mounted || !state.running) {
+      return null;
+    }
+    final speaker = await voice;
+    if (isLate() || !ref.mounted) {
+      return null;
+    }
+    final line = _addLine(
+      text: text,
+      segment: segment,
+      speaker: speaker,
+      lastEndMs: lastEndMs,
+    );
+    final offline = ref.read(textTranslatorProvider(EngineKind.offline));
+    final from = state.source;
+    final to = state.target;
+    if (await offline.isAvailable(from, to).catchError((Object _) => false) &&
+        !isLate()) {
+      final quick = await offline
+          .translate(TranslateRequest(from: from, to: to, text: text))
+          .catchError(
+            (Object _) =>
+                const Translation(text: '', engine: EngineKind.offline),
+          );
+      if (ref.mounted && !isLate() && quick.text.isNotEmpty) {
+        _update(
+          line.id,
+          (l) => l.status == MeetingLineStatus.translated
+              ? l
+              : l.copyWith(
+                  translation: quick.text,
+                  engine: EngineKind.offline,
+                  status: MeetingLineStatus.translated,
+                ),
+        );
+        _pushOverlay();
+      }
+    }
+    return line.id;
+  }
+
+  /// Replaces the quick line [id] with Gemini's [heard] version, or translates it the usual way when Gemini had nothing; then saves it.
+  Future<void> _settleQuickLine(
+    int id,
+    AudioSegment segment,
+    SpeechTranslation? heard,
+  ) async {
+    final endMs = _clock();
+    if (heard != null) {
+      _update(
+        id,
+        (l) => l.copyWith(
+          original: heard.original,
+          translation: heard.translation,
+          engine: EngineKind.standard,
+          fallback: false,
+          status: MeetingLineStatus.translated,
+        ),
+      );
+    } else {
+      final line = state.lines.where((l) => l.id == id).firstOrNull;
+      if (line != null && line.status != MeetingLineStatus.translated) {
+        await _translate(line);
+      }
+    }
+    if (!ref.mounted) {
+      return;
+    }
+    _pushOverlay();
+    _record(id, endMs - segment.durationMs, endMs);
   }
 
   /// Translates [line] on the current engine, falling back to Offline when Standard fails.

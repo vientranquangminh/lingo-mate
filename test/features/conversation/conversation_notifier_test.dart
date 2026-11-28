@@ -105,7 +105,7 @@ void main() {
     final c = await build();
     await notifier(c).toggleMic(Speaker.a);
 
-    fakes.capture.add(pcm(1200, amplitude: 4000));
+    fakes.capture.add(pcm(800, amplitude: 4000));
     await pumpEventQueue();
     expect(c.read(conversationProvider(pair)).draft, 'Xin');
 

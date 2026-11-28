@@ -85,7 +85,7 @@ void main() {
       final c = await build();
       await notifier(c).start();
 
-      fakes.capture.add(pcm(1200, amplitude: 4000));
+      fakes.capture.add(pcm(800, amplitude: 4000));
       await pumpEventQueue();
 
       expect(c.read(listenProvider(languages)).draft, 'こんに');
@@ -118,7 +118,6 @@ void main() {
       expect(caption.translation, 'Xin chào');
       expect(caption.status, CaptionStatus.translated);
       expect(caption.engine, EngineKind.standard);
-      expect(fakes.recognizer.hints, isEmpty);
       expect(fakes.standard.requests, isEmpty);
     },
   );
@@ -140,6 +139,37 @@ void main() {
       expect(caption.original, 'こんにちは');
       expect(caption.translation, '[vi] こんにちは');
       expect(fakes.recognizer.hints, ['ja']);
+    },
+  );
+
+  test(
+    'shows a quick on-device caption while Gemini works, then replaces it',
+    () async {
+      final gemini = Completer<String?>();
+      fakes
+        ..recognizer.texts.add('こんにちわ')
+        ..speech = GeminiSpeechTranslator(
+          ({required system, required wav, required user}) => gemini.future,
+        );
+      final c = await build();
+      await notifier(c).start();
+
+      await speak();
+
+      var caption = c.read(listenProvider(languages)).captions.single;
+      expect(caption.original, 'こんにちわ');
+      expect(caption.translation, '[vi] こんにちわ');
+      expect(caption.engine, EngineKind.offline);
+
+      gemini.complete(
+        '{"lang": "ja", "original": "こんにちは", "translation": "Xin chào"}',
+      );
+      await pumpEventQueue();
+
+      caption = c.read(listenProvider(languages)).captions.single;
+      expect(caption.original, 'こんにちは');
+      expect(caption.translation, 'Xin chào');
+      expect(caption.engine, EngineKind.standard);
     },
   );
 
