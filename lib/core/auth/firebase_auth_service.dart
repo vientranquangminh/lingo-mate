@@ -45,13 +45,35 @@ class FirebaseAuthService implements AuthService {
         GoogleAuthProvider.credential(idToken: idToken),
       );
     } on GoogleSignInException catch (e) {
-      return e.code == GoogleSignInExceptionCode.canceled
-          ? const SignInResult(SignInOutcome.cancelled)
-          : SignInResult(SignInOutcome.failed, message: e.description);
+      return switch (e.code) {
+        GoogleSignInExceptionCode.canceled => const SignInResult(
+          SignInOutcome.cancelled,
+        ),
+        GoogleSignInExceptionCode.clientConfigurationError ||
+        GoogleSignInExceptionCode.providerConfigurationError => SignInResult(
+          SignInOutcome.notConfigured,
+          message: e.description,
+        ),
+        _ => SignInResult(SignInOutcome.failed, message: e.description),
+      };
     } on FirebaseAuthException catch (e) {
-      return SignInResult(SignInOutcome.failed, message: e.code);
+      return SignInResult(
+        isNotConfigured(e.code)
+            ? SignInOutcome.notConfigured
+            : SignInOutcome.failed,
+        message: e.code,
+      );
     }
   }
+
+  /// Whether a Firebase Auth error [code] means the sign-in method is not set up in the Firebase console.
+  static bool isNotConfigured(String code) => const {
+    'operation-not-allowed',
+    'configuration-not-found',
+    'app-not-authorized',
+    'invalid-api-key',
+    'unauthorized-domain',
+  }.contains(code);
 
   @override
   Future<bool> sendEmailLink(String email) async {

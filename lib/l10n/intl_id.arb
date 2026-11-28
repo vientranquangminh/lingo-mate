@@ -516,5 +516,6 @@
   "modeMedia": "Media",
   "mediaIntro": "Ketuk Mulai, izinkan perekaman layar dan audio, lalu putar video atau podcast. Panggilan tidak dapat direkam, dan beberapa aplikasi memblokir perekaman.",
   "mediaSilent": "Tidak ada suara yang tertangkap selama 10 detik. Jika ada yang diputar, aplikasi tersebut mungkin memblokir perekaman audio.",
-  "meetingSpeaker": "Pembicara {number}"
+  "meetingSpeaker": "Pembicara {number}",
+  "signInNotConfigured": "Masuk dengan Google belum disiapkan untuk build ini. Coba dengan email, atau minta pengembang menyelesaikan penyiapan Firebase."
 }

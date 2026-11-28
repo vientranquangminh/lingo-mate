@@ -973,5 +973,9 @@
         "type": "int"
       }
     }
+  },
+  "signInNotConfigured": "Google sign-in isn't set up for this build yet. Try email, or ask the developer to finish the Firebase setup.",
+  "@signInNotConfigured": {
+    "description": "Shown when Google sign-in fails because the Firebase project is not configured for this app."
   }
 }
