@@ -118,7 +118,7 @@ jobs:
           sha1=$(printf '%s' "$info" | sed -n 's/.*SHA1: //p')
           sha256=$(printf '%s' "$info" | sed -n 's/.*SHA256: //p')
           {
-            echo "Debug signing key (add both to the Android app in Firebase for Google sign-in):"
+            echo "Debug signing key (the next step registers it with Firebase):"
             echo ""
             echo "- SHA-1: \`$sha1\`"
             echo "- SHA-256: \`$sha256\`"
@@ -142,6 +142,16 @@ jobs:
             echo "KEY_ALIAS=$KEY_ALIAS"
             echo "KEY_PASSWORD=$KEY_PASSWORD"
           } > android/signing.properties
+
+      - name: Set up sign-in in Firebase
+        continue-on-error: true
+        env:
+          APP_ID: ${{ steps.meta.outputs.app_id }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          KEYSTORE: ${{ needs.config.outputs.release_signing == 'true' && 'android/app/key-release.jks' || '/home/runner/.android/debug.keystore' }}
+          STOREPASS: ${{ needs.config.outputs.release_signing == 'true' && secrets.ANDROID_KEYSTORE_PASSWORD || 'android' }}
+          ALIAS: ${{ needs.config.outputs.release_signing == 'true' && secrets.ANDROID_KEY_ALIAS || 'androiddebugkey' }}
+        run: .github/scripts/firebase-sign-in-setup.sh
 
       - name: Create .env.dev
         env:

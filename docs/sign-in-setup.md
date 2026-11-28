@@ -1,52 +1,40 @@
 # Turning on sign-in (dev project)
 
-The sign-in code (Google and email link, T-2.2) is in the app, but the Firebase project must be
-set up before it works. Until then, Google sign-in shows "Google sign-in isn't set up for this
-build yet", and the email link may not arrive.
+The sign-in code (Google and email link, T-2.2) is in the app. Each staging build sets up as much
+of Firebase as it can with the `FIREBASE_SERVICE_ACCOUNT` secret, in the step **Set up sign-in in
+Firebase** of `.github/workflows/distribute-staging.yml` (`.github/scripts/firebase-sign-in-setup.sh`):
 
-Live on dev and test builds does not need sign-in: those builds carry their own Gemini key
-(`GEMINI_API_KEY`), so no server token is involved. Production Live keeps asking for an
-account, because its tokens come from the `issueLiveToken` Cloud Function.
+- registers the SHA-1 and SHA-256 of the key that signs the build with the Android app
+  `com.lingomate.app.dev`;
+- turns on Anonymous and Email link (passwordless) sign-in;
+- downloads a fresh `google-services.json` and builds with it once it has OAuth clients.
 
-## 1. Turn on the sign-in methods
+The run summary lists what was done and what is left. Live on dev and test builds does not need
+sign-in: those builds carry their own Gemini key (`GEMINI_API_KEY`). Production Live keeps asking
+for an account, because its tokens come from the `issueLiveToken` Cloud Function.
 
-Firebase console → project `lingo-mate-4f38d` → Build → Authentication → Get started →
-Sign-in method:
+## What only the owner can do
 
-1. **Anonymous** → Enable → Save. The app starts every user as anonymous and links the account
-   on sign-in, so phrases are kept.
-2. **Google** → Enable → pick the project support email → Save. This creates the web OAuth
-   client the app needs.
-3. **Email/Password** → Enable, and turn on **Email link (passwordless sign-in)** → Save.
+The summary says which of these are needed:
 
-Authentication → Settings → Authorized domains must list `lingo-mate-4f38d.firebaseapp.com`.
-It is there by default.
+1. **Permission denied**: Google Cloud console → IAM & Admin → IAM (project `lingo-mate-4f38d`) →
+   edit the service account in `FIREBASE_SERVICE_ACCOUNT` → add the role **Firebase Admin**.
+2. **Authentication is not started**: Firebase console → Build → Authentication → **Get started**.
+3. **Google sign-in: off**: Firebase console → Authentication → Sign-in method → **Google** →
+   Enable → pick the support email → Save. The web OAuth client Google sign-in needs is only
+   created by this console switch.
 
-## 2. Add the signing key fingerprints
+Then build staging again.
 
-Google sign-in only works for apps whose signing key Firebase knows.
+## Afterwards
 
-1. Open the latest **Build & Distribute Android (staging)** run on GitHub Actions. Its summary
-   shows the SHA-1 and SHA-256 of the key that signs the test builds.
-2. Firebase console → Project settings → Your apps → Android `com.lingomate.app.dev` →
-   **Add fingerprint**. Add the SHA-1, then the SHA-256.
-3. If you also build on your own machine, add that key too:
+When the summary says `google-services.json` was refreshed, commit the version printed in that
+step's log as `android/app/src/dev/google-services.json`, so local builds get it too. If you also
+build on your own machine, add your debug key's fingerprints in Project settings → Your apps:
 
-   ```bash
-   keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android
-   ```
+```bash
+keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android
+```
 
-When the test builds move to your own `ANDROID_*` keystore, or to Play App Signing for
-release, add those fingerprints as well.
-
-## 3. Update `google-services.json`
-
-After steps 1 and 2, Project settings → Your apps → `com.lingomate.app.dev` → download
-`google-services.json`. It now has an `oauth_client` section. Replace
-`android/app/src/dev/google-services.json` with it and commit, or send it to the developer.
-Without it, Google sign-in fails with a configuration error.
-
-## 4. Check
-
-Push to `staging`, install the new build, and open Me → Sign in → Continue with Google.
-Then try Continue with email. The link opens the app on the same phone.
+To check, install the new build and open Me → Sign in → Continue with Google, then Continue with
+email. The link opens the app on the same phone.
