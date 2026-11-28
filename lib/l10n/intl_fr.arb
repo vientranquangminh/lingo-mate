@@ -516,5 +516,6 @@
   "modeMedia": "Médias",
   "mediaIntro": "Touchez Démarrer, autorisez la capture de l’écran et de l’audio, puis lancez une vidéo ou un podcast. Les appels ne peuvent pas être capturés et certaines applis bloquent la capture.",
   "mediaSilent": "Aucun son capté depuis 10 secondes. Si un contenu est en lecture, cette appli bloque peut-être la capture audio.",
-  "meetingSpeaker": "Intervenant {number}"
+  "meetingSpeaker": "Intervenant {number}",
+  "signInNotConfigured": "La connexion Google n’est pas encore configurée pour cette version. Essayez par e-mail ou demandez au développeur de terminer la configuration Firebase."
 }

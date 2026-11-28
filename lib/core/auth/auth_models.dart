@@ -58,6 +58,7 @@ enum SignInOutcome {
   switchedAccount,
   cancelled,
   failed,
+  notConfigured,
   unavailable,
 }
 
