@@ -102,6 +102,10 @@ class RemoteConfigService {
   Map<String, dynamic> get speakerModel =>
       _json(RemoteDefaults.speakerModel) ?? const {};
 
+  /// How Meeting tells speakers apart (`{merge, minNewMs, minLabelMs}`), tunable without a release.
+  Map<String, dynamic> get speakerTuning =>
+      _json(RemoteDefaults.speakerTuning) ?? const {};
+
   /// Returns the capability matrix override, or null when none is set or it is invalid.
   Map<String, dynamic>? get capabilityMatrix =>
       _json(RemoteDefaults.capabilityMatrix);

@@ -40,6 +40,8 @@ class MeetingLine extends Equatable {
   String get shown => translation ?? original;
 
   MeetingLine copyWith({
+    int? Function()? speaker,
+    bool? newTurn,
     String? original,
     String? translation,
     EngineKind? engine,
@@ -52,8 +54,8 @@ class MeetingLine extends Equatable {
       to: to,
       original: original ?? this.original,
       atMs: atMs,
-      newTurn: newTurn,
-      speaker: speaker,
+      newTurn: newTurn ?? this.newTurn,
+      speaker: speaker != null ? speaker() : this.speaker,
       translation: translation ?? this.translation,
       engine: engine ?? this.engine,
       fallback: fallback ?? this.fallback,
