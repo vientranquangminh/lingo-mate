@@ -145,6 +145,25 @@ void main() {
     expect(find.text('Sign in to keep everything with you'), findsOneWidget);
   });
 
+  testWidgets('says when Google sign-in is not set up for the build', (
+    tester,
+  ) async {
+    auth.googleResult = const SignInResult(SignInOutcome.notConfigured);
+    final container = await pumpApp(tester);
+    container.read(goRouterProvider).push('/sign-in');
+    await settle(tester);
+
+    await tester.tap(find.text('Continue with Google'));
+    await tester.pump();
+
+    expect(
+      find.textContaining("Google sign-in isn't set up for this build yet"),
+      findsOneWidget,
+    );
+    expect(find.text('Sign in to keep everything with you'), findsOneWidget);
+    await settle(tester);
+  });
+
   testWidgets('email sends a link and finishes when it is opened (AC-13.5)', (
     tester,
   ) async {

@@ -516,5 +516,6 @@
   "modeMedia": "媒体",
   "mediaIntro": "点按开始，允许屏幕和音频捕获，然后播放视频或播客。通话无法捕获，部分应用会阻止捕获。",
   "mediaSilent": "已有 10 秒没有捕获到声音。如果正在播放内容，该应用可能阻止了音频捕获。",
-  "meetingSpeaker": "说话人 {number}"
+  "meetingSpeaker": "说话人 {number}",
+  "signInNotConfigured": "此版本尚未设置 Google 登录。请尝试邮箱登录，或请开发者完成 Firebase 设置。"
 }

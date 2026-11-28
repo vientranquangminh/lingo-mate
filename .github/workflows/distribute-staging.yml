@@ -114,8 +114,15 @@ jobs:
               -keyalg RSA -keysize 2048 -validity 10000 \
               -dname "CN=Android Debug,O=Android,C=US"
           }
-          sha1=$(keytool -list -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey | sed -n 's/.*SHA1: //p')
-          echo "Debug signing key SHA-1: $sha1 (add it to the Android app in Firebase for Google sign-in)" >> "$GITHUB_STEP_SUMMARY"
+          info=$(keytool -list -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey)
+          sha1=$(printf '%s' "$info" | sed -n 's/.*SHA1: //p')
+          sha256=$(printf '%s' "$info" | sed -n 's/.*SHA256: //p')
+          {
+            echo "Debug signing key (add both to the Android app in Firebase for Google sign-in):"
+            echo ""
+            echo "- SHA-1: \`$sha1\`"
+            echo "- SHA-256: \`$sha256\`"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Restore Android keystore
         if: needs.config.outputs.release_signing == 'true'

@@ -159,3 +159,9 @@ final liveAccessProvider = Provider<LiveAccess>((ref) {
   }
   return const DevLiveAccess('');
 });
+
+/// Whether Live needs a signed-in account: not on a dev or test build that carries its own Gemini key, where no server token is involved.
+final liveNeedsAccountProvider = Provider<bool>((ref) {
+  final access = ref.watch(liveAccessProvider);
+  return access is! DevLiveAccess || access.apiKey.isEmpty;
+});

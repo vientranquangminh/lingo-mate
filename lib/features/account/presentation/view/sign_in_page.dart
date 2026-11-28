@@ -152,6 +152,8 @@ class _SignInPageState extends ConsumerState<SignInPage> {
       if (mounted) {
         context.pop(true);
       }
+    } else if (result.outcome == SignInOutcome.notConfigured) {
+      showAppToast(context, l10n.signInNotConfigured);
     } else if (result.outcome != SignInOutcome.cancelled) {
       showAppToast(context, l10n.signInFailed);
     }
